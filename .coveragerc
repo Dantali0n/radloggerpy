@@ -1,0 +1,6 @@
+[run]
+branch = True
+source = radloggerpy
+
+[report]
+ignore_errors = True
