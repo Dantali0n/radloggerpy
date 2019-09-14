@@ -38,7 +38,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'RadLoggerPy'
-copyright = u'2017, OpenStack Developers'
+copyright = u'2019, Dantali0n'
 
 # openstackdocstheme options
 repository_name = 'Dantali0n/RadLoggerPy'

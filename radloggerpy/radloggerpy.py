@@ -17,12 +17,14 @@
 
 """Starter script for RadLoggerPy."""
 
-from oslo_config import cfg
 from oslo_log import log
 
+from radloggerpy import config
+
 LOG = log.getLogger(__name__)
-CONF = cfg.CONF
+CONF = config.CONF
 
 
 def main():
+    LOG.warning(CONF.database.mysql_engine)
     pass
