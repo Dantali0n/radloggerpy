@@ -1,5 +1,4 @@
 # -*- encoding: utf-8 -*-
-#
 # Copyright 2019 Dantali0n
 # All Rights Reserved.
 #
@@ -18,6 +17,7 @@
 """Starter script for RadLoggerPy."""
 
 from oslo_log import log
+import serial
 
 from radloggerpy import config
 
@@ -26,5 +26,11 @@ CONF = config.CONF
 
 
 def main():
-    LOG.warning(CONF.database.mysql_engine)
+    LOG.warning(CONF.database.filename)
+    ser = serial.Serial(port='/dev/ttyUSB0', baudrate=9600,
+                        parity=serial.PARITY_NONE,
+                        stopbits=serial.STOPBITS_ONE,
+                        bytesize=serial.EIGHTBITS)
+    while ser.inWaiting() > 0:
+        print(ser.read(1))
     pass

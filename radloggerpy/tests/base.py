@@ -1,5 +1,4 @@
-# -*- coding: utf-8 -*-
-
+# -*- encoding: utf-8 -*-
 # Copyright 2010-2011 OpenStack Foundation
 # Copyright (c) 2013 Hewlett-Packard Development Company, L.P.
 #
@@ -15,9 +14,34 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+from oslo_config import cfg
+from oslo_log import log
 from oslotest import base
+import testscenarios
+
+from radloggerpy.tests import conf_fixture
 
 
-class TestCase(base.BaseTestCase):
+CONF = cfg.CONF
+try:
+    log.register_options(CONF)
+except cfg.ArgsAlreadyParsedError:
+    pass
+CONF.set_override('use_stderr', False)
 
+
+class BaseTestCase(testscenarios.WithScenarios, base.BaseTestCase):
+    """Test base class."""
+
+    def setUp(self):
+        super(BaseTestCase, self).setUp()
+        self.addCleanup(cfg.CONF.reset)
+
+
+class TestCase(BaseTestCase):
     """Test case base class for all unit tests."""
+
+    def setUp(self):
+        super(TestCase, self).setUp()
+        self.useFixture(conf_fixture.ConfReloadFixture())
+        # self.useFixture(conf_fixture.ConfFixture(cfg.CONF))

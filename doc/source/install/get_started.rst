@@ -5,5 +5,6 @@ The radlogger service provides...
 
 The radlogger service consists of the following components:
 
-``radloggerpy-api`` service
-  Accepts and responds to end user compute API calls...
+``radloggerpy`` service
+  Runs as a daemon connecting to the geiger counter and logging
+  data to sqlite database.

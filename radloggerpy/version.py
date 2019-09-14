@@ -1,3 +1,4 @@
+# -*- encoding: utf-8 -*-
 # Copyright 2011 OpenStack Foundation
 # All Rights Reserved.
 #
@@ -15,5 +16,5 @@
 
 import pbr.version
 
-version_info = pbr.version.VersionInfo('python-watcher')
+version_info = pbr.version.VersionInfo('RadLoggerPy')
 version_string = version_info.version_string()
