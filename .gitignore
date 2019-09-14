@@ -9,6 +9,9 @@
 #
 # git config --global core.excludesfile '~/.gitignore'
 
+# IDE
+.idea
+
 # Bytecompiled Python
 *.py[cod]
 
