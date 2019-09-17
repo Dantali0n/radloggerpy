@@ -16,20 +16,17 @@
 
 import enum
 
-from sqlalchemy import Column, Integer, String, Enum
+from sqlalchemy import Column, Integer, Enum
 from sqlalchemy.ext.declarative import declarative_base
 
 Base = declarative_base()
 
 
-class AccountTypes(enum.Enum):
-    radmon = 1
-    gmcmap = 2
+class DeviceTypes(enum.Enum):
+    arduinogeigerpcb = 1
 
 
-class Account(Base):
-    __tablename__ = 'account'
+class Device(Base):
+    __tablename__ = 'device'
     id = Column(Integer, primary_key=True)
-    type = Column(Enum(AccountTypes))
-    username = Column(String(64), nullable=False)
-    password = Column(String(64), nullable=False)
+    type = Column(Enum(DeviceTypes))
