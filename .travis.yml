@@ -23,18 +23,24 @@ jobs:
         - "3.7"
       install:
         - pip install tox
+        - pip install codecov
       script:
         - tox -e py37
     - stage: cover
       name: "Coverage report"
+      env:
+        - CODECOV_TOKEN="ad646b4d-8d41-4b6c-912e-09a09ac2d097"
       python:
         - "3.7"
       install:
         - pip install tox
       script:
         - tox -e cover
+      after_success:
+        - codecov
     - stage: docs
       name: "Sphinx documentation"
+      if: branch = master OR type = pull_request
       python:
         - "3.7"
       install:
@@ -43,9 +49,10 @@ jobs:
         - tox -e docs
     - stage: docs
       name: "Releasenotes"
+      if: branch = master OR type = pull_request
       python:
         - "3.7"
       install:
         - pip install tox
       script:
-        - tox -e releasenots
+        - tox -e releasenotes
