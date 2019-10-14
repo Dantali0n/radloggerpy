@@ -1,5 +1,5 @@
 # -*- encoding: utf-8 -*-
-# Copyright 2019 Dantali0n
+# Copyright (c) 2019 Dantali0n
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
 # not use this file except in compliance with the License. You may obtain
@@ -28,6 +28,8 @@ class TestConfFixture(base.TestCase):
 
     def setUp(self):
         super(TestConfFixture, self).setUp()
+
+        # store the value for the filename database option
         self.filename_opts = [i for i in config.database.DATABASE_OPTS
                               if i.name == 'filename'][0]
 
