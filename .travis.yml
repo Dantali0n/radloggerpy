@@ -1,12 +1,38 @@
 language: python
-python:
-  - "2.7"
-  - "3.6"      # current default Python on Travis CI
-  - "3.7"
-install:
-  - pip install -r requirements.txt
-  - pip install tox
-script:
-  - tox -e pep8
-  - tox -e cover
-  - tox -e docs
+jobs:
+  include:
+    - stage: testpy27
+      python:
+        - "2.7"
+      install:
+        - pip install tox
+      script:
+        - tox -e py27
+    - stage: testpy37
+      python:
+        - "3.6"
+      install:
+        - pip install tox
+      script:
+        - tox -e py36
+    - stage: testpy37
+      python:
+        - "3.7"
+      install:
+        - pip install tox
+      script:
+        - tox -e py37
+    - stage: cover
+      python:
+        - "3.7"
+      install:
+        - pip install tox
+      script:
+        - tox -e cover
+    - stage: docs
+      python:
+        - "3.7"
+      install:
+        - pip install tox
+      script:
+        - tox -e docs
