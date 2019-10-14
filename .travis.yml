@@ -23,7 +23,6 @@ jobs:
         - "3.7"
       install:
         - pip install tox
-        - pip install codecov
       script:
         - tox -e py37
     - stage: cover
@@ -34,6 +33,7 @@ jobs:
         - "3.7"
       install:
         - pip install tox
+        - pip install codecov
       script:
         - tox -e cover
       after_success:
