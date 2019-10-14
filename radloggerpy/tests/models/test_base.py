@@ -13,20 +13,15 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-import enum
 
-from sqlalchemy import Column, Integer, Enum
-from sqlalchemy.ext.declarative import declarative_base
-
-Base = declarative_base()
+from radloggerpy.models import base as base_model
+from radloggerpy.tests import base
 
 
-class DeviceTypes(enum.Enum):
-    """Enum listing all possible supported types of devices"""
-    arduino_geiger_pcb = 1
+class TestBaseModel(base.TestCase):
 
+    def test_no_instance_attributes(self):
+        """Test that the class has no instance variables"""
 
-class Device(Base):
-    __tablename__ = 'device'
-    id = Column(Integer, primary_key=True)
-    type = Column(Enum(DeviceTypes))
+        test = base_model.BaseModel()
+        self.assertEqual(len(dir(base_model.BaseModel)), len(dir(test)))

@@ -13,47 +13,18 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-import time
 
-from radloggerpy.models import base
-
-
-class TimeStamp(base.BaseModel):
-
-    _timestamp = 0
+class BaseModel(object):
 
     def __init__(self):
-        """Performs essential initialization for TimeStamp model
+        """Do not declare any attributes in models their constructor
+
+        By declaring the attributes outside of the constructor it will be
+        easier to see which attributes certain models have. Additionally, it
+        will improve testing as the attributes can be AutoSpec=True by mock.
+        Remember though that all attributes outside the constructor are
+        statically accessible as well. The constructor can still be used to
+        assign a proper value to the declared attributes.
 
         """
-
-        self._timestamp = time.time()
-
-    def set_timestamp(self, timestamp):
-        """
-
-        :param timestamp:
-        :type timestamp:
-        :return:
-        :rtype:
-        """
-
-        self._timestamp = timestamp
-
-    def update_timestamp(self):
-        """
-
-        :return:
-        :rtype:
-        """
-
-        self._timestamp = time.time()
-
-    def get_timestamp(self):
-        """
-
-        :return:
-        :rtype:
-        """
-
-        return self._timestamp
+        pass

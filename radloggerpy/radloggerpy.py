@@ -17,6 +17,7 @@
 
 from oslo_log import log
 import serial
+import time
 
 from radloggerpy import config
 
@@ -26,10 +27,24 @@ CONF = config.CONF
 
 def main():
     LOG.warning(CONF.database.filename)
-    ser = serial.Serial(port='/dev/ttyUSB0', baudrate=9600,
+    try:
+        ser = serial.Serial(port='/dev/ttyUSB0', baudrate=9600,
                         parity=serial.PARITY_NONE,
                         stopbits=serial.STOPBITS_ONE,
                         bytesize=serial.EIGHTBITS)
-    while ser.inWaiting() > 0:
-        print(ser.read(1))
-    pass
+    except serial.serialutil.SerialException as e:
+        LOG.critical(e.errno)
+        return
+
+    string = ""
+    while True:
+        while ser.inWaiting() > 0:
+            char = ser.read(1).decode("utf-8")
+            if char == '\n':
+                print(string)
+                string = ""
+            elif char == '\r':
+                pass
+            else:
+                string += char
+        time.sleep(60)

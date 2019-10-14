@@ -19,4 +19,5 @@ from radloggerpy.tests import base
 class TestRadloggerpy(base.TestCase):
 
     def test_something(self):
+        # import pdb; pdb.set_trace()
         pass
