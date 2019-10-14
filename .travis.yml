@@ -1,21 +1,24 @@
 language: python
 jobs:
   include:
-    - stage: testpy27
+    - stage: test
+      name: "Unit test py27"
       python:
         - "2.7"
       install:
         - pip install tox
       script:
         - tox -e py27
-    - stage: testpy37
+    - stage: test
+      name: "Unit test py36"
       python:
         - "3.6"
       install:
         - pip install tox
       script:
         - tox -e py36
-    - stage: testpy37
+    - stage: test
+      name: "Unit test py37"
       python:
         - "3.7"
       install:
@@ -23,6 +26,7 @@ jobs:
       script:
         - tox -e py37
     - stage: cover
+      name: "Coverage report"
       python:
         - "3.7"
       install:
@@ -30,9 +34,18 @@ jobs:
       script:
         - tox -e cover
     - stage: docs
+      name: "Sphinx documentation"
       python:
         - "3.7"
       install:
         - pip install tox
       script:
         - tox -e docs
+    - stage: docs
+      name: "Releasenotes"
+      python:
+        - "3.7"
+      install:
+        - pip install tox
+      script:
+        - tox -e releasenots
