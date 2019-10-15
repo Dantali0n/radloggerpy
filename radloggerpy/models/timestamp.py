@@ -27,33 +27,26 @@ class TimeStamp(base.BaseModel):
 
         """
 
+        super().__init__()
         self._timestamp = time.time()
 
     def set_timestamp(self, timestamp):
-        """
+        """Set the internal timestamp to the passed timestamp in Epoch
 
-        :param timestamp:
-        :type timestamp:
-        :return:
-        :rtype:
+        :param timestamp: The timestamp in Epoch such as from time.time()
+        :type timestamp: float
         """
-
         self._timestamp = timestamp
 
     def update_timestamp(self):
-        """
-
-        :return:
-        :rtype:
-        """
+        """Update the internal timestamp to the current time.time() Epoch"""
 
         self._timestamp = time.time()
 
     def get_timestamp(self):
-        """
+        """Retrieve and return the internal timestamp
 
-        :return:
-        :rtype:
+        :return: Epoch, time.time() representation of current time
+        :rtype: float
         """
-
         return self._timestamp

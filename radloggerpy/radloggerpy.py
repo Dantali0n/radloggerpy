@@ -15,10 +15,13 @@
 
 """Starter script for RadLoggerPy."""
 
-from oslo_log import log
+import errno
 import serial
 import time
 
+from oslo_log import log
+
+from radloggerpy._i18n import _
 from radloggerpy import config
 
 LOG = log.getLogger(__name__)
@@ -29,11 +32,12 @@ def main():
     LOG.warning(CONF.database.filename)
     try:
         ser = serial.Serial(port='/dev/ttyUSB0', baudrate=9600,
-                        parity=serial.PARITY_NONE,
-                        stopbits=serial.STOPBITS_ONE,
-                        bytesize=serial.EIGHTBITS)
+                            parity=serial.PARITY_NONE,
+                            stopbits=serial.STOPBITS_ONE,
+                            bytesize=serial.EIGHTBITS)
     except serial.serialutil.SerialException as e:
-        LOG.critical(e.errno)
+        if e.errno == errno.EACCES:
+            LOG.critical(_("Insufficient permissions to open device"))
         return
 
     string = ""

@@ -19,9 +19,7 @@ import six
 
 @six.add_metaclass(abc.ABCMeta)
 class Device(object):
-    """
-
-    """
+    """Abstract class all radiation monitoring devices should implement"""
 
     name = "Device"
 

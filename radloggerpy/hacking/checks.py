@@ -57,30 +57,8 @@ def _regex_for_level(level, hint):
     }
 
 
-log_warn = re.compile(
-    r"(.)*LOG\.(warn)\(\s*('|\"|_)")
-unittest_imports_dot = re.compile(r"\bimport[\s]+unittest\b")
-unittest_imports_from = re.compile(r"\bfrom[\s]+unittest\b")
+log_warn = re.compile(r"(.)*LOG\.(warn)\(\s*('|\"|_)")
 re_redundant_import_alias = re.compile(r".*import (.+) as \1$")
-
-
-@flake8ext
-def use_jsonutils(logical_line, filename):
-    msg = "N321: jsonutils.%(fun)s must be used instead of json.%(fun)s"
-
-    # Skip list is currently empty.
-    json_check_skipped_patterns = []
-
-    for pattern in json_check_skipped_patterns:
-        if pattern in filename:
-            return
-
-    if "json." in logical_line:
-        json_funcs = ['dumps(', 'dump(', 'loads(', 'load(']
-        for f in json_funcs:
-            pos = logical_line.find('json.%s' % f)
-            if pos != -1:
-                yield (pos, msg % {'fun': f[:-1]})
 
 
 @flake8ext
@@ -105,7 +83,7 @@ def check_assert_called_once_with(logical_line, filename):
     #    assertCalledOnceWith
     #    assert_has_called
     #    called_once_with
-    if 'watcher/tests/' in filename:
+    if 'radloggerpy/tests/' in filename:
         if '.assert_called_once_with(' in logical_line:
             return
         uncased_line = logical_line.lower().replace('_', '')
@@ -145,8 +123,8 @@ def check_python3_no_iteritems(logical_line):
 
 
 @flake8ext
-def check_asserttrue(logical_line, filename):
-    if 'watcher/tests/' in filename:
+def check_assert_true(logical_line, filename):
+    if 'radloggerpy/tests/' in filename:
         if re.search(r"assertEqual\(\s*True,[^,]*(,[^,]*)?\)", logical_line):
             msg = ("N328: Use assertTrue(observed) instead of "
                    "assertEqual(True, observed)")
@@ -158,21 +136,17 @@ def check_asserttrue(logical_line, filename):
 
 
 @flake8ext
-def check_assertfalse(logical_line, filename):
-    if 'watcher/tests/' in filename:
+def check_assert_false(logical_line, filename):
+    if 'radloggerpy/tests/' in filename:
         if re.search(r"assertEqual\(\s*False,[^,]*(,[^,]*)?\)", logical_line):
-            msg = ("N328: Use assertFalse(observed) instead of "
-                   "assertEqual(False, observed)")
-            yield (0, msg)
-        if re.search(r"assertEqual\([^,]*,\s*False(,[^,]*)?\)", logical_line):
             msg = ("N328: Use assertFalse(observed) instead of "
                    "assertEqual(False, observed)")
             yield (0, msg)
 
 
 @flake8ext
-def check_assertempty(logical_line, filename):
-    if 'watcher/tests/' in filename:
+def check_assert_empty(logical_line, filename):
+    if 'radloggerpy/tests/' in filename:
         msg = ("N330: Use assertEqual(*empty*, observed) instead of "
                "assertEqual(observed, *empty*). *empty* contains "
                "{}, [], (), set(), '', \"\"")
@@ -183,8 +157,8 @@ def check_assertempty(logical_line, filename):
 
 
 @flake8ext
-def check_assertisinstance(logical_line, filename):
-    if 'watcher/tests/' in filename:
+def check_assert_is_instance(logical_line, filename):
+    if 'radloggerpy/tests/' in filename:
         if re.search(r"assertTrue\(\s*isinstance\(\s*[^,]*,\s*[^,]*\)\)",
                      logical_line):
             msg = ("N331: Use assertIsInstance(observed, type) instead "
@@ -193,17 +167,13 @@ def check_assertisinstance(logical_line, filename):
 
 
 @flake8ext
-def check_assertequal_for_httpcode(logical_line, filename):
-    msg = ("N332: Use assertEqual(expected_http_code, observed_http_code) "
-           "instead of assertEqual(observed_http_code, expected_http_code)")
-    if 'watcher/tests/' in filename:
-        if re.search(r"assertEqual\(\s*[^,]*,[^,]*HTTP[^\.]*\.code\s*\)",
-                     logical_line):
-            yield (0, msg)
-
-
-@flake8ext
 def check_log_warn_deprecated(logical_line, filename):
+    """LOG.warn is deprecated but still possible
+
+    N333(watcher/foo.py): LOG.warn("example")
+    Okay(watcher/foo.py): LOG.warning("example")
+    """
+
     msg = "N333: Use LOG.warning due to compatibility with py3"
     if log_warn.match(logical_line):
         yield (0, msg)
@@ -211,11 +181,13 @@ def check_log_warn_deprecated(logical_line, filename):
 
 @flake8ext
 def check_oslo_i18n_wrapper(logical_line, filename, noqa):
-    """Check for watcher.i18n usage.
+    """Check for radloggerpy.i18n usage.
 
-    N340(watcher/foo/bar.py): from watcher.i18n import _
-    Okay(watcher/foo/bar.py): from watcher.i18n import _  # noqa
+    N340(radloggerpy/foo/bar.py): from radloggerpy.i18n import _
+    Okay(radloggerpy/foo/bar.py): from radloggerpy._i18n import _
+    Okay(radloggerpy/foo/bar.py): from radloggerpy.i18n import _  # noqa
     """
+
     if noqa:
         return
 
@@ -223,10 +195,11 @@ def check_oslo_i18n_wrapper(logical_line, filename, noqa):
     modulename = os.path.normpath(filename).split('/')[0]
     bad_i18n_module = '%s.i18n' % modulename
 
-    if (len(split_line) > 1 and split_line[0] in ('import', 'from')):
+    if len(split_line) > 1 and split_line[0] in ('import', 'from'):
         if (split_line[1] == bad_i18n_module or
-            modulename != 'watcher' and split_line[1] in ('watcher.i18n',
-                                                          'watcher._i18n')):
+            modulename !=
+                'radloggerpy' and split_line[1]
+                in ('radloggerpy.i18n', 'radloggerpy._i18n')):
             msg = ("N340: %(found)s is found. Use %(module)s._i18n instead."
                    % {'found': split_line[1], 'module': modulename})
             yield (0, msg)
@@ -236,11 +209,12 @@ def check_oslo_i18n_wrapper(logical_line, filename, noqa):
 def check_builtins_gettext(logical_line, tokens, filename, lines, noqa):
     """Check usage of builtins gettext _().
 
-    N341(watcher/foo.py): _('foo')
-    Okay(watcher/i18n.py): _('foo')
-    Okay(watcher/_i18n.py): _('foo')
-    Okay(watcher/foo.py): _('foo')  # noqa
+    N341(radloggerpy/foo.py): _('foo')
+    Okay(radloggerpy/i18n.py): _('foo')
+    Okay(radloggerpy/_i18n.py): _('foo')
+    Okay(radloggerpy/foo.py): _('foo')  # noqa
     """
+
     if noqa:
         return
 
@@ -274,25 +248,24 @@ def check_builtins_gettext(logical_line, tokens, filename, lines, noqa):
 def no_redundant_import_alias(logical_line):
     """Checking no redundant import alias.
 
-    https://bugs.launchpad.net/watcher/+bug/1745527
-    N342
+    N342(radloggerpy/foo.py): from X import Y as Y
+    Okay(radloggerpy/foo.py): from X import Y as Z
     """
+
     if re.match(re_redundant_import_alias, logical_line):
         yield(0, "N342: No redundant import alias.")
 
 
 def factory(register):
-    register(use_jsonutils)
     register(check_assert_called_once_with)
     register(no_translate_debug_logs)
     register(check_python3_xrange)
     register(check_no_basestring)
     register(check_python3_no_iteritems)
-    register(check_asserttrue)
-    register(check_assertfalse)
-    register(check_assertempty)
-    register(check_assertisinstance)
-    register(check_assertequal_for_httpcode)
+    register(check_assert_true)
+    register(check_assert_false)
+    register(check_assert_empty)
+    register(check_assert_is_instance)
     register(check_log_warn_deprecated)
     register(check_oslo_i18n_wrapper)
     register(check_builtins_gettext)

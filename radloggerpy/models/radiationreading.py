@@ -18,5 +18,23 @@ from radloggerpy.models import timestamp
 
 class RadiationReading(timestamp.TimeStamp):
 
+    _cpm = 0
+
     def __init__(self):
-        pass
+        super().__init__()
+
+    def set_cpm(self, cpm):
+        """Set the counts per minute to the new value
+
+        :param cpm: Counts per minute
+        :type cpm: int
+        """
+        self._cpm = cpm
+
+    def get_cpm(self):
+        """Get the current counts per minute
+
+        :return: The current internal counts per minute
+        :rtype: int
+        """
+        return self._cpm
