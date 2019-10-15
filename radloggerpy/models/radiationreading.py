@@ -21,7 +21,7 @@ class RadiationReading(timestamp.TimeStamp):
     _cpm = 0
 
     def __init__(self):
-        super().__init__()
+        super(RadiationReading, self).__init__()
 
     def set_cpm(self, cpm):
         """Set the counts per minute to the new value

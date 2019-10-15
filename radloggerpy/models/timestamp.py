@@ -27,7 +27,7 @@ class TimeStamp(base.BaseModel):
 
         """
 
-        super().__init__()
+        super(TimeStamp, self).__init__()
         self._timestamp = time.time()
 
     def set_timestamp(self, timestamp):
