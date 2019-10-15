@@ -46,7 +46,7 @@ class TestHacking(base.TestCase):
         self.assertRaises(StopIteration, next, generator)
 
     def test_check_builtins_gettext_offending(self):
-        """"""
+        """Not allowed as it uses native gettext function"""
 
         filename = "radloggerpy/radlogger.py"
         lines = [
@@ -61,7 +61,7 @@ class TestHacking(base.TestCase):
         self.assertEqual(0, next(generator)[0])
 
     def test_check_builtins_gettext_allowed(self):
-        """"""
+        """Allowed as _i18n import ensure native gettext is overridden"""
 
         filename = "radloggerpy/radlogger.py"
         lines = [
@@ -76,6 +76,8 @@ class TestHacking(base.TestCase):
         self.assertRaises(StopIteration, next, generator)
 
     def test_check_oslo_i18n_wrapper_offending(self):
+        """Not allowed as i18n import should lead with _"""
+
         logical_line = "from radloggerpy.i18n import _"
         filename = "radloggerpy/foo/bar.py"
 
@@ -85,6 +87,8 @@ class TestHacking(base.TestCase):
         self.assertEqual(0, next(generator)[0])
 
     def test_check_oslo_i18n_wrapper_allowed(self):
+        """Allowed as i18n imort has leading _"""
+
         logical_line = "from radloggerpy._i18n import _"
         filename = "radloggerpy/foo/bar.py"
 

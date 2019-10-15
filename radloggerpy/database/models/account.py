@@ -13,22 +13,17 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-import enum
-
 from sqlalchemy import Column, Integer, String, Enum
 from sqlalchemy.ext.declarative import declarative_base
 
+from radloggerpy.types import account_types as at
+
 Base = declarative_base()
-
-
-class AccountTypes(enum.Enum):
-    radmon = 1
-    gmcmap = 2
 
 
 class Account(Base):
     __tablename__ = 'account'
     id = Column(Integer, primary_key=True)
-    type = Column(Enum(AccountTypes))
+    type = Column(Enum(at.AccountTypes))
     username = Column(String(64), nullable=False)
     password = Column(String(64), nullable=False)

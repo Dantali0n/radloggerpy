@@ -19,9 +19,18 @@ from radloggerpy.tests import base
 
 class TestRadiationReadingModel(base.TestCase):
 
+    def setUp(self):
+        super(TestRadiationReadingModel, self).setUp()
+
+        self.m_radiation_reading = radiationreading.RadiationReading()
+
     def test_no_instance_attributes(self):
         """Test that the class has no instance variables"""
 
         test = radiationreading.RadiationReading()
         self.assertEqual(
             len(dir(radiationreading.RadiationReading)), len(dir(test)))
+
+    def test_set_get(self):
+        self.m_radiation_reading.set_cpm(24)
+        self.assertEqual(24, self.m_radiation_reading.get_cpm())

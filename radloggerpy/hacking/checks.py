@@ -50,13 +50,6 @@ _all_log_levels = {
 _all_hints = set(_all_log_levels.values())
 
 
-def _regex_for_level(level, hint):
-    return r".*LOG\.%(level)s\(\s*((%(wrong_hints)s)\(|'|\")" % {
-        'level': level,
-        'wrong_hints': '|'.join(_all_hints - set([hint])),
-    }
-
-
 log_warn = re.compile(r"(.)*LOG\.(warn)\(\s*('|\"|_)")
 re_redundant_import_alias = re.compile(r".*import (.+) as \1$")
 
@@ -65,11 +58,7 @@ re_redundant_import_alias = re.compile(r".*import (.+) as \1$")
 def no_translate_debug_logs(logical_line, filename):
     """Check for 'LOG.debug(_(' and 'LOG.debug(_Lx('
 
-    As per our translation policy,
-    https://wiki.openstack.org/wiki/LoggingStandards#Log_Translation
-    we shouldn't translate debug level logs.
     * This check assumes that 'LOG' is a logger.
-    N319
     """
     for hint in _all_hints:
         if logical_line.startswith("LOG.debug(%s(" % hint):
@@ -126,10 +115,6 @@ def check_python3_no_iteritems(logical_line):
 def check_assert_true(logical_line, filename):
     if 'radloggerpy/tests/' in filename:
         if re.search(r"assertEqual\(\s*True,[^,]*(,[^,]*)?\)", logical_line):
-            msg = ("N328: Use assertTrue(observed) instead of "
-                   "assertEqual(True, observed)")
-            yield (0, msg)
-        if re.search(r"assertEqual\([^,]*,\s*True(,[^,]*)?\)", logical_line):
             msg = ("N328: Use assertTrue(observed) instead of "
                    "assertEqual(True, observed)")
             yield (0, msg)

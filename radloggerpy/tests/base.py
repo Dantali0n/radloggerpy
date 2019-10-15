@@ -35,6 +35,23 @@ class BaseTestCase(testscenarios.WithScenarios, base.BaseTestCase):
 
     def setUp(self):
         super(BaseTestCase, self).setUp()
+
+        # Use this fixture if class variables are changed so they get patched
+        # back to the default value afterwards. This fixture also works for
+        # ensuring singletons are patched back to default state.
+        #
+        # self.p_example = mock.patch.object(
+        #     file, 'Class',
+        #     new=file.Class)
+        # self.m_example = self.p_example.start()
+        # self.addCleanup(self.p_example.stop)
+        #
+        # This binds methods from the fixture to their respective class
+        # has to be done for every method but only for python 2.7 so we can
+        # almost get rid of this.
+        # self.m_example.get_method = self.m_example.__get__(
+        #   self.m_example, file.Class)
+
         self.addCleanup(cfg.CONF.reset)
 
 

@@ -13,15 +13,13 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from sqlalchemy import Column, Integer, Enum
-from sqlalchemy.ext.declarative import declarative_base
-
-from radloggerpy.types import device_types as dt
-
-Base = declarative_base()
+from radloggerpy.devices import device
 
 
-class Device(Base):
-    __tablename__ = 'device'
-    id = Column(Integer, primary_key=True)
-    type = Column(Enum(dt.DeviceTypes))
+class ArduinoGeigerPCB(device.Device):
+    """"""
+
+    NAME = "ArduinoGeigerPCB"
+
+    def __init__(self):
+        super(ArduinoGeigerPCB, self).__init__()

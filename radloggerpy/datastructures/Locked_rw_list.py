@@ -13,34 +13,17 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-import abc
-import six
-
 from oslo_log import log
 from radloggerpy import config
+
+from radloggerpy.datastructures import reentrant_rw_lock as rrwl
 
 LOG = log.getLogger(__name__)
 CONF = config.CONF
 
 
-@six.add_metaclass(abc.ABCMeta)
-class Device(object):
-    """Abstract class all radiation monitoring devices should implement"""
+class LockedReadWriteList(object):
 
-    " Each radiation monitoring device should have a unique name"
-    NAME = "Device"
-
-    def __init__(self):
-        self.data = [None] * CONF.devices.initial_buffer_size
-        pass
-
-    def get_data(self):
-        """Return a collection of radiation monitoring data if any is available
-
-        Retrieves the currently stores collection of radiation monitoring data
-        and subsequently clears it.
-
-        :return: Collection of RadiationReading objects
-        :rtype:
-        """
-        pass
+    def __init__(self, initial_size=20):
+        self.data = [None] * initial_size
+        self.rwlock = rrwl.ReentrantReadWriteLock()
