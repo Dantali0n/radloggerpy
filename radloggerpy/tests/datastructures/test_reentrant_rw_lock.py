@@ -13,21 +13,107 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+import time
+
+from oslo_log import log
+from radloggerpy import config
+
 import futurist
-# from futurist import waiters
+from futurist import waiters
+
+from concurrent.futures import ThreadPoolExecutor
+
+# for when we deprecate python 2.7
+# from readerwriterlock import rwlock
 
 from radloggerpy.datastructures.reentrant_rw_lock import ReentrantReadWriteLock
-
 from radloggerpy.tests import base
+
+LOG = log.getLogger(__name__)
+CONF = config.CONF
 
 
 class TestReentrantReadWriteLock(base.TestCase):
 
-    def get_read(self, rrwlock):
-        return rrwlock.read_acquire()
+    shared_counter = 0
 
-    def get_write(self, rrwlock):
-        return rrwlock.write_acquire()
+    # def get_read_ext(self, rrwlock):
+    #     lock = rrwlock.gen_rlock()
+    #     try:
+    #         did_acquire = lock.acquire()
+    #         if did_acquire:
+    #             self.shared_counter += 1
+    #         return did_acquire
+    #     except Exception as e:
+    #         LOG.exception(e)
+    #     finally:
+    #         lock.release()
+    #
+    # def get_write_ext(self, rrwlock):
+    #     lock = rrwlock.gen_wlock()
+    #     try:
+    #         did_acquire = lock.acquire()
+    #         if did_acquire:
+    #             self.shared_counter += 1
+    #         return did_acquire
+    #     except Exception as e:
+    #         LOG.exception(e)
+    #     finally:
+    #         lock.release()
+    #
+    # def get_read_ext_hold(self, rrwlock):
+    #     lock = rrwlock.gen_rlock()
+    #     try:
+    #         did_acquire = lock.acquire()
+    #         if did_acquire:
+    #             self.shared_counter += 1
+    #         return did_acquire
+    #     except Exception as e:
+    #         LOG.exception(e)
+
+    def get_read_native(self, rrwlock):
+        try:
+            lock = rrwlock.read_acquire()
+            if lock:
+                self.shared_counter += 1
+            return lock
+        except Exception as e:
+            LOG.exception(e)
+        finally:
+            rrwlock.read_release()
+
+    def get_read_native_hold(self, rrwlock):
+        try:
+            lock = rrwlock.read_acquire()
+            if lock:
+                self.shared_counter += 1
+            return lock
+        except Exception as e:
+            LOG.exception(e)
+
+    def get_read_native_reentrant(self, rrwlock):
+        try:
+            rrwlock.read_acquire()
+            lock = rrwlock.read_acquire()
+            if lock:
+                self.shared_counter += 1
+            return lock
+        except Exception as e:
+            LOG.exception(e)
+        finally:
+            rrwlock.read_release()
+            rrwlock.read_release()
+
+    def get_write_native(self, rrwlock):
+        try:
+            lock = rrwlock.write_acquire()
+            if lock:
+                self.shared_counter += 1
+            return lock
+        except Exception as e:
+            LOG.exception(e)
+        finally:
+            rrwlock.write_release()
 
     def setUp(self):
         super(TestReentrantReadWriteLock, self).setUp()
@@ -70,27 +156,82 @@ class TestReentrantReadWriteLock(base.TestCase):
         self.assertTrue(rrwlock.write_acquire())
         self.assertFalse(rrwlock.read_acquire(timeout=1))
 
-    # def test_mutual_exclusion_concurrent_read_write(self):
-    #     rrwlock = ReentrantReadWriteLock()
+    def test_mutual_exclusion_concurrent_read_write_native(self):
+        rrwlock = ReentrantReadWriteLock()
+
+        self.shared_counter = 0
+
+        futures = []
+        futures.append(self._threadpool.submit(self.get_read_native, rrwlock))
+        futures.append(self._threadpool.submit(self.get_write_native, rrwlock))
+
+        results = waiters.wait_for_all(futures)
+        self.assertTrue(results[0].pop().result)
+        self.assertTrue(results[0].pop().result)
+        self.assertEqual(2, self.shared_counter)
+
+    def test_mutual_exclusion_concurrent_read_write_no_futurist(self):
+        rrwlock = ReentrantReadWriteLock()
+
+        self.shared_counter = 0
+
+        executor = ThreadPoolExecutor(max_workers=2)
+
+        futures = list()
+        futures.append(executor.submit(self.get_read_native, rrwlock))
+        futures.append(executor.submit(self.get_write_native, rrwlock))
+
+        while len(futures) > 0:
+            for f in futures:
+                if f.done():
+                    futures.remove(f)
+                    self.assertTrue(f.result())
+            time.sleep(1)
+
+        self.assertEqual(2, self.shared_counter)
+
+    def test_mutual_exclusion_concurrent_read_read(self):
+        rrwlock = ReentrantReadWriteLock()
+
+        self.shared_counter = 0
+
+        futures = []
+        futures.append(
+            self._threadpool.submit(self.get_read_native_hold, rrwlock))
+        futures.append(
+            self._threadpool.submit(self.get_read_native_hold, rrwlock))
+        results = waiters.wait_for_all(futures)
+
+        self.assertTrue(results[0].pop().result)
+        self.assertTrue(results[0].pop().result)
+        self.assertEqual(2, self.shared_counter)
+
+    def test_mutual_exclusion_concurrent_read_reentrant(self):
+        rrwlock = ReentrantReadWriteLock()
+
+        self.shared_counter = 0
+
+        futures = []
+        futures.append(
+            self._threadpool.submit(self.get_read_native_reentrant, rrwlock))
+        futures.append(
+            self._threadpool.submit(self.get_write_native, rrwlock))
+        results = waiters.wait_for_all(futures)
+
+        self.assertTrue(results[0].pop().result)
+        self.assertTrue(results[0].pop().result)
+        self.assertEqual(2, self.shared_counter)
+
+    # def test_mutual_exclusion_concurrent_read_write_ext(self):
+    #     rrwlock = rwlock.RWLockRead()
     #
-    #     # Attempt to concurrent read and writes
+    #     self.shared_counter = 0
+    #
     #     futures = []
-    #     futures.append(self._threadpool.submit(self.get_read, rrwlock))
-    #     futures.append(self._threadpool.submit(self.get_write, rrwlock))
+    #     futures.append(self._threadpool.submit(self.get_read_ext, rrwlock))
+    #     futures.append(self._threadpool.submit(self.get_write_ext, rrwlock))
     #
-    #     # Get the results and verify only one of the calls succeeded
-    #     # assert that the other call is still pending
-    #     results = waiters.wait_for_any([futures[0]])
-    #     self.assertTrue(results[0].pop().result)
-    #     # .assertEqual(1, len(results[1]))
-    #
-    # def test_mutual_exclusion_concurrent_read_read(self):
-    #     rrwlock = ReentrantReadWriteLock()
-    #
-    #     futures = []
-    #     futures.append(self._threadpool.submit(self.get_read, rrwlock))
-    #     futures.append(self._threadpool.submit(self.get_read, rrwlock))
     #     results = waiters.wait_for_all(futures)
-    #
     #     self.assertTrue(results[0].pop().result)
     #     self.assertTrue(results[0].pop().result)
+    #     self.assertEqual(2, self.shared_counter)

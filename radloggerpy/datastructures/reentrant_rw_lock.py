@@ -26,7 +26,7 @@ CONF = config.CONF
 class ReentrantReadWriteLock(object):
     """Dual lock wrapper to facilitate reentrant read / write lock pattern
 
-    Implements first reader-writer problem (reader preference).
+    Implements second reader-writer problem (writer preference).
 
     Once python 2,7 is officially deprecated use this instead:
     https://pypi.org/project/readerwriterlock/
@@ -34,9 +34,10 @@ class ReentrantReadWriteLock(object):
     """
 
     def __init__(self):
-        self._condition = Condition()
+
         self._read_lock = RLock()
         self._write_lock = RLock()
+        self._condition = Condition()
         self._num_readers = 0
         self._wants_write = False
 
@@ -50,7 +51,7 @@ class ReentrantReadWriteLock(object):
                         return False
                     with self._condition:
                         self._condition.wait(waitout)
-                        first_it = False
+                    first_it = False
                 self._num_readers += 1
                 return True
             return False
@@ -77,7 +78,7 @@ class ReentrantReadWriteLock(object):
                         return False
                     with self._condition:
                         self._condition.wait(waitout)
-                        first_it = False
+                    first_it = False
                 self._wants_write = True
                 return True
             return False
