@@ -44,8 +44,10 @@ class ReentrantReadWriteLock(object):
     def read_acquire(self, blocking=True, timeout=-1):
         waitout = None if timeout == -1 else timeout
         first_it = True
+        int_lock = False
         try:
             if self._read_lock.acquire(blocking, timeout):
+                int_lock = True
                 while self._wants_write:
                     if not blocking or not first_it:
                         return False
@@ -56,23 +58,29 @@ class ReentrantReadWriteLock(object):
                 return True
             return False
         finally:
-            self._read_lock.release()
+            if int_lock:
+                self._read_lock.release()
 
     def read_release(self):
+        int_lock = False
         try:
             if self._read_lock.acquire():
+                int_lock = True
                 self._num_readers -= 1
                 if self._num_readers == 0:
                     with self._condition:
                         self._condition.notifyAll()
         finally:
-            self._read_lock.release()
+            if int_lock:
+                self._read_lock.release()
 
     def write_acquire(self, blocking=True, timeout=-1):
         waitout = None if timeout == -1 else timeout
         first_it = True
+        int_lock = False
         try:
             if self._write_lock.acquire(blocking, timeout):
+                int_lock = True
                 while self._num_readers > 0 or self._wants_write:
                     if not blocking or not first_it:
                         return False
@@ -83,13 +91,17 @@ class ReentrantReadWriteLock(object):
                 return True
             return False
         finally:
-            self._write_lock.release()
+            if int_lock:
+                self._write_lock.release()
 
     def write_release(self):
+        int_lock = False
         try:
             if self._write_lock.acquire():
+                int_lock = True
                 self._wants_write = False
                 with self._condition:
                     self._condition.notifyAll()
         finally:
-            self._write_lock.release()
+            if int_lock:
+                self._write_lock.release()
