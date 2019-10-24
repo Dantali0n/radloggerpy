@@ -141,20 +141,10 @@ class TestReentrantReadWriteLock(base.TestCase):
         self.assertTrue(rrwlock.read_acquire())
         self.assertFalse(rrwlock.write_acquire(False))
 
-    def test_mutual_exclusion_read_write_timeout(self):
-        rrwlock = ReentrantReadWriteLock()
-        self.assertTrue(rrwlock.read_acquire())
-        self.assertFalse(rrwlock.write_acquire(timeout=1))
-
     def test_mutual_exclusion_write_read_block(self):
         rrwlock = ReentrantReadWriteLock()
         self.assertTrue(rrwlock.write_acquire())
         self.assertFalse(rrwlock.read_acquire(False))
-
-    def test_mutual_exclusion_write_read_timeout(self):
-        rrwlock = ReentrantReadWriteLock()
-        self.assertTrue(rrwlock.write_acquire())
-        self.assertFalse(rrwlock.read_acquire(timeout=1))
 
     def test_mutual_exclusion_concurrent_read_write_native(self):
         rrwlock = ReentrantReadWriteLock()
