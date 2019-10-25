@@ -13,7 +13,14 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+from oslo_log import log
+from radloggerpy import config
+
+from radloggerpy._i18n import _
 from radloggerpy.models import timestamp
+
+LOG = log.getLogger(__name__)
+CONF = config.CONF
 
 
 class RadiationReading(timestamp.TimeStamp):
@@ -29,6 +36,11 @@ class RadiationReading(timestamp.TimeStamp):
         :param cpm: Counts per minute
         :type cpm: int
         """
+
+        if cpm < 0:
+            LOG.warning(_("RadiationReading can not have negative cpm"))
+            return
+
         self._cpm = cpm
 
     def get_cpm(self):

@@ -42,17 +42,22 @@ class ReentrantReadWriteLock(object):
         self._wants_write = False
 
     def read_acquire(self, blocking=True):
-        first_it = True
+        """Acquire a reentrant read lock
+
+        Allows reentrant and multiple concurrent readers
+
+        :param blocking: If the method is allowed to block or not
+        :return: True if the lock was acquired false otherwise
+        """
         int_lock = False
         try:
             if self._read_lock.acquire(blocking):
                 int_lock = True
                 while self._wants_write:
-                    if not blocking or not first_it:
+                    if not blocking:
                         return False
                     with self._condition:
                         self._condition.wait()
-                    first_it = False
                 self._num_readers += 1
                 return True
             return False
@@ -61,30 +66,39 @@ class ReentrantReadWriteLock(object):
                 self._read_lock.release()
 
     def read_release(self):
+        """Release reentrant read lock
+
+        Does not validate that a lock was previously acquired by the same
+        caller.
+        """
         int_lock = False
         try:
             if self._read_lock.acquire():
                 int_lock = True
                 self._num_readers -= 1
-                if self._num_readers == 0:
-                    with self._condition:
-                        self._condition.notifyAll()
+                with self._condition:
+                    self._condition.notifyAll()
         finally:
             if int_lock:
                 self._read_lock.release()
 
     def write_acquire(self, blocking=True):
-        first_it = True
+        """Acquire a reentrant write lock
+
+        Allows reentrant writers.
+
+        :param blocking: If the method is allowed to block or not
+        :return: True if the lock was acquired false otherwise
+        """
         int_lock = False
         try:
             if self._write_lock.acquire(blocking):
                 int_lock = True
                 while self._num_readers > 0 or self._wants_write:
-                    if not blocking or not first_it:
+                    if not blocking:
                         return False
                     with self._condition:
                         self._condition.wait()
-                    first_it = False
                 self._wants_write = True
                 return True
             return False

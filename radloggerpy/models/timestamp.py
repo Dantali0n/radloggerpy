@@ -23,11 +23,10 @@ class TimeStamp(base.BaseModel):
     _timestamp = 0
 
     def __init__(self):
-        """Performs essential initialization for TimeStamp model
-
-        """
+        """Performs essential initialization for TimeStamp model"""
 
         super(TimeStamp, self).__init__()
+        # auto generate timestamp upon instantiation.
         self._timestamp = time.time()
 
     def set_timestamp(self, timestamp):

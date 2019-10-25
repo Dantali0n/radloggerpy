@@ -13,6 +13,8 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+import mock
+
 from radloggerpy.hacking import checks
 
 from radloggerpy.tests import base
@@ -28,6 +30,31 @@ class TestHacking(base.TestCase):
 
     def setUp(self):
         super(TestHacking, self).setUp()
+
+    def test_register(self):
+        """Check all defined additional checks are registered in the factory"""
+
+        m_register = mock.Mock()
+
+        checks.factory(m_register)
+
+        m_register.assert_has_calls([
+            mock.call(checks.check_assert_called_once_with),
+            mock.call(checks.check_assert_empty),
+            mock.call(checks.check_assert_false),
+            mock.call(checks.check_assert_is_instance),
+            mock.call(checks.check_assert_true),
+            mock.call(checks.check_builtins_gettext),
+            mock.call(checks.check_log_warn_deprecated),
+            mock.call(checks.check_no_basestring),
+            mock.call(checks.check_oslo_i18n_wrapper),
+            mock.call(checks.check_python3_no_iteritems),
+            mock.call(checks.check_python3_xrange),
+            mock.call(checks.no_redundant_import_alias),
+            mock.call(checks.no_translate_debug_logs)
+        ], any_order=True)
+
+        self.assertEqual(13, m_register.call_count)
 
     def test_no_redundant_import_alias_offending(self):
         """Settings an alias to the name of the import is not allowed"""

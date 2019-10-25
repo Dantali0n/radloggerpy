@@ -243,7 +243,6 @@ def no_redundant_import_alias(logical_line):
 
 def factory(register):
     register(check_assert_called_once_with)
-    register(no_translate_debug_logs)
     register(check_python3_xrange)
     register(check_no_basestring)
     register(check_python3_no_iteritems)
@@ -254,4 +253,5 @@ def factory(register):
     register(check_log_warn_deprecated)
     register(check_oslo_i18n_wrapper)
     register(check_builtins_gettext)
+    register(no_translate_debug_logs)
     register(no_redundant_import_alias)

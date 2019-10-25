@@ -19,6 +19,9 @@ import six
 from oslo_log import log
 from radloggerpy import config
 
+from radloggerpy._i18n import _C
+from radloggerpy.datastructures.device_data_buffer import DeviceDataBuffer
+
 LOG = log.getLogger(__name__)
 CONF = config.CONF
 
@@ -27,20 +30,24 @@ CONF = config.CONF
 class Device(object):
     """Abstract class all radiation monitoring devices should implement"""
 
-    " Each radiation monitoring device should have a unique name"
+    "Each radiation monitoring device should have a unique name"
     NAME = "Device"
 
     def __init__(self):
-        self.data = [None] * CONF.devices.initial_buffer_size
-        pass
+        self.data = DeviceDataBuffer(CONF.devices.initial_buffer_size)
 
     def get_data(self):
         """Return a collection of radiation monitoring data if any is available
 
-        Retrieves the currently stores collection of radiation monitoring data
+        Retrieves the currently stored collection of radiation monitoring data
         and subsequently clears it.
 
         :return: Collection of RadiationReading objects
-        :rtype:
+        :rtype: List of :py:class: '~.RadiationReading' instances
         """
-        pass
+        got_data = self.data.fetch_clear_readings()
+        if got_data:
+            return got_data
+        else:
+            LOG.error(_C("Unable to retrieve data for: {0}".format(self.NAME)))
+            return []
