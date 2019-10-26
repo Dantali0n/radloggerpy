@@ -85,7 +85,8 @@ class DeviceDataBuffer(object):
             has_lock = self.rwlock.write_acquire()
             if has_lock:
                 ref = copy.copy(self.data)
-                self.data.clear()
+                # replace with self.data.clear() when deprecating python 2.7
+                del self.data[:]
                 return ref
         finally:
             if has_lock:
