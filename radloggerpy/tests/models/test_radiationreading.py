@@ -13,6 +13,8 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+import mock
+
 from radloggerpy.models import radiationreading
 from radloggerpy.tests import base
 
@@ -34,3 +36,13 @@ class TestRadiationReadingModel(base.TestCase):
     def test_set_get(self):
         self.m_radiation_reading.set_cpm(24)
         self.assertEqual(24, self.m_radiation_reading.get_cpm())
+
+    @mock.patch.object(radiationreading, 'LOG')
+    def test_set_invalid(self, m_log):
+        """Set cpm to an invalid value and check it stays unchanged and logs"""
+
+        self.m_radiation_reading.set_cpm(0)
+        self.m_radiation_reading.set_cpm(-1)
+
+        m_log.warning.assert_called_once()
+        self.assertEqual(0, self.m_radiation_reading.get_cpm())

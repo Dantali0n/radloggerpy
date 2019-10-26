@@ -32,3 +32,8 @@ def parse_args(argv, default_config_files=None, default_config_dirs=None):
              version=version.version_info.release_string(),
              default_config_dirs=default_config_dirs,
              default_config_files=default_config_files)
+
+
+def list_opts():
+    """Required method by opts for oslo-config-generator"""
+    return []

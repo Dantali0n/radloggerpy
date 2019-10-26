@@ -34,7 +34,18 @@ class Device(object):
     NAME = "Device"
 
     def __init__(self):
-        self.data = DeviceDataBuffer(CONF.devices.initial_buffer_size)
+        self.data = DeviceDataBuffer()
+
+    @abc.abstractmethod
+    def run(self):
+        """Method to be called to run continuously in its own thread
+
+        Devices should not leave this method unless the intent is for the
+        device to stop retrieving data. Data can be gathered by either polling
+        or using events / wait if the external system supports to do so.
+        Timers may also be used, please be sure to honor:
+        CONF.devices.minimal_polling_delay
+        """
 
     def get_data(self):
         """Return a collection of radiation monitoring data if any is available
@@ -49,5 +60,5 @@ class Device(object):
         if got_data:
             return got_data
         else:
-            LOG.error(_C("Unable to retrieve data for: {0}".format(self.NAME)))
+            LOG.error(_C("Unable to retrieve data for: {0}", self.NAME))
             return []

@@ -13,6 +13,8 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+import copy
+
 from oslo_log import log
 from radloggerpy import config
 
@@ -36,8 +38,8 @@ class DeviceDataBuffer(object):
     enforced while calling add_elements.
     """
 
-    def __init__(self, initial_size=20):
-        self.data = [None] * initial_size
+    def __init__(self):
+        self.data = list()
         self.rwlock = rrwl.ReentrantReadWriteLock()
 
     def add_readings(self, readings):
@@ -53,15 +55,15 @@ class DeviceDataBuffer(object):
 
         for e in readings:
             if not isinstance(e, RadiationReading):
-                LOG.error(_C("Element: {0}, is not of type "
-                             "RadiationReading".format(e)))
-                readings.pop(e)
+                LOG.error(_C("Element: {0}, is not of type \
+                             RadiationReading", e))
+                readings.remove(e)
 
         has_lock = False
         try:
             has_lock = self.rwlock.read_acquire()
             if has_lock:
-                self.data.append(readings)
+                self.data.extend(readings)
             return has_lock
         finally:
             if has_lock:
@@ -82,7 +84,7 @@ class DeviceDataBuffer(object):
         try:
             has_lock = self.rwlock.write_acquire()
             if has_lock:
-                ref = self.data
+                ref = copy.copy(self.data)
                 self.data.clear()
                 return ref
         finally:

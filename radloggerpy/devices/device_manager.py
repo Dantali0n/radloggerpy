@@ -18,7 +18,9 @@ from radloggerpy import config
 
 from collections import OrderedDict
 import futurist
+import multiprocessing
 
+from radloggerpy._i18n import _C
 from radloggerpy.devices import arduino_geiger_pcb as agp
 from radloggerpy.types import device_types as dt
 
@@ -54,10 +56,18 @@ class DeviceManager(object):
 
     """
 
+    """Map DeviceType enum to their equivalent classes"""
     DEVICE_MAP = OrderedDict([
-        (dt.DeviceTypes.arduino_geiger_pcb, agp.ArduinoGeigerPCB.NAME)
+        (dt.DeviceTypes.arduino_geiger_pcb, agp.ArduinoGeigerPCB)
     ])
 
     def __init__(self):
+        num_workers = CONF.devices.concurrent_worker_amount
+
+        if num_workers == -1:
+            LOG.info(_C("Configured device manager for {0} workers",
+                        num_workers))
+            num_workers = multiprocessing.cpu_count()
+
         self._threadpool = futurist.GreenThreadPoolExecutor(
-            max_workers=CONF.devices.concurrent_worker_amount)
+            max_workers=num_workers)

@@ -13,6 +13,8 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+import time
+
 from radloggerpy.devices import device
 
 
@@ -23,3 +25,7 @@ class ArduinoGeigerPCB(device.Device):
 
     def __init__(self):
         super(ArduinoGeigerPCB, self).__init__()
+
+    def run(self):
+        while True:
+            time.sleep(1)

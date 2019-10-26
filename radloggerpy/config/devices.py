@@ -31,15 +31,7 @@ DEVICES_OPTS = [
                min=0,
                help='Minimum time in between a device pulling for data, going '
                     'to sleep and pulling for data again. Value is expressed '
-                    'in milliseconds (1/1000 second).'),
-    cfg.IntOpt('initial_buffer_size',
-               default=100,
-               min=1,
-               max=65535,
-               help='Initial size for the data buffers each device will hold'
-                    'to store radiation monitoring data. The buffer will'
-                    'dynamically grow to accommodate more data but resizing'
-                    'comes with a performance overhead.')
+                    'in milliseconds (1/1000 second).')
 ]
 
 

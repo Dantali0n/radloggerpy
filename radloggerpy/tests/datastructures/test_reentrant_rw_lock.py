@@ -120,33 +120,39 @@ class TestReentrantReadWriteLock(base.TestCase):
         self._threadpool = futurist.GreenThreadPoolExecutor(max_workers=4)
 
     def test_read_write(self):
+        """Test acquiring the read and afterwards the write after releasing"""
         rrwlock = ReentrantReadWriteLock()
         self.assertTrue(rrwlock.read_acquire())
         rrwlock.read_release()
         self.assertTrue(rrwlock.write_acquire())
 
     def test_write_read(self):
+        """Test acquiring the write and afterwards the read after releasing"""
         rrwlock = ReentrantReadWriteLock()
         self.assertTrue(rrwlock.write_acquire())
         rrwlock.write_release()
         self.assertTrue(rrwlock.read_acquire())
 
     def test_read_read(self):
+        """Test acquiring multiple read locks"""
         rrwlock = ReentrantReadWriteLock()
         self.assertTrue(rrwlock.read_acquire())
         self.assertTrue(rrwlock.read_acquire())
 
     def test_mutual_exclusion_read_write_block(self):
+        """Test non-blocking mutual exclusion read write"""
         rrwlock = ReentrantReadWriteLock()
         self.assertTrue(rrwlock.read_acquire())
         self.assertFalse(rrwlock.write_acquire(False))
 
     def test_mutual_exclusion_write_read_block(self):
+        """Test non-blocking mutual exclusion write read"""
         rrwlock = ReentrantReadWriteLock()
         self.assertTrue(rrwlock.write_acquire())
         self.assertFalse(rrwlock.read_acquire(False))
 
     def test_mutual_exclusion_concurrent_read_write_native(self):
+        """Test concurrent read release, write release"""
         rrwlock = ReentrantReadWriteLock()
 
         self.shared_counter = 0
@@ -161,6 +167,7 @@ class TestReentrantReadWriteLock(base.TestCase):
         self.assertEqual(2, self.shared_counter)
 
     def test_mutual_exclusion_concurrent_read_write_no_futurist(self):
+        """Test concurrent read release, write release without futurist"""
         rrwlock = ReentrantReadWriteLock()
 
         self.shared_counter = 0
@@ -181,6 +188,7 @@ class TestReentrantReadWriteLock(base.TestCase):
         self.assertEqual(2, self.shared_counter)
 
     def test_mutual_exclusion_concurrent_read_read(self):
+        """Test concurrent multiple read locks"""
         rrwlock = ReentrantReadWriteLock()
 
         self.shared_counter = 0
@@ -197,6 +205,7 @@ class TestReentrantReadWriteLock(base.TestCase):
         self.assertEqual(2, self.shared_counter)
 
     def test_mutual_exclusion_concurrent_read_reentrant(self):
+        """Test concurrent reentrant read locks"""
         rrwlock = ReentrantReadWriteLock()
 
         self.shared_counter = 0
