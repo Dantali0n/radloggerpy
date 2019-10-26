@@ -13,11 +13,11 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-import mock
 import inspect
+import mock
 
-from oslo_log import log
 from oslo_config import cfg
+from oslo_log import log
 from radloggerpy import config
 
 from radloggerpy.config import opts
@@ -64,7 +64,7 @@ class TestConfOpts(base.TestCase):
     class FakeOpts(object):
         """Simulate options module since list_opts won't distinguish"""
         fgroup = cfg.OptGroup(name='example_group',
-                               title='Example')
+                              title='Example')
 
         fopts = [cfg.IntOpt('example_opts')]
 
@@ -76,7 +76,7 @@ class TestConfOpts(base.TestCase):
     @mock.patch.object(opts, '_import_modules')
     def test_list_opts(self, m_modules):
         """Test that with the FakeOpts the expected available config options"""
-        
+
         m_modules.return_value = [self.FakeOpts]
 
         self.assertEqual([(self.FakeOpts.fgroup, self.FakeOpts.fopts)],

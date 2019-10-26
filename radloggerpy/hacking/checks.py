@@ -67,8 +67,7 @@ def no_translate_debug_logs(logical_line, filename):
 
 @flake8ext
 def check_assert_called_once_with(logical_line, filename):
-    # Try to detect unintended calls of nonexistent mock methods like:
-    #    assert_called_once
+    # Try to detect nonexistent mock methods like:
     #    assertCalledOnceWith
     #    assert_has_called
     #    called_once_with
@@ -77,7 +76,7 @@ def check_assert_called_once_with(logical_line, filename):
             return
         uncased_line = logical_line.lower().replace('_', '')
 
-        check_calls = ['.assertcalledonce', '.calledoncewith']
+        check_calls = ['.calledoncewith']
         if any(x for x in check_calls if x in uncased_line):
             msg = ("N322: Possible use of no-op mock method. "
                    "please use assert_called_once_with.")
