@@ -257,7 +257,7 @@ class TestHacking(base.TestCase):
         self.assertRaises(StopIteration, next, generator)
 
     def test_check_assert_called_once_with_offending(self):
-        logical_line = "m_mocked.assertcalledonce(1, 2)"
+        logical_line = "m_mocked.asserthascalled(1, 2)"
         filename = "radloggerpy/tests/bar.py"
 
         generator = checks.check_assert_called_once_with(
@@ -266,7 +266,7 @@ class TestHacking(base.TestCase):
         self.assertEqual(0, next(generator)[0])
 
     def test_check_assert_called_once_with_offending_two(self):
-        logical_line = "m_mocked.asserthascalled(1, 2)"
+        logical_line = "m_mocked.calledoncewith(1, 2)"
         filename = "radloggerpy/tests/bar.py"
 
         generator = checks.check_assert_called_once_with(

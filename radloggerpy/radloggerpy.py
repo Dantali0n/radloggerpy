@@ -16,20 +16,26 @@
 """Starter script for RadLoggerPy."""
 
 import errno
+import os
 import serial
+import sys
 import time
 
 from oslo_log import log
+from radloggerpy import config
 
 from radloggerpy._i18n import _
-from radloggerpy import config
+from radloggerpy.common import service
 
 LOG = log.getLogger(__name__)
 CONF = config.CONF
 
 
 def main():
-    LOG.warning(CONF.database.filename)
+    service.prepare_service(sys.argv, CONF)
+
+    LOG.info(_('Starting RadLoggerPy service on PID %s') % os.getpid())
+
     try:
         ser = serial.Serial(port='/dev/ttyUSB0', baudrate=9600,
                             parity=serial.PARITY_NONE,
@@ -37,7 +43,9 @@ def main():
                             bytesize=serial.EIGHTBITS)
     except serial.serialutil.SerialException as e:
         if e.errno == errno.EACCES:
-            LOG.critical(_("Insufficient permissions to open device"))
+            LOG.critical(_("Insufficient permissions to open device %s") % ser)
+        elif e.errno == errno.EADDRNOTAVAIL:
+            LOG.critical(_("Device %s does not exist") % ser)
         return
 
     string = ""
