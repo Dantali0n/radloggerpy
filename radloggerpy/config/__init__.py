@@ -18,10 +18,8 @@ from oslo_config import cfg
 
 from radloggerpy.config import database
 from radloggerpy.config import devices
-from radloggerpy.config import paths
 
 CONF = cfg.CONF
 
-paths.register_opts(CONF)
 devices.register_opts(CONF)
 database.register_opts(CONF)

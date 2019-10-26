@@ -59,6 +59,15 @@ class TestDeviceDataBuffer(base.TestCase):
         m_log.error.assert_called_once()
         self.assertEqual(m_add_readings, readings)
 
+    def test_clearing_buffer(self):
+        """Test that fetch_clear will remove previous readings"""
+        m_reading = RadiationReading()
+
+        self.m_buffer.add_readings([m_reading])
+
+        self.assertEqual([m_reading], self.m_buffer.fetch_clear_readings())
+        self.assertEqual([], self.m_buffer.fetch_clear_readings())
+
     @mock.patch.object(
         reentrant_rw_lock.ReentrantReadWriteLock, 'read_acquire')
     def test_add_reading_lock(self, m_read):
