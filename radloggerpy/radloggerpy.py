@@ -25,14 +25,14 @@ from oslo_log import log
 from radloggerpy import config
 
 from radloggerpy._i18n import _
-from radloggerpy.config import config
+from radloggerpy.config import config as configurator
 
 LOG = log.getLogger(__name__)
 CONF = config.CONF
 
 
 def main():
-    config.setup_config_and_logging(sys.argv, CONF)
+    configurator.setup_config_and_logging(sys.argv, CONF)
 
     LOG.info(_('Starting RadLoggerPy service on PID %s') % os.getpid())
 
