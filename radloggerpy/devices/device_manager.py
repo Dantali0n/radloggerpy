@@ -20,7 +20,7 @@ from collections import OrderedDict
 import futurist
 import multiprocessing
 
-from radloggerpy._i18n import _C
+from radloggerpy._i18n import _
 from radloggerpy.devices import arduino_geiger_pcb as agp
 from radloggerpy.types import device_types as dt
 
@@ -65,9 +65,9 @@ class DeviceManager(object):
         num_workers = CONF.devices.concurrent_worker_amount
 
         if num_workers == -1:
-            LOG.info(_C("Configured device manager for {0} workers",
-                        num_workers))
             num_workers = multiprocessing.cpu_count()
+            LOG.info(_("Configured device manager for %d workers")
+                     % num_workers)
 
         self._threadpool = futurist.GreenThreadPoolExecutor(
             max_workers=num_workers)

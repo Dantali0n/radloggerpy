@@ -25,7 +25,13 @@ CONF = config.CONF
 
 
 class FirstTimeRun(object):
-    """Handles service wide first time initialization"""
+    """Handles service wide first time initialization
+
+    FirstTimeRun should not be instantiated until all checks and tasks have
+    been added. The FirstTimeRun will perform checks and if necessary perform
+    all tasks upon construction.
+
+    """
 
     # all calls that will be made if first time init is required
     _tasks = list()
@@ -46,6 +52,7 @@ class FirstTimeRun(object):
         for task in self._tasks:
             try:
                 task()
+                LOG.info(_("Ran task: %s") % task)
             except Exception as e:
                 LOG.error(_("Encountered error during first time"
                             "initialization with task: %s") % e)
@@ -59,7 +66,7 @@ class FirstTimeRun(object):
         """
 
         # store return values for all checks
-        values = list
+        values = list()
 
         for check in self._checks:
             try:
@@ -80,7 +87,14 @@ class FirstTimeRun(object):
 
     @staticmethod
     def add_task(task):
-        if inspect.ismethod(task):
+        if inspect.ismethod(task) or inspect.isfunction(task):
             FirstTimeRun._tasks.append(task)
         else:
             LOG.warning(_("Task %s was not of type method") % task)
+
+    @staticmethod
+    def add_check(check):
+        if inspect.ismethod(check) or inspect.isfunction(check):
+            FirstTimeRun._checks.append(check)
+        else:
+            LOG.warning(_("Check %s was not of type method") % check)
