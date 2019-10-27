@@ -17,8 +17,33 @@
 #    under the License.
 
 from oslo_config import cfg
+from oslo_log import _options
+from oslo_log import log
 
+from radloggerpy import config
 from radloggerpy import version
+
+LOG = log.getLogger(__name__)
+CONF = config.CONF
+
+"""Handles service like methods such as setting the correct log levels and
+parsing command line arguments."""
+
+_DEFAULT_LOG_LEVELS = ['sqlalchemy=WARN', 'stevedore=INFO', 'iso8601=WARN',
+                       'requests=WARN']
+
+
+def setup_config_and_logging(argv=(), conf=cfg.CONF):
+    """register logging config options and parse commandline arguments"""
+    log.register_options(conf)
+
+    parse_args(argv)
+    # Set log levels for external libraries
+    cfg.set_defaults(_options.log_opts,
+                     default_log_levels=_DEFAULT_LOG_LEVELS)
+    log.setup(conf, 'radloggerpy')
+    # Write all configuration options and values to log
+    conf.log_opt_values(LOG, log.DEBUG)
 
 
 def parse_args(argv, default_config_files=None, default_config_dirs=None):

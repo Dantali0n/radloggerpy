@@ -13,29 +13,30 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from oslo_config import cfg
-from oslo_log import _options
-from oslo_log import log
+import sys
+import mock
 
+from oslo_log import log
 from radloggerpy import config
+
 from radloggerpy.config import config as configurator
+from radloggerpy.tests import base
 
 LOG = log.getLogger(__name__)
 CONF = config.CONF
 
-"""Handles service like methods such as setting the correct log levels and
-parsing command line arguments."""
 
-_DEFAULT_LOG_LEVELS = ['sqlalchemy=WARN', 'stevedore=INFO', 'iso8601=WARN',
-                       'requests=WARN']
+class TestConfig(base.TestCase):
 
+    def setUp(self):
+        super(TestConfig, self).setUp()
 
-def prepare_service(argv=(), conf=cfg.CONF):
-    """"""
-    log.register_options(conf)
+    @mock.patch.object(log, 'register_options')
+    def test_setup_config_and_logging(self, m_log):
+        configurator.setup_config_and_logging(sys.argv, CONF)
 
-    configurator.parse_args(argv)
-    cfg.set_defaults(_options.log_opts,
-                     default_log_levels=_DEFAULT_LOG_LEVELS)
-    log.setup(conf, 'radloggerpy')
-    conf.log_opt_values(LOG, log.DEBUG)
+        m_log.assert_called_once_with(CONF)
+
+    def test_has_list_opts(self):
+        """Test that radloggerpy.config.config.py contains list_opts method"""
+        self.assertEqual([], configurator.list_opts())
