@@ -149,7 +149,6 @@ class TestFirstTimeRun(base.TestCase):
         FirstTimeRun.add_task(self.fake_task())
         FirstTimeRun._tasks.append(m_method)
 
-        construct = FirstTimeRun()
+        FirstTimeRun()
 
         m_method.assert_called_once()
-
