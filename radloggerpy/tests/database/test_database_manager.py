@@ -68,7 +68,7 @@ class TestDatabaseManager(base.TestCase):
     @mock.patch.object(dbm, 'LOG')
     def test_check_database_missing_error(self, m_log):
         self.m_isfile.return_value = True
-        self.m_database.side_effect = FileNotFoundError()
+        self.m_database.side_effect = Exception()
 
         self.assertTrue(dbm.DatabaseManager.check_database_missing())
         m_log.warning.assert_called_once()
@@ -86,7 +86,7 @@ class TestDatabaseManager(base.TestCase):
     @mock.patch.object(dbm, 'create_database')
     def test_create_database_error(self, m_create, m_log):
         m_engine = dbm.DatabaseManager.create_engine(CONF.database.filename)
-        m_create.side_effect = PermissionError()
+        m_create.side_effect = Exception()
 
         dbm.DatabaseManager.create_database()
 
