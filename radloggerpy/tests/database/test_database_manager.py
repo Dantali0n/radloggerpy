@@ -13,8 +13,8 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-import os
 import mock
+import os
 
 from oslo_log import log
 from radloggerpy import config
