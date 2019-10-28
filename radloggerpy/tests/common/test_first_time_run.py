@@ -108,3 +108,48 @@ class TestFirstTimeRun(base.TestCase):
         m_run.add_check(self.fake_check_true)
 
         self.assertTrue(m_run._run_checks(all_to_init=True))
+
+    def test_run_tasks(self):
+        # Crate a mocked method
+        m_method = mock.Mock()
+        m_run = FirstTimeRun()
+
+        m_run.add_task(self.fake_task)
+        # Force mocked method into the tasks list
+        m_run._tasks.append(m_method)
+
+        m_run._run_tasks()
+
+        m_method.assert_called_once()
+
+    @mock.patch.object(first_time_run, 'LOG')
+    def test_run_tasks_error(self, m_log):
+        # Crate a mocked method
+        m_method = mock.Mock()
+        m_method.side_effect = Exception("Whoops")
+        m_run = FirstTimeRun()
+
+        m_run.add_task(self.fake_task)
+        # Force mocked method into the tasks list
+        m_run._tasks.append(m_method)
+
+        m_run._run_tasks()
+
+        m_method.assert_called_once()
+        m_log.error.assert_called_once()
+
+    def test_constructor(self):
+        m_method = mock.Mock()
+
+        self.assertEqual(0, len(FirstTimeRun._tasks))
+        self.assertEqual(0, len(FirstTimeRun._checks))
+
+        FirstTimeRun.add_check(self.fake_check_true)
+        FirstTimeRun.add_check(self.fake_check_false)
+        FirstTimeRun.add_task(self.fake_task())
+        FirstTimeRun._tasks.append(m_method)
+
+        construct = FirstTimeRun()
+
+        m_method.assert_called_once()
+
