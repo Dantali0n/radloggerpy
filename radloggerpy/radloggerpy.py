@@ -25,14 +25,21 @@ from oslo_log import log
 from radloggerpy import config
 
 from radloggerpy._i18n import _
+from radloggerpy.common.first_time_run import FirstTimeRun
 from radloggerpy.config import config as configurator
+from radloggerpy.database.database_manager import DatabaseManager
 
 LOG = log.getLogger(__name__)
 CONF = config.CONF
 
+FirstTimeRun.add_check(DatabaseManager.check_database_exists)
+
 
 def main():
     configurator.setup_config_and_logging(sys.argv, CONF)
+
+    # Perform first time initialization if required
+    FirstTimeRun()
 
     LOG.info(_('Starting RadLoggerPy service on PID %s') % os.getpid())
 
