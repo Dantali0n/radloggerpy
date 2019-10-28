@@ -9,6 +9,7 @@ pbr>=2.0 # Apache-2.0
 futurist>=1.9.0 # Apache-2.0
 pyserial>=3.4 # BSD
 SQLAlchemy>=1.2.5 # MIT
+SQLAlchemy-Utils>=0.34.2 # BSD
 six>=1.12.0 # MIT
 # for when we deprecate python 2.7
 #readerwriterlock>=1.0.4 # MIT

@@ -19,6 +19,8 @@ from oslo_log import log
 from radloggerpy import config
 
 import sqlalchemy
+from sqlalchemy_utils import create_database
+from sqlalchemy_utils import database_exists
 
 from radloggerpy._i18n import _
 
@@ -47,8 +49,11 @@ class DatabaseManager(object):
         return sqlalchemy.create_engine("sqlite:///{0}".format(database_name))
 
     @staticmethod
-    def check_database_exists():
-        """Check if the database exists"""
+    def check_database_missing():
+        """Check if the database is missing
+
+        :return: True if the database does not exist False if it does
+        """
         file = CONF.database.filename
 
         LOG.info(_("Checking if database: %s exists") % file)
@@ -58,7 +63,24 @@ class DatabaseManager(object):
             return True
 
         try:
-            DatabaseManager.create_engine(file)
+            engine = DatabaseManager.create_engine(file)
+            if not database_exists(engine.url):
+                return True
         except Exception as e:
             LOG.warning(e)
             return True
+
+        return False
+
+    @staticmethod
+    def create_database():
+        """Create the database using sqlalchemy utils"""
+        file = CONF.database.filename
+
+        try:
+            LOG.info(_("Creating database"))
+            engine = DatabaseManager.create_engine(file)
+            DatabaseManager.create_engine(engine.url)
+            create_database(engine.url)
+        except Exception as e:
+            LOG.error(_("Failed to create database due to error: %s") % e)

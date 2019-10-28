@@ -32,7 +32,8 @@ from radloggerpy.database.database_manager import DatabaseManager
 LOG = log.getLogger(__name__)
 CONF = config.CONF
 
-FirstTimeRun.add_check(DatabaseManager.check_database_exists)
+FirstTimeRun.add_check_task(
+    DatabaseManager.check_database_missing, DatabaseManager.create_database)
 
 
 def main():
