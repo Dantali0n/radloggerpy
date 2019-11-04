@@ -183,7 +183,7 @@ class TestReentrantReadWriteLock(base.TestCase):
                 if f.done():
                     futures.remove(f)
                     self.assertTrue(f.result())
-            time.sleep(1)
+            time.sleep(0.1)
 
         self.assertEqual(2, self.shared_counter)
 

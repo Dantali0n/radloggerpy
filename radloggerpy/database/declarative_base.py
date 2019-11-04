@@ -13,19 +13,21 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-import time
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.ext.declarative import declared_attr
 
-from radloggerpy.devices import device
+
+class Base(object):
+    """Base object all sqlalchemy models will extend"""
+
+    @declared_attr
+    def __tablename__(cls):
+        """Generate tablename based on class name
+
+        Setting the model its __tablename__ attribute will override this
+        generated name.
+        """
+        return cls.__name__.lower()
 
 
-class ArduinoGeigerPCB(device.Device):
-    """"""
-
-    NAME = "ArduinoGeigerPCB"
-
-    def __init__(self):
-        super(ArduinoGeigerPCB, self).__init__()
-
-    def run(self):
-        while True:
-            time.sleep(0.1)
+base = declarative_base(cls=Base)

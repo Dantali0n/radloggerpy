@@ -19,6 +19,7 @@ import os
 from oslo_log import log
 from radloggerpy import config
 
+from radloggerpy.database import create_database as cd
 from radloggerpy.database import database_manager as dbm
 from radloggerpy.tests import base
 
@@ -44,51 +45,53 @@ class TestDatabaseManager(base.TestCase):
         self.addCleanup(self.p_database.stop)
 
     def test_create_engine(self):
-        engine = dbm.DatabaseManager.create_engine("test.sqlite")
+        engine = dbm.create_engine("test.sqlite")
 
         self.assertEqual("sqlite:///test.sqlite", '%s' % engine.url)
 
     def test_check_database_missing(self):
         self.m_isfile.return_value = False
 
-        self.assertTrue(dbm.DatabaseManager.check_database_missing())
+        self.assertTrue(dbm.check_database_missing())
 
     def test_check_database_exists(self):
         self.m_isfile.return_value = True
         self.m_database.return_value = True
 
-        self.assertFalse(dbm.DatabaseManager.check_database_missing())
+        self.assertFalse(dbm.check_database_missing())
 
     def test_check_database_missing_exists(self):
         self.m_isfile.return_value = True
         self.m_database.return_value = False
 
-        self.assertTrue(dbm.DatabaseManager.check_database_missing())
+        self.assertTrue(dbm.check_database_missing())
 
     @mock.patch.object(dbm, 'LOG')
     def test_check_database_missing_error(self, m_log):
         self.m_isfile.return_value = True
         self.m_database.side_effect = Exception()
 
-        self.assertTrue(dbm.DatabaseManager.check_database_missing())
+        self.assertTrue(dbm.check_database_missing())
         m_log.warning.assert_called_once()
 
-    @mock.patch.object(dbm, 'create_database')
-    def test_create_database(self, m_create):
-        m_engine = dbm.DatabaseManager.create_engine(CONF.database.filename)
+    @mock.patch.object(dbm, 'create_engine')
+    @mock.patch.object(cd, 'create_database_tables')
+    def test_create_database(self, m_create, m_engine):
+        m_engine.return_value = mock.Mock()
         m_create.return_value = True
 
-        dbm.DatabaseManager.create_database()
+        dbm.create_database()
 
-        m_create.assert_called_once_with(m_engine.url)
+        m_create.assert_called_once_with(m_engine())
 
+    @mock.patch.object(dbm, 'create_engine')
     @mock.patch.object(dbm, 'LOG')
-    @mock.patch.object(dbm, 'create_database')
-    def test_create_database_error(self, m_create, m_log):
-        m_engine = dbm.DatabaseManager.create_engine(CONF.database.filename)
-        m_create.side_effect = Exception()
+    @mock.patch.object(cd, 'create_database_tables')
+    def test_create_database_error(self, m_create, m_log, m_engine):
+        m_engine.return_value = mock.Mock()
+        m_create.side_effect = AssertionError()
 
-        dbm.DatabaseManager.create_database()
+        self.assertRaises(AssertionError, dbm.create_database)
 
-        m_create.assert_called_once_with(m_engine.url)
+        m_create.assert_called_once_with(m_engine())
         m_log.error.assert_called_once()

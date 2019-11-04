@@ -14,14 +14,12 @@
 # under the License.
 
 from sqlalchemy import Column, Integer, String, Enum
-from sqlalchemy.ext.declarative import declarative_base
 
+from radloggerpy.database.declarative_base import base
 from radloggerpy.types import account_types as at
 
-Base = declarative_base()
 
-
-class Account(Base):
+class Account(base):
     __tablename__ = 'account'
     id = Column(Integer, primary_key=True)
     type = Column(Enum(at.AccountTypes))

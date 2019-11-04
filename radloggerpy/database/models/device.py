@@ -14,14 +14,12 @@
 # under the License.
 
 from sqlalchemy import Column, Integer, Enum
-from sqlalchemy.ext.declarative import declarative_base
 
+from radloggerpy.database.declarative_base import base
 from radloggerpy.types import device_types as dt
 
-Base = declarative_base()
 
-
-class Device(Base):
+class Device(base):
     __tablename__ = 'device'
     id = Column(Integer, primary_key=True)
     type = Column(Enum(dt.DeviceTypes))

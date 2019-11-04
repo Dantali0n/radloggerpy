@@ -27,13 +27,15 @@ from radloggerpy import config
 from radloggerpy._i18n import _
 from radloggerpy.common.first_time_run import FirstTimeRun
 from radloggerpy.config import config as configurator
-from radloggerpy.database.database_manager import DatabaseManager
+from radloggerpy.database import database_manager
+from radloggerpy.database.models.device import Device
+from radloggerpy.types.device_types import DeviceTypes
 
 LOG = log.getLogger(__name__)
 CONF = config.CONF
 
 FirstTimeRun.add_check_task(
-    DatabaseManager.check_database_missing, DatabaseManager.create_database)
+    database_manager.check_database_missing, database_manager.create_database)
 
 
 def main():
@@ -44,6 +46,11 @@ def main():
 
     LOG.info(_('Starting RadLoggerPy service on PID %s') % os.getpid())
 
+    device = Device(type=DeviceTypes.arduino_geiger_pcb)
+    session = database_manager.create_session()
+    session.add(device)
+    session.commit()
+
     try:
         ser = serial.Serial(port='/dev/ttyUSB0', baudrate=9600,
                             parity=serial.PARITY_NONE,
@@ -51,7 +58,8 @@ def main():
                             bytesize=serial.EIGHTBITS)
     except serial.serialutil.SerialException as e:
         if e.errno == errno.EACCES:
-            LOG.critical(_("Insufficient permissions to open device %s") % ser)
+            LOG.critical(_("Insufficient permissions "
+                           "to open device %s") % ser)
         elif e.errno == errno.EADDRNOTAVAIL:
             LOG.critical(_("Device %s does not exist") % ser)
         return
@@ -68,3 +76,6 @@ def main():
             else:
                 string += char
         time.sleep(60)
+
+    # close all database sessions that are still left open
+    database_manager.close_lingering_sessions()

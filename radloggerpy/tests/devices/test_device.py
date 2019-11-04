@@ -41,11 +41,11 @@ class TestDevice(base.TestCase):
             """Add RadiationReading element"""
             for i in range(2):
                 self.data.add_readings([RadiationReading()])
-                time.sleep(1)
+                time.sleep(0.1)
 
             while self.runner:
                 """Keep running until stopped externally"""
-                time.sleep(1)
+                time.sleep(0.1)
 
     def setUp(self):
         super(TestDevice, self).setUp()
@@ -62,11 +62,11 @@ class TestDevice(base.TestCase):
         executor = ThreadPoolExecutor(max_workers=1)
         future = executor.submit(self.m_device.run)
 
-        time.sleep(2)
+        time.sleep(0.5)
 
         self.assertEqual(2, len(self.m_device.get_data()))
         self.assertFalse(future.done())
 
         self.m_device.runner = False
-        time.sleep(2)
+        time.sleep(0.5)
         self.assertTrue(future.done())

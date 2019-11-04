@@ -19,68 +19,86 @@ from oslo_log import log
 from radloggerpy import config
 
 import sqlalchemy
-from sqlalchemy_utils import create_database
+from sqlalchemy import orm
 from sqlalchemy_utils import database_exists
 
 from radloggerpy._i18n import _
+from radloggerpy.database import create_database as cd
 
 LOG = log.getLogger(__name__)
 CONF = config.CONF
 
 
-class DatabaseManager(object):
+def create_session():
+    """Create a session using the appropriate configuration
 
-    def __init__(self):
-        pass
+    :return: Returns an sqlalchemy session or None if a error occurred
+    :rtype: Instance of :py:class: 'orm.Session'
+    """
+    file = CONF.database.filename
 
-    @staticmethod
-    def create_engine(database_name):
-        """Create the database engine with appropriate parameters
+    try:
+        sess = orm.sessionmaker(bind=create_engine(file))
+        return sess()
+    except Exception as e:
+        LOG.error(_("Failed to create session due to exception: %s") % e)
 
-        This method should be used whenever sqlalchemy.create_engine is to be
-        called. It ensures the same parameters are used across the application.
+    return None
 
-        :parameter database_name: base name of the database without sqlite://
-        :type database_name: str
-        :return: sqlalchemy engine instance
-        :rtype: Instance of :py:class: 'sqlalchemy.engine.Engine`
-        """
 
-        return sqlalchemy.create_engine("sqlite:///{0}".format(database_name))
+def close_lingering_sessions():
+    """Closes all lingering sqlalchemy sessions"""
+    orm.session.close_all_sessions()
 
-    @staticmethod
-    def check_database_missing():
-        """Check if the database is missing
 
-        :return: True if the database does not exist False if it does
-        """
-        file = CONF.database.filename
+def create_engine(database_name):
+    """Create the database engine with appropriate parameters
 
-        LOG.info(_("Checking if database: %s exists") % file)
+    This method should be used whenever sqlalchemy.create_engine is to be
+    called. It ensures the same parameters are used across the application.
 
-        if not os.path.isfile(file):
-            LOG.warning(_("Database file does not exist in configured path"))
+    :parameter database_name: base name of the database without sqlite://
+    :type database_name: str
+    :return: sqlalchemy engine instance
+    :rtype: Instance of :py:class: 'sqlalchemy.engine.Engine`
+    """
+
+    return sqlalchemy.create_engine("sqlite:///{0}".format(database_name))
+
+
+def check_database_missing():
+    """Check if the database is missing, used for first time init
+
+    :return: True if the database does not exist False if it does
+    """
+    file = CONF.database.filename
+
+    LOG.info(_("Checking if database: %s exists") % file)
+
+    if not os.path.isfile(file):
+        LOG.warning(_("Database file does not exist in configured path"))
+        return True
+
+    try:
+        engine = create_engine(file)
+        if not database_exists(engine.url):
             return True
+    except Exception as e:
+        LOG.warning(e)
+        return True
 
-        try:
-            engine = DatabaseManager.create_engine(file)
-            if not database_exists(engine.url):
-                return True
-        except Exception as e:
-            LOG.warning(e)
-            return True
+    return False
 
-        return False
 
-    @staticmethod
-    def create_database():
-        """Create the database using sqlalchemy utils"""
-        file = CONF.database.filename
+def create_database():
+    """Create the database using sqlalchemy, used for first time init """
+    file = CONF.database.filename
 
-        try:
-            LOG.info(_("Creating database"))
-            engine = DatabaseManager.create_engine(file)
-            DatabaseManager.create_engine(engine.url)
-            create_database(engine.url)
-        except Exception as e:
-            LOG.error(_("Failed to create database due to error: %s") % e)
+    try:
+        LOG.info(_("Creating database"))
+        engine = create_engine(file)
+        LOG.info(_("Creating database tables"))
+        cd.create_database_tables(engine)
+    except Exception as e:
+        LOG.error(_("Failed to create database due to error: %s") % e)
+        raise e
