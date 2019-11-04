@@ -19,7 +19,7 @@ import time
 from oslo_log import log
 from radloggerpy import config
 
-from radloggerpy.devices.device import Device
+from radloggerpy.device.device import Device
 from radloggerpy.models.radiationreading import RadiationReading
 from radloggerpy.tests import base
 

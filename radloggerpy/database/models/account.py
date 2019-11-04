@@ -20,7 +20,6 @@ from radloggerpy.types import account_types as at
 
 
 class Account(base):
-    __tablename__ = 'account'
     id = Column(Integer, primary_key=True)
     type = Column(Enum(at.AccountTypes))
     username = Column(String(64), nullable=False)

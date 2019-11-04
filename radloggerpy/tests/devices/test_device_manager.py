@@ -19,7 +19,7 @@ import multiprocessing
 from oslo_log import log
 from radloggerpy import config
 
-from radloggerpy.devices.device_manager import DeviceManager
+from radloggerpy.device.device_manager import DeviceManager
 from radloggerpy.tests import base
 
 LOG = log.getLogger(__name__)

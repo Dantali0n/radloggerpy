@@ -19,5 +19,5 @@ from enum import unique
 
 @unique
 class DeviceTypes(Enum):
-    """Enum listing all possible supported types of devices"""
-    arduino_geiger_pcb = 1
+    """Enum listing all possible supported types of device"""
+    SERIAL = 1

@@ -33,6 +33,9 @@ class Device(object):
     "Each radiation monitoring device should have a unique name"
     NAME = "Device"
 
+    "Each radiation monitoring device should be of a specific type"
+    TYPE = None
+
     def __init__(self):
         self.data = DeviceDataBuffer()
 

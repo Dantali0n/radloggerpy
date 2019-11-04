@@ -13,12 +13,19 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from sqlalchemy import Column, Integer, Enum
+import abc
+import six
 
-from radloggerpy.database.declarative_base import base
-from radloggerpy.types import device_types as dt
+from radloggerpy.device import device
+from radloggerpy.types.device_types import DeviceTypes
 
 
-class Device(base):
-    id = Column(Integer, primary_key=True)
-    type = Column(Enum(dt.DeviceTypes))
+@six.add_metaclass(abc.ABCMeta)
+class SerialDevice(device.Device):
+    """"""
+
+    NAME = "SerialDevice"
+    TYPE = DeviceTypes.SERIAL
+
+    def __init__(self):
+        super(SerialDevice, self).__init__()

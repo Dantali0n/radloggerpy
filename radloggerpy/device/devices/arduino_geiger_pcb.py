@@ -15,10 +15,10 @@
 
 import time
 
-from radloggerpy.devices import device
+from radloggerpy.device.device_types.serial_device import SerialDevice
 
 
-class ArduinoGeigerPCB(device.Device):
+class ArduinoGeigerPCB(SerialDevice):
     """"""
 
     NAME = "ArduinoGeigerPCB"

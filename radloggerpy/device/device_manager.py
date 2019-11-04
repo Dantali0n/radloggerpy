@@ -13,17 +13,18 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+import importlib
+# from collections import OrderedDict
+import multiprocessing
+import pkgutil
+
 from oslo_log import log
 from radloggerpy import config
 
-from collections import OrderedDict
 import futurist
-import multiprocessing
 
 from radloggerpy._i18n import _
-from radloggerpy.devices import arduino_geiger_pcb as agp
-from radloggerpy.types import device_types as dt
-
+from radloggerpy.device import device_types as dt
 
 LOG = log.getLogger(__name__)
 CONF = config.CONF
@@ -56,10 +57,11 @@ class DeviceManager(object):
 
     """
 
-    """Map DeviceType enum to their equivalent classes"""
-    DEVICE_MAP = OrderedDict([
-        (dt.DeviceTypes.arduino_geiger_pcb, agp.ArduinoGeigerPCB)
-    ])
+    # """Map of types and their device names with classes"""
+    # DEVICE_MAP = OrderedDict(
+    #     {DeviceTypes.serial=[
+    #     (ArduinoGeigerPCB.NAME, ArduinoGeigerPCB)
+    # ]})
 
     def __init__(self):
         num_workers = CONF.devices.concurrent_worker_amount
@@ -71,3 +73,43 @@ class DeviceManager(object):
 
         self._threadpool = futurist.GreenThreadPoolExecutor(
             max_workers=num_workers)
+
+    @staticmethod
+    def get_device_types():
+        """Return a collection of all device types their abstract classes
+
+        Access abstract classes their TYPE to determine how they map to
+        :py:class:`radloggerpy.types.device_types.DeviceTypes`
+
+        :return:
+        :rtype:
+        """
+        device_types = []
+
+        # discover the path for device.device_types directory
+        package_path = dt.__path__
+
+        # iterate over all files in device_types and append classes to the list
+        for __, modname, ispkg in pkgutil.iter_modules(path=[package_path]):
+            class_name = modname.title().replace('_', '')
+            mod = importlib.import_module(package_path + modname)
+            if not hasattr(mod, class_name):
+                msg = "The module '" + package_path + ".%s' should have a" \
+                      "'%s' class similar to the module name." % \
+                      (modname, class_name)
+                raise AttributeError(msg)
+            else:
+                device_types.append(getattr(mod, class_name))
+        return device_types
+
+    @staticmethod
+    def get_device_map():
+        """Return dictionary mapping device types to all concrete classes
+
+        The dictionary structure follows the following schema;
+            { DeviceTypes.serial : [devices.ArduinoGeigerPCB]}
+
+        :return:
+        :rtype:
+        """
+        pass
