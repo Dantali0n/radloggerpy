@@ -40,7 +40,7 @@ def _list_tables():
         modules.append((module_name, module_name.title().replace('_', '')))
 
     imported_modules = import_modules(
-        modules, models.__package__, fetch_attribute=True)
+        modules, models.__name__, fetch_attribute=True)
     for module, attribute in imported_modules:
         # Access the modules class and subsequent __table__
         tables.append(getattr(module, attribute).__table__)
