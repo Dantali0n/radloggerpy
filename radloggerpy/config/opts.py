@@ -26,9 +26,10 @@ in this package. It is assumed that:
 * this module is only used in the context of sample file generation
 """
 
-import importlib
 import os
-import pkgutil
+
+from radloggerpy.common.dynamic_import import import_modules
+from radloggerpy.common.dynamic_import import list_module_names
 
 LIST_OPTS_FUNC_NAME = "list_opts"
 
@@ -40,33 +41,10 @@ def list_opts():
              is either a group name as a string or an OptGroup object.
     """
     opts = list()
-    module_names = _list_module_names()
-    imported_modules = _import_modules(module_names)
+    package_path = os.path.dirname(os.path.abspath(__file__))
+    module_names = list_module_names(package_path, ['opts'])
+    imported_modules = import_modules(
+        module_names, 'radloggerpy.config', LIST_OPTS_FUNC_NAME)
     for mod in imported_modules:
         opts.extend(mod.list_opts())
     return opts
-
-
-def _list_module_names():
-    module_names = []
-    package_path = os.path.dirname(os.path.abspath(__file__))
-    for __, modname, ispkg in pkgutil.iter_modules(path=[package_path]):
-        if modname == "opts" or ispkg:
-            continue
-        else:
-            module_names.append(modname)
-    return module_names
-
-
-def _import_modules(module_names):
-    imported_modules = []
-    for modname in module_names:
-        mod = importlib.import_module("radloggerpy.config." + modname)
-        if not hasattr(mod, LIST_OPTS_FUNC_NAME):
-            msg = "The module 'radloggerpy.config.%s' should have a '%s' "\
-                  "function which returns the config options." % \
-                  (modname, LIST_OPTS_FUNC_NAME)
-            raise Exception(msg)
-        else:
-            imported_modules.append(mod)
-    return imported_modules

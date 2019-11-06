@@ -13,10 +13,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-import importlib
-# from collections import OrderedDict
 import multiprocessing
-import pkgutil
 
 from oslo_log import log
 from radloggerpy import config
@@ -24,6 +21,8 @@ from radloggerpy import config
 import futurist
 
 from radloggerpy._i18n import _
+from radloggerpy.common.dynamic_import import import_modules
+from radloggerpy.common.dynamic_import import list_module_names
 from radloggerpy.device import device_types as dt
 
 LOG = log.getLogger(__name__)
@@ -87,19 +86,17 @@ class DeviceManager(object):
         device_types = []
 
         # discover the path for device.device_types directory
-        package_path = dt.__path__
+        package_path = dt.__path__[0]
 
-        # iterate over all files in device_types and append classes to the list
-        for __, modname, ispkg in pkgutil.iter_modules(path=[package_path]):
-            class_name = modname.title().replace('_', '')
-            mod = importlib.import_module(package_path + modname)
-            if not hasattr(mod, class_name):
-                msg = "The module '" + package_path + ".%s' should have a" \
-                      "'%s' class similar to the module name." % \
-                      (modname, class_name)
-                raise AttributeError(msg)
-            else:
-                device_types.append(getattr(mod, class_name))
+        modules = list()
+        for module_name in list_module_names(package_path):
+            modules.append((module_name, module_name.title().replace('_', '')))
+
+        imported_modules = import_modules(
+            modules, dt.__package__, fetch_attribute=True)
+        for module, attribute in imported_modules:
+            device_types.append(getattr(module, attribute))
+
         return device_types
 
     @staticmethod

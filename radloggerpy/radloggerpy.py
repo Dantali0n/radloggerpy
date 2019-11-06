@@ -25,11 +25,10 @@ from oslo_log import log
 from radloggerpy import config
 
 from radloggerpy._i18n import _
+from radloggerpy.common import ascii_logo
 from radloggerpy.common.first_time_run import FirstTimeRun
 from radloggerpy.config import config as configurator
 from radloggerpy.database import database_manager
-from radloggerpy.database.models.device import Device
-from radloggerpy.types.device_types import DeviceTypes
 
 LOG = log.getLogger(__name__)
 CONF = config.CONF
@@ -41,15 +40,19 @@ FirstTimeRun.add_check_task(
 def main():
     configurator.setup_config_and_logging(sys.argv, CONF)
 
+    # Display logo's
+    LOG.info(ascii_logo.TEXT + ascii_logo.LOGO)
+
+    # Display pid
+    LOG.info(_('Starting RadLoggerPy service on PID %s') % os.getpid())
+
     # Perform first time initialization if required
     FirstTimeRun()
 
-    LOG.info(_('Starting RadLoggerPy service on PID %s') % os.getpid())
-
-    device = Device(type=DeviceTypes.arduino_geiger_pcb)
-    session = database_manager.create_session()
-    session.add(device)
-    session.commit()
+    # device = Device(type=DeviceTypes.SERIAL)
+    # session = database_manager.create_session()
+    # session.add(device)
+    # session.commit()
 
     try:
         ser = serial.Serial(port='/dev/ttyUSB0', baudrate=9600,

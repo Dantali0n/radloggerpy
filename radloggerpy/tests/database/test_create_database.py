@@ -22,6 +22,8 @@ from radloggerpy import config
 
 from sqlalchemy import create_engine, text
 
+from radloggerpy.common.dynamic_import import import_modules
+from radloggerpy.common.dynamic_import import list_module_names
 from radloggerpy.database import create_database as cd
 from radloggerpy.database import models
 from radloggerpy.database.models import device
@@ -37,6 +39,8 @@ class TestCreateDatabase(base.TestCase):
     def setUp(self):
         super(TestCreateDatabase, self).setUp()
 
+        self.m_path = models.__path__[0]
+
     def test_create_tables(self):
         m_engine = create_engine('sqlite:///:memory:', echo=True)
         cd.create_database_tables(m_engine)
@@ -49,15 +53,16 @@ class TestCreateDatabase(base.TestCase):
 
         # assert that as many tables as models were created.
         # WARNING: this will break when there are many-to-many relationships
-        self.assertEqual(len(cd._list_model_names()), len(result))
+        self.assertEqual(
+            len(list_module_names(self.m_path)), len(result))
 
-    @mock.patch.object(cd, '_import_models')
-    @mock.patch.object(cd, '_list_model_names')
-    def test_list_tables(self, m_list_models, m_import_models):
+    @mock.patch.object(cd, 'import_modules')
+    @mock.patch.object(cd, 'list_module_names')
+    def test_list_tables(self, m_list_modules, m_import_models):
         """Test list_tables list generation by accessing tuples"""
 
         # return a list with the supposed names of modules
-        m_list_models.return_value = ['a', 'b']
+        m_list_modules.return_value = ['a', 'b']
 
         # create mocked classes with the __table__ attribute
         m_a = mock.Mock(__table__='value1')
@@ -72,12 +77,14 @@ class TestCreateDatabase(base.TestCase):
         result = cd._list_tables()
 
         # assert _list_tables called list_model and import_models
-        m_list_models.assert_called_once_with()
-        m_import_models.assert_called_once_with(['a', 'b'])
+        m_list_modules.assert_called_once_with(self.m_path)
+        m_import_models.assert_called_once_with([('a', 'A'), ('b', 'B')],
+                                                'radloggerpy.database.models',
+                                                fetch_attribute=True)
 
         self.assertEqual(['value1', 'value2'], result)
 
-    def test_model_names(self):
+    def test_modules_names(self):
         """Test that all model files are properly discovered"""
 
         # get all modules of the model directory using the directory __path__
@@ -87,20 +94,23 @@ class TestCreateDatabase(base.TestCase):
             modules.append(modname)
 
         # ensure that _list_model_names() gets all modules properly
-        self.assertEqual(modules, cd._list_model_names())
+        self.assertEqual(modules, list_module_names(self.m_path))
 
     def test_module_import(self):
         """Assert correct import of model with returned tuple"""
 
         self.assertEqual(
-            [(device, 'Device')], cd._import_models(['device']))
+            [(device, 'Device')], import_modules([('device', 'Device')],
+                                                 'radloggerpy.database.models',
+                                                 fetch_attribute=True))
 
     @mock.patch.object(importlib, 'import_module')
     def test_module_import_exception(self, m_importlib):
         """Assert raising exception on failed import of model"""
-        m_module = 'fake_model'
+        m_module = ('fake_model', 'FakeModel')
 
         # ensure mocked return does not have attribute FakeModel
         m_importlib.return_value = object()
 
-        self.assertRaises(AttributeError, cd._import_models, [m_module])
+        self.assertRaises(AttributeError, import_modules, [m_module],
+                          self.m_path, fetch_attribute=True)

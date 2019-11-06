@@ -20,6 +20,7 @@ from oslo_config import cfg
 from oslo_log import log
 from radloggerpy import config
 
+from radloggerpy.common import dynamic_import as di
 from radloggerpy.config import opts
 from radloggerpy.tests import base
 
@@ -41,6 +42,7 @@ class TestConfOpts(base.TestCase):
         remove = ['opts', 'cfg']
 
         # get all attributes of the config directory
+        path = config.__path__[0]
         names = dir(config)
         modules = list()
 
@@ -54,12 +56,16 @@ class TestConfOpts(base.TestCase):
             modules.remove(r)
 
         # ensure that opts._list_module_names() gets all modules properly
-        self.assertEqual(modules, opts._list_module_names())
+        self.assertEqual(modules, di.list_module_names(path, remove))
 
     def test_module_import(self):
         """Assert correct import of config modules based on string name"""
 
-        self.assertEqual([config.devices], opts._import_modules(['devices']))
+        path = 'radloggerpy.config'
+
+        self.assertEqual(
+            [config.devices],
+            di.import_modules(['devices'], path, opts.LIST_OPTS_FUNC_NAME))
 
     class FakeOpts(object):
         """Simulate options module since list_opts won't distinguish"""
@@ -73,7 +79,7 @@ class TestConfOpts(base.TestCase):
             return [(TestConfOpts.FakeOpts.fgroup,
                      TestConfOpts.FakeOpts.fopts)]
 
-    @mock.patch.object(opts, '_import_modules')
+    @mock.patch.object(opts, 'import_modules')
     def test_list_opts(self, m_modules):
         """Test that with the FakeOpts the expected available config options"""
 
