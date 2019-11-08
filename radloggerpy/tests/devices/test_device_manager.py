@@ -19,7 +19,9 @@ import multiprocessing
 from oslo_log import log
 from radloggerpy import config
 
-from radloggerpy.device.device_manager import DeviceManager
+from radloggerpy.device import device_manager as dm
+from radloggerpy.device import device_types as dt
+from radloggerpy.device import devices as dev
 from radloggerpy.tests import base
 
 LOG = log.getLogger(__name__)
@@ -35,11 +37,57 @@ class TestDeviceManager(base.TestCase):
     def test_num_processors(self, m_cpu):
         m_cpu.return_value = 2
 
-        self.m_dmanager = DeviceManager()
+        self.m_dmanager = dm.DeviceManager()
 
         m_cpu.assert_called_once_with()
 
-    def test_conf_workers(self):
+    @mock.patch.object(dm, 'futurist')
+    def test_conf_workers(self, m_futurist):
         CONF.devices.concurrent_worker_amount = 2
 
-        self.m_dmanager = DeviceManager()
+        self.m_dmanager = dm.DeviceManager()
+
+        m_futurist.GreenThreadPoolExecutor.\
+            assert_called_once_with(max_workers=2)
+
+    @mock.patch.object(dm, 'import_modules')
+    @mock.patch.object(dm, 'list_module_names')
+    def test_get_device_module(self, m_list_names, m_import):
+        m_path = 'path'
+        m_package = 'package'
+        m_name = 'test'
+        m_class = 'Test'
+
+        m_module = mock.Mock(__path__=[m_path], __name__=m_package)
+
+        m_list_names.return_value = [m_name]
+
+        m_result = mock.Mock(Test=True)
+        m_import.return_value = [(m_result, m_class)]
+
+        result = dm.DeviceManager._get_device_module(m_module)
+
+        m_list_names.assert_called_once_with(m_path)
+        m_import.assert_called_once_with(
+            [(m_name, m_class)], m_package, fetch_attribute=True)
+
+        self.assertEqual([True], result)
+
+    @mock.patch.object(dm.DeviceManager, '_get_device_module')
+    def test_get_device_types(self, m_get_device_module):
+        """Assert get_device_types called with correct module"""
+        dm.DeviceManager.get_device_types()
+
+        m_get_device_module.assert_called_once_with(dt)
+
+    @mock.patch.object(dm.DeviceManager, '_get_device_module')
+    def test_get_device_implementations(self, m_get_device_module):
+        """Assert get_device_implementations called with correct module"""
+        dm.DeviceManager.get_device_implementations()
+
+        m_get_device_module.assert_called_once_with(dev)
+
+    def test_get_device_map_created_once(self):
+        m_map = dm.DeviceManager.get_device_map()
+
+        self.assertEqual(m_map, dm.DeviceManager.get_device_map())

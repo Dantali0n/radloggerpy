@@ -19,10 +19,10 @@
 """Logo's to output to terminal when radlogger starts up"""
 
 TEXT = """
-  ____             _  _                                      ____         
- |  _ \  __ _   __| || |     ___    __ _   __ _   ___  _ __ |  _ \  _   _ 
- | |_) |/ _` | / _` || |    / _ \  / _` | / _` | / _ \| '__|| |_) || | | |
- |  _ <| (_| || (_| || |___| (_) || (_| || (_| ||  __/| |   |  __/ | |_| |
+  ____             _  _                                      ____          
+ |  _ \  __ _   __| || |     ___    __ _   __ _   ___  _ __ |  _ \  _   _  
+ | |_) |/ _` | / _` || |    / _ \  / _` | / _` | / _ \| '__|| |_) || | | | 
+ |  _ <| (_| || (_| || |___| (_) || (_| || (_| ||  __/| |   |  __/ | |_| | 
  |_| \_\\\__,_| \__,_||_____|\___/  \__, | \__, | \___||_|   |_|     \__, |
                                    |___/  |___/                     |___/  
 """
@@ -33,7 +33,7 @@ LOGO = """
             )vn>   {nvnnnnnnnnnnnoo(            
             )oos, _)nnnnnnnnnnoooow[            
           ajWZ#onnnnnnnnnnnnnoonomZ#6a          
-        _jQQQmmmg\"\"\"\"\"\"\"nnnooonXdZZZQQQa        
+        _jQQQmmmg\"\"\"\"\"\"\"nnnooonXdZZZQQQa 
     __uqWWWWBWBWWhnonoooooonooXZ#Z##QEvns;;..   
   %noSd#ZZZZZZZZZZmonnononoooqZZUZ#ZQkvvvn;;::  
  )nvnd#Z#Z#Z#Z#Z#ZZZ2onoooood#Z#Z#ZZQEvnvvn;=:; 
@@ -49,6 +49,6 @@ nnnnnnnnnnn(  :::::::"nnnv}~::;;;:;;;;;:;;;;;;;;
             .:::=vnvnvvnvvnvvvvs....            
             .::=nvnvvvnvvnvvnvnvi==.            
             .:)nvnvvnvvnvvnvvnvvvn;.            
-             ;::+\"|{vnvvnvvnv\"\"\":;;.            
+             ;::+\"|{vnvvnvvnv\"\"\":;;.        
               ::;;;;;:;;:;;;;;;;;=-             
                  ---:;;;;;;;:---                """

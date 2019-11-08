@@ -21,3 +21,4 @@ from enum import unique
 class DeviceTypes(Enum):
     """Enum listing all possible supported types of device"""
     SERIAL = 1
+    ETHERNET = 2

@@ -18,13 +18,13 @@ import time
 from radloggerpy.device.device_types.serial_device import SerialDevice
 
 
-class ArduinoGeigerPCB(SerialDevice):
+class ArduinoGeigerPcb(SerialDevice):
     """"""
 
     NAME = "ArduinoGeigerPCB"
 
     def __init__(self):
-        super(ArduinoGeigerPCB, self).__init__()
+        super(ArduinoGeigerPcb, self).__init__()
 
     def run(self):
         while True:

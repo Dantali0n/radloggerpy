@@ -13,6 +13,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+from collections import OrderedDict
 import multiprocessing
 
 from oslo_log import log
@@ -24,6 +25,7 @@ from radloggerpy._i18n import _
 from radloggerpy.common.dynamic_import import import_modules
 from radloggerpy.common.dynamic_import import list_module_names
 from radloggerpy.device import device_types as dt
+from radloggerpy.device import devices as dev
 
 LOG = log.getLogger(__name__)
 CONF = config.CONF
@@ -56,11 +58,8 @@ class DeviceManager(object):
 
     """
 
-    # """Map of types and their device names with classes"""
-    # DEVICE_MAP = OrderedDict(
-    #     {DeviceTypes.serial=[
-    #     (ArduinoGeigerPCB.NAME, ArduinoGeigerPCB)
-    # ]})
+    # """Private Map of device types and corresponding implementations"""
+    _DEVICE_MAP = None
 
     def __init__(self):
         num_workers = CONF.devices.concurrent_worker_amount
@@ -74,6 +73,25 @@ class DeviceManager(object):
             max_workers=num_workers)
 
     @staticmethod
+    def _get_device_module(module):
+        device_types = []
+
+        # discover the path for the module directory and the package
+        package_path = module.__path__[0]
+        package = module.__name__
+
+        modules = list()
+        for module_name in list_module_names(package_path):
+            modules.append((module_name, module_name.title().replace('_', '')))
+
+        imported_modules = import_modules(
+            modules, package, fetch_attribute=True)
+        for module, attribute in imported_modules:
+            device_types.append(getattr(module, attribute))
+
+        return device_types
+
+    @staticmethod
     def get_device_types():
         """Return a collection of all device types their abstract classes
 
@@ -83,30 +101,48 @@ class DeviceManager(object):
         :return:
         :rtype:
         """
-        device_types = []
+        return DeviceManager._get_device_module(dt)
 
-        # discover the path for device.device_types directory
-        package_path = dt.__path__[0]
+    @staticmethod
+    def get_device_implementations():
+        """Return a collection of all device implementations
 
-        modules = list()
-        for module_name in list_module_names(package_path):
-            modules.append((module_name, module_name.title().replace('_', '')))
+        Access implementations their TYPE to determine how they map to
+        :py:class:`radloggerpy.types.device_types.DeviceTypes`
 
-        imported_modules = import_modules(
-            modules, dt.__package__, fetch_attribute=True)
-        for module, attribute in imported_modules:
-            device_types.append(getattr(module, attribute))
-
-        return device_types
+        :return:
+        :rtype:
+        """
+        return DeviceManager._get_device_module(dev)
 
     @staticmethod
     def get_device_map():
         """Return dictionary mapping device types to all concrete classes
 
+        The map will only be generated the first time this method is called
+        and is subsequently stored in _DEVICE_MAP.
+
         The dictionary structure follows the following schema;
-            { DeviceTypes.serial : [devices.ArduinoGeigerPCB]}
+            {
+                DeviceTypes.SERIAL   : [devices.ArduinoGeigerPcb],
+                DeviceTypes.ETHERNET : []
+            }
 
         :return:
         :rtype:
         """
-        pass
+        if DeviceManager._DEVICE_MAP:
+            return DeviceManager._DEVICE_MAP
+
+        device_map = OrderedDict()
+
+        d_types = DeviceManager.get_device_types()
+        for d_type in d_types:
+            device_map[d_type.TYPE] = []
+
+        implementations = DeviceManager.get_device_implementations()
+        for implementation in implementations:
+            device_map[implementation.TYPE].append(implementation)
+
+        DeviceManager._DEVICE_MAP = device_map
+        return DeviceManager._DEVICE_MAP
