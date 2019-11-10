@@ -13,6 +13,8 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+import mock
+
 from oslo_log import log
 from radloggerpy import config
 
@@ -20,6 +22,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import Integer, Column, create_engine, text
 
+from radloggerpy.database import declarative_base as decl_base_module
 from radloggerpy.database.declarative_base import Base
 from radloggerpy.database.declarative_base import base as decl_base_inst
 from radloggerpy.tests import base
@@ -38,7 +41,8 @@ class TestDeclarativeBase(base.TestCase):
 
         self.assertEqual(Base.__doc__, decl_base_inst.__doc__)
 
-    def test_base_tablename_lower(self):
+    @mock.patch.object(decl_base_module, 'base')
+    def test_base_tablename_lower(self, m_base_instance):
         """Assert that the baseclass tablename lower gets applied"""
 
         # Create a in memory sqlite database using a declarative_base

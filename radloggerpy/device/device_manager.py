@@ -131,7 +131,7 @@ class DeviceManager(object):
         :return:
         :rtype:
         """
-        if DeviceManager._DEVICE_MAP:
+        if DeviceManager._DEVICE_MAP is not None:
             return DeviceManager._DEVICE_MAP
 
         device_map = OrderedDict()

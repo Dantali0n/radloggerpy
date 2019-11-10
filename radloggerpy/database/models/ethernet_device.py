@@ -13,21 +13,14 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from sqlalchemy import Column, Integer, Enum
+from sqlalchemy import Column, Integer, ForeignKey
 from sqlalchemy.orm import relationship
 
 from radloggerpy.database.declarative_base import base
-from radloggerpy.types import device_types as dt
 
 
-class Device(base):
+class EthernetDevice(base):
     id = Column(Integer, primary_key=True)
-
-    type = Column(Enum(dt.DeviceTypes))
-
-    attributes = relationship(
-        "DeviceAttribute", back_populates="base_device")
-    serial = relationship(
-        "SerialDevice", uselist=False, back_populates="base_device")
-    ethernet = relationship(
-        "EthernetDevice", uselist=False, back_populates="base_device")
+    base_id = Column(Integer, ForeignKey('device.id'))
+    base_device = relationship(
+        "Device", back_populates="ethernet")

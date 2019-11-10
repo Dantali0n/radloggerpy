@@ -13,21 +13,15 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from sqlalchemy import Column, Integer, Enum
-from sqlalchemy.orm import relationship
-
-from radloggerpy.database.declarative_base import base
-from radloggerpy.types import device_types as dt
+from enum import Enum
+from enum import unique
 
 
-class Device(base):
-    id = Column(Integer, primary_key=True)
-
-    type = Column(Enum(dt.DeviceTypes))
-
-    attributes = relationship(
-        "DeviceAttribute", back_populates="base_device")
-    serial = relationship(
-        "SerialDevice", uselist=False, back_populates="base_device")
-    ethernet = relationship(
-        "EthernetDevice", uselist=False, back_populates="base_device")
+@unique
+class SerialParityTypes(Enum):
+    """Enum listing all possible supported types of serial parity"""
+    PARITY_NONE = 'N'
+    PARITY_EVEN = 'E'
+    PARITY_ODD = 'O'
+    PARITY_MARK = 'M'
+    PARITY_SPACE = 'S'

@@ -50,8 +50,12 @@ def main():
     FirstTimeRun()
 
     # device = Device(type=DeviceTypes.SERIAL)
+    # serial_device = SerialDevice(base_device=device)
+    # device.serial = serial_device
+    #
     # session = database_manager.create_session()
     # session.add(device)
+    # session.add(serial_device)
     # session.commit()
 
     try:
