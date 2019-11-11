@@ -36,6 +36,12 @@ class TestDeclarativeBase(base.TestCase):
     def setUp(self):
         super(TestDeclarativeBase, self).setUp()
 
+        self.p_base = mock.patch.object(
+            decl_base_module, 'Base',
+            new=decl_base_module.Base)
+        self.m_base = self.p_base.start()
+        self.addCleanup(self.p_base.stop)
+
     def test_base_cls_base(self):
         """The sqlalchemy declarative_base passed base object"""
 
@@ -46,7 +52,7 @@ class TestDeclarativeBase(base.TestCase):
         """Assert that the baseclass tablename lower gets applied"""
 
         # Create a in memory sqlite database using a declarative_base
-        m_base = declarative_base(cls=Base)
+        m_base = declarative_base(cls=self.m_base)
         m_engine = create_engine('sqlite:///:memory:', echo=True)
 
         # This model wil be added to the declarative_base
