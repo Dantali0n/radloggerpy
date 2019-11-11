@@ -18,7 +18,7 @@ import mock
 from oslo_log import log
 from radloggerpy import config
 
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.ext import declarative
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import Integer, Column, create_engine, text
 
@@ -37,9 +37,9 @@ class TestDeclarativeBase(base.TestCase):
         super(TestDeclarativeBase, self).setUp()
 
         self.p_base = mock.patch.object(
-            decl_base_module, 'Base',
-            new=decl_base_module.Base)
-        self.m_base = self.p_base.start()
+            declarative, 'declarative_base',
+            new=declarative.declarative_base)
+        self.m_decl_base = self.p_base.start()
         self.addCleanup(self.p_base.stop)
 
     def test_base_cls_base(self):
@@ -51,8 +51,8 @@ class TestDeclarativeBase(base.TestCase):
     def test_base_tablename_lower(self, m_base_instance):
         """Assert that the baseclass tablename lower gets applied"""
 
-        # Create a in memory sqlite database using a declarative_base
-        m_base = declarative_base(cls=self.m_base)
+        # Create a in memory sqlite database using a fixture declarative_base
+        m_base = self.m_decl_base(cls=Base)
         m_engine = create_engine('sqlite:///:memory:', echo=True)
 
         # This model wil be added to the declarative_base
