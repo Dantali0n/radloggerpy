@@ -66,9 +66,13 @@ def main():
     except serial.serialutil.SerialException as e:
         if e.errno == errno.EACCES:
             LOG.critical(_("Insufficient permissions "
-                           "to open device %s") % ser)
-        elif e.errno == errno.EADDRNOTAVAIL:
-            LOG.critical(_("Device %s does not exist") % ser)
+                           "to open device."))
+        elif e.errno == errno.ENOENT:
+            LOG.critical(_("Device does not exist"))
+        else:
+            LOG.critical(_("Device error %d") % e.errno)
+        # close all database sessions that are still left open
+        database_manager.close_lingering_sessions()
         return
 
     string = ""
