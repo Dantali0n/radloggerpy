@@ -12,12 +12,11 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-import time
 
 import mock
 
 import errno
-import serial as pyserial
+from serial.serialutil import SerialException
 
 from radloggerpy import radloggerpy
 
@@ -49,7 +48,7 @@ class TestRadloggerpy(base.TestCase):
         self.m_serial = self.p_serial.start()
         self.addCleanup(self.p_serial.stop)
 
-    @mock.patch.object(time, 'sleep')
+    @mock.patch.object(radloggerpy.time, 'sleep')
     def test_run_main(self, m_sleep):
         m_sleep.side_effect = InterruptedError
 
@@ -66,7 +65,7 @@ class TestRadloggerpy(base.TestCase):
         m_sleep.assert_called_once()
 
     def test_run_main_err_no_device(self):
-        m_execption = pyserial.serialutil.SerialException
+        m_execption = SerialException
         m_execption.errno = errno.EACCES
         self.m_serial.side_effect = m_execption
 
@@ -77,7 +76,7 @@ class TestRadloggerpy(base.TestCase):
         self.m_configurator.setup_config_and_logging.assert_called_once()
 
     def test_run_main_err_access(self):
-        m_execption = pyserial.serialutil.SerialException
+        m_execption = SerialException
         m_execption.errno = errno.ENOENT
         self.m_serial.side_effect = m_execption
 
@@ -88,7 +87,7 @@ class TestRadloggerpy(base.TestCase):
         self.m_configurator.setup_config_and_logging.assert_called_once()
 
     def test_run_main_err_arbitrary(self):
-        m_execption = pyserial.serialutil.SerialException
+        m_execption = SerialException
         m_execption.errno = errno.EFAULT
         self.m_serial.side_effect = m_execption
 

@@ -10,14 +10,6 @@ jobs:
       script:
         - tox -e pep8
     - stage: test
-      name: "Unit test py27"
-      python:
-        - "2.7"
-      install:
-        - pip install tox
-      script:
-        - tox -e py27
-    - stage: test
       name: "Unit test py36"
       python:
         - "3.6"

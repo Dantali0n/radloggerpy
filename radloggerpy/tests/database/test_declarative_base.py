@@ -13,18 +13,10 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-import mock
-
 from oslo_log import log
 
 from radloggerpy import config
 
-from sqlalchemy.ext.declarative.base import declared_attr
-from sqlalchemy.ext import declarative
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy import Integer, Column, create_engine, text
-
-from radloggerpy.database import declarative_base as decl_base_module
 from radloggerpy.database.declarative_base import Base
 from radloggerpy.database.declarative_base import base as decl_base_inst
 from radloggerpy.tests import base
@@ -83,6 +75,6 @@ class TestDeclarativeBase(base.TestCase):
     #     result = m_conn.execute(m_text).fetchall()
     #     m_conn.close()
     #
-    #     # Check that the inserted element could be retrieved from the database
-    #     # using the lowercase name of the model class.
+    #     # Check that the inserted element could be retrieved from the
+    #     # database using the lowercase name of the model class.
     #     self.assertEqual(1, len(result))
