@@ -18,8 +18,9 @@ import copy
 from oslo_log import log
 from radloggerpy import config
 
+from readerwriterlock import rwlock
+
 from radloggerpy._i18n import _C
-from radloggerpy.datastructures import reentrant_rw_lock as rrwl
 from radloggerpy.models.radiationreading import RadiationReading
 
 LOG = log.getLogger(__name__)
@@ -40,7 +41,7 @@ class DeviceDataBuffer(object):
 
     def __init__(self):
         self.data = list()
-        self.rwlock = rrwl.ReentrantReadWriteLock()
+        self.rwlock = rwlock.RWLockRead()
 
     def add_readings(self, readings):
         """Add the readings to the buffer
@@ -59,15 +60,15 @@ class DeviceDataBuffer(object):
                              RadiationReading", e))
                 readings.remove(e)
 
-        has_lock = False
+        lock = self.rwlock.gen_rlock()
         try:
-            has_lock = self.rwlock.read_acquire()
-            if has_lock:
+            if lock.acquire():
                 self.data.extend(readings)
-            return has_lock
+                return True
         finally:
-            if has_lock:
-                self.rwlock.read_release()
+            lock.release()
+
+        return False
 
     def fetch_clear_readings(self):
         """Retrieve all the readings from the buffer and clear the buffer
@@ -80,14 +81,13 @@ class DeviceDataBuffer(object):
         :return: All the buffered readings available or None if the lock fails
         :rtype: List of :py:class: '~.RadiationReading' instances | None
         """
-        has_lock = False
+
+        lock = self.rwlock.gen_wlock()
         try:
-            has_lock = self.rwlock.write_acquire()
-            if has_lock:
+            if lock.acquire():
                 ref = copy.copy(self.data)
                 # replace with self.data.clear() when deprecating python 2.7
                 del self.data[:]
                 return ref
         finally:
-            if has_lock:
-                self.rwlock.write_release()
+            lock.release()

@@ -18,8 +18,9 @@ import mock
 from oslo_log import log
 from radloggerpy import config
 
+from readerwriterlock import rwlock
+
 from radloggerpy.datastructures import device_data_buffer
-from radloggerpy.datastructures import reentrant_rw_lock
 from radloggerpy.models.radiationreading import RadiationReading
 from radloggerpy.tests import base
 
@@ -69,19 +70,19 @@ class TestDeviceDataBuffer(base.TestCase):
         self.assertEqual([], self.m_buffer.fetch_clear_readings())
 
     @mock.patch.object(
-        reentrant_rw_lock.ReentrantReadWriteLock, 'read_acquire')
+        rwlock.RWLockRead, 'gen_rlock')
     def test_add_reading_lock(self, m_read):
         """Simulate failed lock and correct add_readings return value"""
-        m_read.return_value = False
+        m_read.return_value.acquire.return_value = False
         m_reading = RadiationReading()
 
         self.assertFalse(self.m_buffer.add_readings([m_reading]))
 
     @mock.patch.object(
-        reentrant_rw_lock.ReentrantReadWriteLock, 'write_acquire')
-    def test_fetch_readings_lock(self, m_read):
+        rwlock.RWLockRead, 'gen_wlock')
+    def test_fetch_readings_lock(self, m_write):
         """Simulate failed lock and correct fetch_x_readings return value"""
-        m_read.side_effect = [False]
+        m_write.return_value.acquire.side_effect = [False]
         m_reading = RadiationReading()
 
         self.assertTrue(self.m_buffer.add_readings([m_reading]))
