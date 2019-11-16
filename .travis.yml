@@ -1,9 +1,24 @@
 language: python
+# To ensure caches are accessible between staged jobs they need to have the
+# following attributes be identical:
+#   - os name (linux, osx, windows)
+#   - os distribution (xenial, trusty)
+#   - osx image (xcode7.2)
+#   - environment variables (CODECOV_TOKEN)
+#   - language runtime (python: "3.7")
+# Failure to have all of these attributes identical will result in separate
+# caches and files not being available between jobs & stages!
+# Travis offers no method to override the sharedness of its cache system.
 cache:
   directories:
   - radloggerpy/locale
-  - radloggerpy/.tox/py36
-  - radloggerpy/.tox/py37
+  - .tox/pep8
+  - .tox/py37
+  - .tox/py36
+  - .tox/cover
+  - .tox/docs
+  - .tox/releasenotes
+  - .tox/genconfig
 env:
   - CODECOV_TOKEN="ad646b4d-8d41-4b6c-912e-09a09ac2d097"
 jobs:
@@ -72,7 +87,7 @@ jobs:
       name: "Releasenotes"
       if: branch = master OR type = pull_request
       python:
-        - "3.7"
+        - "3.6"
       install:
         - pip install tox
       script:

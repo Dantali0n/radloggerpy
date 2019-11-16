@@ -7,6 +7,11 @@
 Welcome to the documentation of radloggerpy
 ===========================================
 
+.. image:: /images/radloggerpy.png
+    :align: center
+    :width: 25%
+    :alt: RadLoggerPy official logo
+
 Contents:
 
 .. toctree::
@@ -19,10 +24,3 @@ Contents:
    cli/index
    user/index
    reference/index
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
