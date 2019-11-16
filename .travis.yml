@@ -4,7 +4,8 @@ cache:
   - radloggerpy/locale
   - radloggerpy/.tox/py36
   - radloggerpy/.tox/py37
-  - radloggerpy/.tox/cover
+env:
+  - CODECOV_TOKEN="ad646b4d-8d41-4b6c-912e-09a09ac2d097"
 jobs:
   include:
     - stage: linting
@@ -22,7 +23,6 @@ jobs:
       install:
         - pip install tox
       script:
-        - echo $TRAVIS_BUILD_DIR
         - tox -e venv python setup.py compile_catalog
     - stage: locale
       name: "Locale py37"
@@ -31,7 +31,6 @@ jobs:
       install:
         - pip install tox
       script:
-        - echo $TRAVIS_BUILD_DIR
         - tox -e venv python setup.py compile_catalog
     - stage: test
       name: "Unit test py36"
@@ -40,7 +39,6 @@ jobs:
       install:
         - pip install tox
       script:
-        - echo $TRAVIS_BUILD_DIR
         - tox -e py36
     - stage: test
       name: "Unit test py37"
@@ -49,19 +47,15 @@ jobs:
       install:
         - pip install tox
       script:
-        - echo $TRAVIS_BUILD_DIR
         - tox -e py37
     - stage: cover
       name: "Coverage report"
-      env:
-        - CODECOV_TOKEN="ad646b4d-8d41-4b6c-912e-09a09ac2d097"
       python:
         - "3.7"
       install:
         - pip install tox
         - pip install codecov
       script:
-        - echo $TRAVIS_BUILD_DIR
         - tox -e cover
       after_success:
         - codecov
