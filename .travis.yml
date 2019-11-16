@@ -1,4 +1,9 @@
 language: python
+cache:
+  directories:
+    - radloggerpy/locale
+    - radloggerpy/.tox/py36
+    - radloggerpy/.tox/py37
 jobs:
   include:
     - stage: linting
@@ -13,9 +18,7 @@ jobs:
       name: "Locale"
       python:
         - "3.7"
-      cache:
-        directories:
-          - radloggerpy/locale
+        - "3.6"
       install:
         - pip install tox
       script:
@@ -24,9 +27,6 @@ jobs:
       name: "Unit test py36"
       python:
         - "3.6"
-      cache:
-        directories:
-          - radloggerpy/locale
       install:
         - pip install tox
       script:
@@ -35,9 +35,6 @@ jobs:
       name: "Unit test py37"
       python:
         - "3.7"
-      cache:
-        directories:
-          - radloggerpy/locale
       install:
         - pip install tox
       script:
