@@ -1,4 +1,7 @@
 language: python
+cache:
+  directories:
+  - radloggerpy/locale
 jobs:
   include:
     - stage: linting
@@ -9,6 +12,15 @@ jobs:
         - pip install tox
       script:
         - tox -e pep8
+    - stage: locale
+      name: "Locale"
+      python:
+        - "3.7"
+      install:
+        - pip install tox
+      script:
+        - source .tox/py37/bin/active
+        - python compile_catalog
     - stage: test
       name: "Unit test py36"
       python:
