@@ -8,7 +8,8 @@ language: python
 #   - language runtime (python: "3.7")
 # Failure to have all of these attributes identical will result in separate
 # caches and files not being available between jobs & stages!
-# Travis offers no method to override the sharedness of its cache system.
+# Travis offers no method to override how caches are shared.
+# Never cache .tox/venv as it is used by both Python 3.6 and 3.7.
 cache:
   directories:
   - radloggerpy/locale
@@ -87,7 +88,7 @@ jobs:
       name: "Releasenotes"
       if: branch = master OR type = pull_request
       python:
-        - "3.6"
+        - "3.7"
       install:
         - pip install tox
       script:
