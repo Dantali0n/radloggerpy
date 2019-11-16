@@ -19,8 +19,7 @@ jobs:
       install:
         - pip install tox
       script:
-        - source .tox/py37/bin/active
-        - python setup.py compile_catalog
+        - tox -e venv python setup.py compile_catalog
     - stage: test
       name: "Unit test py36"
       python:
