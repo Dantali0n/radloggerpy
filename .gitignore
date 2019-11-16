@@ -65,3 +65,6 @@ releasenotes/build
 
 # Config sample
 etc/radloggerpy/radloggerpy.conf.sample
+
+# Database
+radlogger.sqlite

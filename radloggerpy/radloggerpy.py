@@ -25,6 +25,7 @@ from oslo_log import log
 from radloggerpy import config
 
 from radloggerpy._i18n import _
+from radloggerpy._i18n import get_available_languages
 from radloggerpy.common import ascii_logo
 from radloggerpy.common.first_time_run import FirstTimeRun
 from radloggerpy.config import config as configurator
@@ -49,6 +50,8 @@ def main():
     # Perform first time initialization if required
     FirstTimeRun()
 
+    LOG.info(get_available_languages())
+
     # device = Device(type=DeviceTypes.SERIAL)
     # serial_device = SerialDevice(base_device=device)
     # device.serial = serial_device
@@ -57,7 +60,6 @@ def main():
     # session.add(device)
     # session.add(serial_device)
     # session.commit()
-
     try:
         ser = serial.Serial(port='/dev/ttyUSB0', baudrate=9600,
                             parity=serial.PARITY_NONE,

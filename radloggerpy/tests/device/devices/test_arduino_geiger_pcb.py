@@ -13,8 +13,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from concurrent.futures import ThreadPoolExecutor
-import time
+import mock
 
 from oslo_log import log
 from radloggerpy import config
@@ -34,3 +33,10 @@ class TestArduinoGeigerPcb(base.TestCase):
     def test_name(self):
         m_device = agpcb.ArduinoGeigerPcb()
         self.assertEqual(agpcb.ArduinoGeigerPcb.NAME, m_device.NAME)
+
+    @mock.patch.object(agpcb, 'time')
+    def test_run(self, m_time):
+        m_time.sleep.side_effect = [InterruptedError]
+        m_device = agpcb.ArduinoGeigerPcb()
+
+        self.assertRaises(InterruptedError, m_device.run)
