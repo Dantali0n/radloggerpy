@@ -9,17 +9,9 @@ language: python
 # Failure to have all of these attributes identical will result in separate
 # caches and files not being available between jobs & stages!
 # Travis offers no method to override how caches are shared.
-# Never cache .tox/venv as it is used by both Python 3.6 and 3.7.
 cache:
   directories:
   - radloggerpy/locale
-  - .tox/pep8
-  - .tox/py37
-  - .tox/py36
-  - .tox/cover
-  - .tox/docs
-  - .tox/releasenotes
-  - .tox/genconfig
 env:
   - CODECOV_TOKEN="ad646b4d-8d41-4b6c-912e-09a09ac2d097"
 jobs:

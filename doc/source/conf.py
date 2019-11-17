@@ -15,6 +15,8 @@
 import os
 import sys
 
+from radloggerpy import version
+
 sys.path.insert(0, os.path.abspath('../..'))
 # -- General configuration ----------------------------------------------------
 
@@ -22,8 +24,8 @@ sys.path.insert(0, os.path.abspath('../..'))
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
 extensions = [
     'sphinx.ext.autodoc',
+    'sphinx.ext.viewcode',
     "sphinx_rtd_theme"
-    # 'openstackdocstheme',
     #'sphinx.ext.intersphinx',
 ]
 
@@ -49,6 +51,11 @@ html_last_updated_fmt = '%Y-%m-%d %H:%M'
 
 # If true, '()' will be appended to :func: etc. cross-reference text.
 add_function_parentheses = True
+
+release = version.version_info.release_string()
+version = version.version_info.version_string()
+
+modindex_common_prefix = ['radloggerpy.']
 
 # If true, the current module name will be prepended to all description
 # unit titles (such as .. function::).
@@ -76,7 +83,7 @@ latex_documents = [
     ('index',
      '%s.tex' % project,
      u'%s Documentation' % project,
-     u'OpenStack Developers', 'manual'),
+     u'RadLoggerPy', 'manual'),
 ]
 
 # Example configuration for intersphinx: refer to the Python standard library.
