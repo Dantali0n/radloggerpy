@@ -15,6 +15,7 @@
 
 from cliff import app
 from cliff import commandmanager
+from cliff.complete import CompleteCommand
 
 from radloggerpy import version
 
@@ -31,10 +32,11 @@ class RadLoggerShell(app.App):
             description=self.__doc__.strip(),
             version=version.version_string,
             command_manager=commandmanager.CommandManager(
-                'radloggerpy.cli.v1'),
+                'radloggerpy.cli'),
             deferred_help=True,
             **kwargs
         )
+        self.command_manager.add_command('complete', CompleteCommand)
 
     def initialize_app(self, argv):
         self.LOG.debug('initialize_app')

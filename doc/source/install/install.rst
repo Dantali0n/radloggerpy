@@ -3,8 +3,9 @@
 .. role:: bash(code)
    :language: bash
 
+*********************
 Install and configure
-~~~~~~~~~~~~~~~~~~~~~
+*********************
 
 This section describes how to install and configure the RadLogger service,
 code-named RadLoggerPy. However, this installation and configuration procedure
@@ -18,7 +19,9 @@ potential pip conflicts but requires that the environment is activated before
 RadLoggerPy can be run. Additionally, the system wide installation offers
 Systemd service files while virtualenv will not install these.
 
-**Install dependencies:**
+Install dependencies:
+#####################
+
  Arch:
     :bash:`pacman -Syu python python-virtualenv python-pip`
  Debian & Ubuntu:

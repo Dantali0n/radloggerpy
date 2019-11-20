@@ -25,9 +25,13 @@ sys.path.insert(0, os.path.abspath('../..'))
 extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.viewcode',
-    "sphinx_rtd_theme"
+    "sphinx_rtd_theme",
+    'cliff.sphinxext'
     #'sphinx.ext.intersphinx',
 ]
+
+# Do not ignore cliff autoprogram commands
+autoprogram_cliff_ignored = []
 
 # autodoc generation is a bit aggressive and a nuisance when doing heavy
 # text edit cycles.
