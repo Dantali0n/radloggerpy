@@ -13,15 +13,19 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+from radloggerpy import config
+
 from cliff import app
 from cliff import commandmanager
 from cliff.complete import CompleteCommand
 
+from radloggerpy._i18n import _
+from radloggerpy.common import ascii_logo
+from radloggerpy.config.config import parse_args
+from radloggerpy.database.database_manager import create_session
 from radloggerpy import version
 
-from oslo_log import log
-
-LOG = log.getLogger(__name__)
+CONF = config.CONF
 
 
 class RadLoggerShell(app.App):
@@ -37,9 +41,17 @@ class RadLoggerShell(app.App):
             **kwargs
         )
         self.command_manager.add_command('complete', CompleteCommand)
+        self.database_session = create_session()
 
     def initialize_app(self, argv):
-        self.LOG.debug('initialize_app')
+        # update configuration (sets CONF.version amongst others)
+        parse_args(argv=())
+
+        # Display logo
+        self.LOG.info(ascii_logo.TEXT)
+
+        # Display version
+        self.LOG.info(_('Initializing radloggercli %s') % CONF.version)
 
     def prepare_to_run_command(self, cmd):
         self.LOG.debug('prepare_to_run_command %s', cmd.__class__.__name__)

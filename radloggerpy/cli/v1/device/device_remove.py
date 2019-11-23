@@ -5,7 +5,7 @@
 # not use this file except in compliance with the License. You may obtain
 # a copy of the License at
 #
-#         http://www.apache.org/licenses/LICENSE-2.0
+#      http://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
@@ -13,13 +13,19 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-"""Starter script for RadLoggerCli."""
-
-import sys
-
-from radloggerpy.cli.radlogger_shell import RadLoggerShell
+from cliff.command import Command
 
 
-def main():
-    # Run interactive command line interface
-    return RadLoggerShell().run(sys.argv[1:])
+class DeviceRemove(Command):
+    """Command to add devices"""
+
+    def get_parser(self, program_name):
+        parser = super(DeviceRemove, self).get_parser(program_name)
+        parser.add_argument('id', nargs='?', default=None)
+        return parser
+
+    def take_action(self, parsed_args):
+        self.app.LOG.info(self.app.database_session)
+        columns = ["action"]
+        data = [parsed_args.action]
+        return (columns, data)

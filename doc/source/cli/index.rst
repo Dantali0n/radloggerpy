@@ -25,5 +25,5 @@ Typical usage for this command is:
 
     </div>
 
-.. autoprogram-cliff:: radloggerpy.cli.v1
+.. autoprogram-cliff:: radloggerpy.cli
    :application: radloggercli

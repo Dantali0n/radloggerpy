@@ -13,17 +13,19 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from cliff.command import Command
-
-from oslo_log import log
-
-LOG = log.getLogger(__name__)
+from cliff.show import ShowOne
 
 
-class Simple(Command):
-    """A simple command that prints a message."""
+class DeviceShow(ShowOne):
+    """Command to show information about devices"""
+
+    def get_parser(self, program_name):
+        parser = super(DeviceShow, self).get_parser(program_name)
+        parser.add_argument('id', nargs='?', default=None)
+        return parser
 
     def take_action(self, parsed_args):
-        LOG.info('sending greeting')
-        LOG.debug('debugging')
-        self.app.stdout.write('hi!\n')
+        self.app.LOG.info(self.app.database_session)
+        columns = ["action"]
+        data = [parsed_args.action]
+        return (columns, data)

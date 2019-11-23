@@ -25,17 +25,20 @@ sys.path.insert(0, os.path.abspath('../..'))
 extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.viewcode',
+    'sphinxcontrib.apidoc',
     "sphinx_rtd_theme",
     'cliff.sphinxext'
-    #'sphinx.ext.intersphinx',
+    #'sphinx.ext.intersphinx'
 ]
 
 # Do not ignore cliff autoprogram commands
 autoprogram_cliff_ignored = []
 
-# autodoc generation is a bit aggressive and a nuisance when doing heavy
-# text edit cycles.
-# execute "export SPHINX_DEBUG=1" in your terminal to disable
+apidoc_module_dir = '../../radloggerpy'
+apidoc_output_dir = 'source_documentation'
+apidoc_excluded_paths = ['tests']
+apidoc_separate_modules = True
+apidoc_toc_file = False
 
 # The suffix of source filenames.
 source_suffix = '.rst'

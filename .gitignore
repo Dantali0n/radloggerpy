@@ -55,6 +55,8 @@ output/*/index.html
 
 # Sphinx
 doc/build
+doc/source/source_documentation/*
+!doc/source/source_documentation/index.rst
 
 # pbr generates these
 AUTHORS

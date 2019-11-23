@@ -23,4 +23,4 @@ Contents:
    configuration/index
    cli/index
    user/index
-   reference/index
+   source_documentation/index

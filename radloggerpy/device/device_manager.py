@@ -58,7 +58,7 @@ class DeviceManager(object):
 
     """
 
-    # """Private Map of device types and corresponding implementations"""
+    """Private Map of device types and corresponding implementations"""
     _DEVICE_MAP = None
 
     def __init__(self):
@@ -101,6 +101,7 @@ class DeviceManager(object):
         :return:
         :rtype:
         """
+
         return DeviceManager._get_device_module(dt)
 
     @staticmethod
@@ -113,24 +114,29 @@ class DeviceManager(object):
         :return:
         :rtype:
         """
+
         return DeviceManager._get_device_module(dev)
+
+        # {
+        #     DeviceTypes.SERIAL   : [devices.ArduinoGeigerPcb],
+        #     DeviceTypes.ETHERNET : []
+        # }
 
     @staticmethod
     def get_device_map():
         """Return dictionary mapping device types to all concrete classes
 
         The map will only be generated the first time this method is called
-        and is subsequently stored in _DEVICE_MAP.
+        and is subsequently stored in :py:attr:`_DEVICE_MAP`.
 
-        The dictionary structure follows the following schema;
-            {
-                DeviceTypes.SERIAL   : [devices.ArduinoGeigerPcb],
-                DeviceTypes.ETHERNET : []
-            }
+        The dictionary structure follows the following schema:
+
+        `` { test, example }``
 
         :return:
         :rtype:
         """
+
         if DeviceManager._DEVICE_MAP is not None:
             return DeviceManager._DEVICE_MAP
 

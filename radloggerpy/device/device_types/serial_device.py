@@ -25,18 +25,18 @@ class SerialDevice(device.Device):
     """SerialDevice class for serial communication interface devices
 
     A SerialDevice is used for communication interfaces typically available
-    such as RS-232 or RS-485. If the device to support uses a COMx port on
-    Windows or is listed in /dev/tty* on Linux this is the abstract class to
+    such as `RS-232` or `RS-485`. If the device to support uses a COMx port on
+    Windows or is listed in `/dev/tty*` on Linux this is the abstract class to
     implement.
 
-    TODO (Dantali0n):  Do not refer to database models but to database
-                       interfacing classes (add_devices(session, [device])).
     Devices implementing this class their settings are stored in the database
-    with the :class:`radloggerpy.database.serial_device.SerialDevice`. if any
-    additional information is required these can be stored using the
-    :class:`radloggerpy.database.device_attribute.DeviceAttribute`.
-
+    with the :py:class:`radloggerpy.database.serial_device.SerialDevice`. if
+    any additional information is required these can be stored using the
+    :py:class:`radloggerpy.database.device_attribute.DeviceAttribute`.
     """
+
+    # TODO(Dantali0n): Do not refer to database models but to database
+    #                  interfacing classes(add_devices(session, [device])).
 
     NAME = "SerialDevice"
     TYPE = DeviceTypes.SERIAL

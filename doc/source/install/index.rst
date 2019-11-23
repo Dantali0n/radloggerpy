@@ -1,6 +1,6 @@
-====================================
-radlogger service installation guide
-====================================
+======================================
+RadLoggerPy service installation guide
+======================================
 
 .. toctree::
    :maxdepth: 2
