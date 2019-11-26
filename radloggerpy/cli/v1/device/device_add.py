@@ -15,17 +15,32 @@
 
 from cliff.command import Command
 
+from radloggerpy.cli.argument import Argument
+from radloggerpy.cli.argument_helper import ArgumentHelper
 
-class DeviceAdd(Command):
+
+class DeviceAdd(Command, ArgumentHelper):
     """Command to add devices"""
+
+    arguments = {
+        'name': Argument(default="henk"),
+        '--type': Argument('-t', required=True),
+    }
 
     def get_parser(self, program_name):
         parser = super(DeviceAdd, self).get_parser(program_name)
-        parser.add_argument('id', nargs='?', default=None)
+        self.arguments['name'].add_kwarg('choices', {'henk', 'tank'})
+        self.register_arguments(parser)
         return parser
 
     def take_action(self, parsed_args):
-        self.app.LOG.info(self.app.database_session)
-        columns = ["action"]
-        data = [parsed_args.action]
-        return (columns, data)
+        pass
+
+    # return self._verify_required_arguments(parsed_args)
+
+    # def _verify_required_arguments(self, parsed_args):
+    #     for key, value in self._ARGUMENTS.items():
+    #         if value.required is True and not hasattr(parsed_args,  key):
+    #             self.app.LOG.error(_("Missing required attribute: %s") % key)
+    #             return False
+    #     return True

@@ -39,6 +39,9 @@ apidoc_output_dir = 'source_documentation'
 apidoc_excluded_paths = ['tests']
 apidoc_separate_modules = True
 apidoc_toc_file = False
+# This should include private methods but does not work
+# https://github.com/sphinx-contrib/apidoc/issues/14
+apidoc_extra_args = ['-P']
 
 # The suffix of source filenames.
 source_suffix = '.rst'

@@ -117,11 +117,6 @@ class DeviceManager(object):
 
         return DeviceManager._get_device_module(dev)
 
-        # {
-        #     DeviceTypes.SERIAL   : [devices.ArduinoGeigerPcb],
-        #     DeviceTypes.ETHERNET : []
-        # }
-
     @staticmethod
     def get_device_map():
         """Return dictionary mapping device types to all concrete classes
@@ -131,10 +126,11 @@ class DeviceManager(object):
 
         The dictionary structure follows the following schema:
 
-        `` { test, example }``
+        ``OrderedDict([ (DeviceTypes.SERIAL, [devices.ArduinoGeigerPcb]) ])``
 
-        :return:
-        :rtype:
+        :return: Ordered dictionary mapping DeviceType enums to concrete
+                 classes
+        :rtype: OrderedDict with DeviceTypes as key and lists as values
         """
 
         if DeviceManager._DEVICE_MAP is not None:
