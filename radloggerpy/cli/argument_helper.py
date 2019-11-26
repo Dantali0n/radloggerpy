@@ -51,5 +51,5 @@ class ArgumentHelper(object):
         :param parser: argparse parser for command line strings
         :type parser: :py:class:`argparse.ArgumentParser`
         """
-        for key, value in self._arguments.items():
+        for key, value in self.arguments.items():
             parser.add_argument(key, *value.args(), **value.kwargs())
