@@ -76,15 +76,15 @@ jobs:
         - pip install tox
       script:
         - tox -e docs
-    - stage: docs
-      name: "Releasenotes"
-      if: branch = master OR type = pull_request
-      python:
-        - "3.7"
-      install:
-        - pip install tox
-      script:
-        - tox -e releasenotes
+#    - stage: docs
+#      name: "Releasenotes"
+#      if: branch = master OR type = pull_request
+#      python:
+#        - "3.7"
+#      install:
+#        - pip install tox
+#      script:
+#        - tox -e releasenotes
     - stage: docs
       name: "Generated configuration"
       if: branch = master OR type = pull_request
