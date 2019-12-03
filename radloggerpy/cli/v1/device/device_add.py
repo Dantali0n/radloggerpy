@@ -13,34 +13,33 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from cliff.command import Command
+import abc
+import six
 
 from radloggerpy.cli.argument import Argument
 from radloggerpy.cli.argument_helper import ArgumentHelper
+from radloggerpy.device.device_manager import DeviceManager
 
 
-class DeviceAdd(Command, ArgumentHelper):
-    """Command to add devices"""
+@six.add_metaclass(abc.ABCMeta)
+class DeviceAdd(ArgumentHelper):
+    """Abstract command to add devices"""
 
-    arguments = {
-        'name': Argument(default="henk"),
-        '--type': Argument('-t', required=True),
-    }
+    _arguments = None
 
-    def get_parser(self, program_name):
-        parser = super(DeviceAdd, self).get_parser(program_name)
-        self.arguments['name'].add_kwarg('choices', {'henk', 'tank'})
-        self.register_arguments(parser)
-        return parser
+    @property
+    def arguments(self):
+        if self._arguments is None:
+            self._arguments = dict()
+            self._arguments.update({
+                'name': Argument(),
+                'implementation': Argument(),
+            })
+        return self._arguments
 
-    def take_action(self, parsed_args):
-        pass
-
-    # return self._verify_required_arguments(parsed_args)
-
-    # def _verify_required_arguments(self, parsed_args):
-    #     for key, value in self._ARGUMENTS.items():
-    #         if value.required is True and not hasattr(parsed_args,  key):
-    #             self.app.LOG.error(_("Missing required attribute: %s") % key)
-    #             return False
-    #     return True
+    def _add_implementations(self, device_type):
+        self.arguments['implementation'].add_kwarg(
+            'choices',
+            [dev.NAME for dev in DeviceManager.get_device_implementations()
+             if dev.TYPE == device_type]
+        )
