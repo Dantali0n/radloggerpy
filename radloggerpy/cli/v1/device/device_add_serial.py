@@ -14,15 +14,39 @@
 # under the License.
 
 from cliff.command import Command
-import serial
 
 from radloggerpy.cli.argument import Argument
 from radloggerpy.cli.v1.device.device_add import DeviceAdd
+from radloggerpy.database.objects.serial_device import SerialDeviceObject
 from radloggerpy.types.device_types import DeviceTypes
+from radloggerpy.types.serial_bytesize_types import SerialBytesizeTypes
+from radloggerpy.types.serial_parity_types import SerialParityTypes
+from radloggerpy.types.serial_stopbit_types import SerialStopbitTypes
 
 
 class DeviceAddSerial(Command, DeviceAdd):
     """Command to add serial devices"""
+
+    BYTESIZE_CHOICES = {
+        5: SerialBytesizeTypes.FIVEBITS,
+        6: SerialBytesizeTypes.SIXBITS,
+        7: SerialBytesizeTypes.SEVENBITS,
+        8: SerialBytesizeTypes.EIGHTBITS,
+    }
+
+    PARITY_CHOICES = {
+        "none": SerialParityTypes.PARITY_NONE,
+        "odd": SerialParityTypes.PARITY_ODD,
+        "even": SerialParityTypes.PARITY_EVEN,
+        "mark": SerialParityTypes.PARITY_MARK,
+        "space": SerialParityTypes.PARITY_SPACE
+    }
+
+    STOPBIT_CHOICES = {
+        1: SerialStopbitTypes.STOPBITS_ONE,
+        1.5: SerialStopbitTypes.STOPBITS_ONE_POINT_FIVE,
+        2: SerialStopbitTypes.STOPBITS_TWO,
+    }
 
     _arguments = None
 
@@ -31,11 +55,22 @@ class DeviceAddSerial(Command, DeviceAdd):
         if self._arguments is None:
             self._arguments = super().arguments
             self._arguments.update({
-                'port': Argument(),
-                'baudrate': Argument(),
-                '--bytesize': Argument('-b', default=8, type=int),
-                '--parity': Argument('-p', default=serial.PARITY_NONE),
-                '---stopbits': Argument('-s', default=1, type=int),
+                'port': Argument(
+                    help="Symbolic name of the serial port to be translated "
+                         "to the physical device, such as /dev/ttyUSB0 or "
+                         "COM1."),
+                'baudrate': Argument(
+                    help="The speed at which the device sends data expressed "
+                         "in symbols per second (baud), typically 9600 Bd/s."),
+                '--bytesize': Argument(
+                    '-b', default=8, type=int,
+                    choices=self.BYTESIZE_CHOICES),
+                '--parity': Argument(
+                    '-p', default="none",
+                    choices=self.PARITY_CHOICES),
+                '---stopbits': Argument(
+                    '-s', default=1, type=float,
+                    choices=self.STOPBIT_CHOICES),
                 '--timeout': Argument('-t', default=None),
             })
         return self._arguments
@@ -47,4 +82,7 @@ class DeviceAddSerial(Command, DeviceAdd):
         return parser
 
     def take_action(self, parsed_args):
-        pass
+        import pdb
+        pdb.set_trace()
+        test_obj = SerialDeviceObject(**dict(parsed_args._get_kwargs()))
+        test_obj.type = DeviceTypes.SERIAL

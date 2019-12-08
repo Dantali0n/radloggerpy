@@ -61,8 +61,8 @@ class RadLoggerShell(app.App):
         if err:
             self.LOG.debug('got an error: %s', err)
 
-    # def run(self, argv):
-    #     try:
-    #         super(RadLoggerShell, self).run(argv)
-    #     except Exception as e:
-    #         LOG.error(_('Exception raised: %s'), str(e))
+    def run(self, argv):
+        try:
+            super(RadLoggerShell, self).run(argv)
+        except Exception as e:
+            self.LOG.error(_('Exception raised: %s'), str(e))

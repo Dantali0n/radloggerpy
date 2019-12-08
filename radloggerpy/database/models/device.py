@@ -13,17 +13,27 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from sqlalchemy import Column, Integer, Enum
+from sqlalchemy import Column, Integer, Enum, String
 from sqlalchemy.orm import relationship
+from sqlalchemy_utils import ChoiceType
 
 from radloggerpy.database.declarative_base import base
+from radloggerpy.device.device_manager import DeviceManager as Dm
 from radloggerpy.types import device_types as dt
 
 
 class Device(base):
     id = Column(Integer, primary_key=True)
 
+    name = Column(String, unique=True)
+
     type = Column(Enum(dt.DeviceTypes))
+
+    implementation = Column(
+        ChoiceType(
+            [(imp, imp.NAME) for imp in Dm.get_device_implementations()]
+        )
+    )
 
     attributes = relationship(
         "DeviceAttribute", back_populates="base_device")

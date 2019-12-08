@@ -32,8 +32,11 @@ class DeviceAdd(ArgumentHelper):
         if self._arguments is None:
             self._arguments = dict()
             self._arguments.update({
-                'name': Argument(),
-                'implementation': Argument(),
+                'name': Argument(
+                    help="Unique name to help identify this device."),
+                'implementation': Argument(
+                    help="The specific implementation of radiation monitor "
+                         "device see documentation for supported models."),
             })
         return self._arguments
 
