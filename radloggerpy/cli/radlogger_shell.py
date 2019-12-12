@@ -21,11 +21,15 @@ from cliff.complete import CompleteCommand
 
 from radloggerpy._i18n import _
 from radloggerpy.common import ascii_logo
+from radloggerpy.common.first_time_run import FirstTimeRun
 from radloggerpy.config.config import parse_args
-from radloggerpy.database.database_manager import create_session
+from radloggerpy.database import database_manager as dm
 from radloggerpy import version
 
 CONF = config.CONF
+
+FirstTimeRun.add_check_task(
+    dm.check_database_missing, dm.create_database)
 
 
 class RadLoggerShell(app.App):
@@ -41,7 +45,7 @@ class RadLoggerShell(app.App):
             **kwargs
         )
         self.command_manager.add_command('complete', CompleteCommand)
-        self.database_session = create_session()
+        self.database_session = dm.create_session()
 
     def initialize_app(self, argv):
         # update configuration (sets CONF.version amongst others)
@@ -49,6 +53,9 @@ class RadLoggerShell(app.App):
 
         # Display logo
         self.LOG.info(ascii_logo.TEXT)
+
+        # Perform first time initialization if required
+        FirstTimeRun()
 
         # Display version
         self.LOG.info(_('Initializing radloggercli %s') % CONF.version)

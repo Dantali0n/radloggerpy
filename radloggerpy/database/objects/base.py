@@ -42,6 +42,11 @@ class DatabaseObject(object):
                 setattr(self, key, value)
 
     @abc.abstractmethod
+    def _build_object(self):
+        """Build the object with its given attributes for matching models"""
+        pass
+
+    @abc.abstractmethod
     def add(self, session):
         """Add the current state of the object to the database
 

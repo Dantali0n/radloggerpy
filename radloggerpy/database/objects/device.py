@@ -16,6 +16,7 @@
 import abc
 import six
 
+from radloggerpy.database.models.device import Device
 from radloggerpy.database.objects.base import DatabaseObject
 
 
@@ -27,3 +28,17 @@ class DeviceObject(DatabaseObject):
     name = None
     type = None
     implementation = None
+
+    m_device = None
+
+    def _build_object(self):
+        self.m_device = Device()
+
+        if self.id:
+            self.m_device.id = self.id
+        if self.name:
+            self.m_device.name = self.name
+        if self.type:
+            self.m_device.type = self.type
+        if self.implementation:
+            self.m_device.implementation = self.implementation

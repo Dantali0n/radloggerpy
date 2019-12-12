@@ -28,6 +28,13 @@ from radloggerpy.database import create_database as cd
 LOG = log.getLogger(__name__)
 CONF = config.CONF
 
+"""
+Ensure all models their tables and relationships are loaded before sessions
+are created. Otherwise SQLAlchemy will have troubling finding
+unimported relationshios.
+"""
+RUNTIME_TABLES = cd._list_tables()
+
 
 def create_session():
     """Create a session using the appropriate configuration

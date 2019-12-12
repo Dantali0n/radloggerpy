@@ -26,8 +26,7 @@ class SerialDevice(base):
     id = Column(Integer(), primary_key=True)
     base_id = Column(Integer, ForeignKey('device.id'))
 
-    # ttyACM255 should be longest possible string
-    port = Column(String(9))
+    port = Column(String, unique=True)
     baudrate = Column(Integer())
     bytesize = Column(Enum(SerialBytesizeTypes))
     parity = Column(Enum(SerialParityTypes))
