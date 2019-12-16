@@ -17,6 +17,8 @@ import mock
 import os
 
 from oslo_log import log
+from sqlalchemy import orm
+
 from radloggerpy import config
 
 from radloggerpy.database import create_database as cd
@@ -48,6 +50,27 @@ class TestDatabaseManager(base.TestCase):
         engine = dbm.create_engine("test.sqlite")
 
         self.assertEqual("sqlite:///test.sqlite", '%s' % engine.url)
+
+    @mock.patch.object(dbm, 'create_engine')
+    def test_create_session(self, m_engine):
+        m_engine.return_value = "sqlite:///test.sqlite"
+
+        session = dbm.create_session()
+
+        m_engine.assert_called_once()
+        self.assertTrue(isinstance(session, orm.Session))
+        self.assertEqual("sqlite:///test.sqlite", session.bind)
+
+    @mock.patch.object(dbm, 'LOG')
+    @mock.patch.object(dbm, 'create_engine')
+    def test_create_session_error(self, m_engine, m_log):
+        m_engine.side_effect = Exception()
+
+        session = dbm.create_session()
+
+        m_engine.assert_called_once()
+        m_log.error.assert_called_once()
+        self.assertEqual(None, session)
 
     def test_check_database_missing(self):
         self.m_isfile.return_value = False
