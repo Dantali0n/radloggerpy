@@ -58,7 +58,7 @@ class TestDatabaseManager(base.TestCase):
         session = dbm.create_session()
 
         m_engine.assert_called_once()
-        self.assertTrue(isinstance(session, orm.Session))
+        self.assertIsInstance(session, orm.Session)
         self.assertEqual("sqlite:///test.sqlite", session.bind)
 
     @mock.patch.object(dbm, 'LOG')
@@ -70,7 +70,7 @@ class TestDatabaseManager(base.TestCase):
 
         m_engine.assert_called_once()
         m_log.error.assert_called_once()
-        self.assertEqual(None, session)
+        self.assertIsNone(None, session)
 
     def test_check_database_missing(self):
         self.m_isfile.return_value = False

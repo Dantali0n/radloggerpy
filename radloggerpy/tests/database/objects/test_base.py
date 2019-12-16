@@ -75,7 +75,7 @@ class TestDatabaseObject(base.TestCase):
 
         self.assertEqual("value1", test_obj.attribute1)
         self.assertEqual("value2", test_obj.attribute2)
-        self.assertEqual(None, getattr(test_obj, "attributeskip", None))
+        self.assertIsNone(getattr(test_obj, "attributeskip", None))
 
     def test_filter(self):
 

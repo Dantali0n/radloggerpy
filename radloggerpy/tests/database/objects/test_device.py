@@ -40,7 +40,7 @@ class TestDeviceObject(base.TestCase):
         test_obj = DeviceObject(**m_atribs)
 
         self.assertEqual("value1", test_obj.name)
-        self.assertEqual(None, getattr(test_obj, "attributeskip", None))
+        self.assertIsNone(None, getattr(test_obj, "attributeskip", None))
 
     def test_filter(self):
 
@@ -61,10 +61,10 @@ class TestDeviceObject(base.TestCase):
         test_obj = DeviceObject()
         test_obj._build_object()
 
-        self.assertEqual(None, test_obj.m_device.id)
-        self.assertEqual(None, test_obj.m_device.name)
-        self.assertEqual(None, test_obj.m_device.type)
-        self.assertEqual(None, test_obj.m_device.implementation)
+        self.assertIsNone(None, test_obj.m_device.id)
+        self.assertIsNone(None, test_obj.m_device.name)
+        self.assertIsNone(None, test_obj.m_device.type)
+        self.assertIsNone(None, test_obj.m_device.implementation)
 
     def test_build_object_values(self):
 
