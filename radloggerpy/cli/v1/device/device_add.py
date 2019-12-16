@@ -22,7 +22,7 @@ from radloggerpy.device.device_manager import DeviceManager
 
 
 @six.add_metaclass(abc.ABCMeta)
-class DeviceAdd(ArgumentHelper):
+class DeviceAddCommand(ArgumentHelper):
     """Abstract command to add devices"""
 
     _arguments = None

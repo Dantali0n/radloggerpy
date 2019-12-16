@@ -18,9 +18,15 @@ from enum import unique
 
 
 @unique
-class SerialBytesizeTypes(Enum):
-    """Enum listing all possible supported types of serial byte sizes"""
-    FIVEBITS = 5
-    SIXBITS = 6
-    SEVENBITS = 7
-    EIGHTBITS = 8
+class SerialStopbitTypes(Enum):
+    """Enum listing all possible supported types of serial stopbits"""
+    STOPBITS_ONE = 1
+    STOPBITS_ONE_POINT_FIVE = 1.5
+    STOPBITS_TWO = 2
+
+
+STOPBIT_CHOICES = {
+    SerialStopbitTypes.STOPBITS_ONE: 1,
+    SerialStopbitTypes.STOPBITS_ONE_POINT_FIVE: 1.5,
+    SerialStopbitTypes.STOPBITS_TWO: 2
+}

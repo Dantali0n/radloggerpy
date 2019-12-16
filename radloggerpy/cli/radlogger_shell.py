@@ -52,7 +52,7 @@ class RadLoggerShell(app.App):
         parse_args(argv=())
 
         # Display logo
-        self.LOG.info(ascii_logo.TEXT)
+        self.LOG.info(ascii_logo.TEXT + ascii_logo.LOGO)
 
         # Perform first time initialization if required
         FirstTimeRun()

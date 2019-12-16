@@ -15,9 +15,9 @@
 
 from radloggerpy.database.models.serial_device import SerialDevice
 from radloggerpy.database.objects.device import DeviceObject
-from radloggerpy.types.serial_bytesize_types import SerialBytesizeTypes
-from radloggerpy.types.serial_parity_types import SerialParityTypes
-from radloggerpy.types.serial_stopbit_types import SerialStopbitTypes
+from radloggerpy.types.serial_bytesize import BYTESIZE_CHOICES
+from radloggerpy.types.serial_parity import PARITY_CHOICES
+from radloggerpy.types.serial_stopbit import STOPBIT_CHOICES
 
 
 class SerialDeviceObject(DeviceObject):
@@ -32,27 +32,6 @@ class SerialDeviceObject(DeviceObject):
     to commit an object to the database one would call:
     `object.add(session)`
     """
-
-    BYTESIZE_CHOICES = {
-        5: SerialBytesizeTypes.FIVEBITS,
-        6: SerialBytesizeTypes.SIXBITS,
-        7: SerialBytesizeTypes.SEVENBITS,
-        8: SerialBytesizeTypes.EIGHTBITS,
-    }
-
-    PARITY_CHOICES = {
-        "none": SerialParityTypes.PARITY_NONE,
-        "odd": SerialParityTypes.PARITY_ODD,
-        "even": SerialParityTypes.PARITY_EVEN,
-        "mark": SerialParityTypes.PARITY_MARK,
-        "space": SerialParityTypes.PARITY_SPACE
-    }
-
-    STOPBIT_CHOICES = {
-        1: SerialStopbitTypes.STOPBITS_ONE,
-        1.5: SerialStopbitTypes.STOPBITS_ONE_POINT_FIVE,
-        2: SerialStopbitTypes.STOPBITS_TWO,
-    }
 
     "Device serial model attributes"
     port = None
@@ -75,86 +54,62 @@ class SerialDeviceObject(DeviceObject):
         if self.baudrate:
             self.m_serial_device.baudrate = self.baudrate
 
-        if self.BYTESIZE_CHOICES[self.bytesize]:
-            self.m_serial_device.bytesize = \
-                self.BYTESIZE_CHOICES[self.bytesize]
-        elif self.bytesize:
+        if self.bytesize in BYTESIZE_CHOICES.keys():
             self.m_serial_device.bytesize = self.bytesize
+        elif self.bytesize in BYTESIZE_CHOICES.values():
+            index = list(BYTESIZE_CHOICES.values()).index(self.bytesize)
+            self.m_serial_device.bytesize = \
+                list(BYTESIZE_CHOICES.keys())[index]
 
-        if self.PARITY_CHOICES[self.parity]:
-            self.m_serial_device.parity = \
-                self.PARITY_CHOICES[self.parity]
-        elif self.parity:
+        if self.parity in PARITY_CHOICES.keys():
             self.m_serial_device.parity = self.parity
+        elif self.parity in PARITY_CHOICES.values():
+            index = list(PARITY_CHOICES.values()).index(self.parity)
+            self.m_serial_device.parity = \
+                list(PARITY_CHOICES.keys())[index]
 
-        if self.STOPBIT_CHOICES[self.stopbits]:
-            self.m_serial_device.stopbits = \
-                self.STOPBIT_CHOICES[self.stopbits]
-        elif self.stopbits:
+        if self.stopbits in STOPBIT_CHOICES.keys():
             self.m_serial_device.stopbits = self.stopbits
+        elif self.stopbits in STOPBIT_CHOICES.values():
+            index = list(STOPBIT_CHOICES.values()).index(self.stopbits)
+            self.m_serial_device.stopbits = \
+                list(STOPBIT_CHOICES.keys())[index]
 
         if self.timeout:
             self.m_serial_device.timeout = self.timeout
 
-    def add(self, session):
-        """Add the current state of the object to the database
+    @staticmethod
+    def add(session, reference):
+        reference._build_object()
 
-        :param session: an active :py:class:`sqlalchemy.orm.session.Session`
-        """
+        session.add(reference.m_device)
 
-        self._build_object()
-
-        session.add(self.m_device)
-
-        session.add(self.m_serial_device)
+        session.add(reference.m_serial_device)
 
         try:
-            session.commit()
+            return session.commit()
         except Exception as e:
             session.rollback()
             # TODO(Dantali0n): These errors are horrendous for users to
             #                  understand an error abstraction is needed.
             raise
 
-    def update(self, session, reference, allow_multiple=False):
-        """Find the reference(s) in the database and update with own state
-
-        :param session: an active :py:class:`sqlalchemy.orm.session.Session`
-        :param reference: the reference to find to apply the update to
-        :param allow_multiple: if updating multiple database items is allowed
-        """
-        pass
-
-    def remove(self, session, allow_multiple=False):
-        """Remove the object(s) that match the current state
-
-        :param session: an active :py:class:`sqlalchemy.orm.session.Session`
-        :param allow_multiple: if updating multiple database items is allowed
-        """
-        pass
-
-    def find(self, session, allow_multiple=True):
-        """Return object(s) that match the current state
-
-        :param session: an active :py:class:`sqlalchemy.orm.session.Session`
-        :param allow_multiple: if updating multiple database items is allowed
-        """
-        pass
+    @staticmethod
+    def update(session, reference, base, allow_multiple=False):
+        NotImplementedError()
 
     @staticmethod
-    def find_all(session, objects):
-        """For every specified object find all its matching database objects
-
-        :param session: an active :py:class:`sqlalchemy.orm.session.Session`
-        :param objects: find database results based on these objects
-        """
-        pass
+    def delete(session, reference, allow_multiple=False):
+        NotImplementedError()
 
     @staticmethod
-    def add_all(session, objects):
-        """Add all specified objects to the database
+    def find(session, reference, allow_multiple=True):
+        NotImplementedError()
 
-        :param session: an active :py:class:`sqlalchemy.orm.session.Session`
-        :param objects: add all these objects to the database
-        """
-        pass
+    @staticmethod
+    def find_all(session, references):
+        NotImplementedError()
+
+    @staticmethod
+    def add_all(session, references):
+        NotImplementedError()

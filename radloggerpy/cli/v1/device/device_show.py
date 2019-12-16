@@ -14,18 +14,43 @@
 # under the License.
 
 from cliff.show import ShowOne
+from sqlalchemy.orm.exc import MultipleResultsFound
+
+from radloggerpy._i18n import _
+from radloggerpy.cli.v1.device.device import DeviceCommand
+from radloggerpy.database.objects.device import DeviceObject
 
 
-class DeviceShow(ShowOne):
+class DeviceShow(ShowOne, DeviceCommand):
     """Command to show information about devices"""
+
+    _arguments = None
+
+    @property
+    def arguments(self):
+        if self._arguments is None:
+            self._arguments = super().arguments
+        return self._arguments
 
     def get_parser(self, program_name):
         parser = super(DeviceShow, self).get_parser(program_name)
-        parser.add_argument('id', nargs='?', default=None)
+        self._add_types()
+        self._add_implementations()
+        self.register_arguments(parser)
         return parser
 
     def take_action(self, parsed_args):
-        self.app.LOG.info(self.app.database_session)
-        columns = ["action"]
-        data = [parsed_args.action]
-        return (columns, data)
+        device_obj = DeviceObject(**dict(parsed_args._get_kwargs()))
+
+        try:
+            data = DeviceObject.find(
+                self.app.database_session, device_obj, False)
+        except MultipleResultsFound:
+            raise RuntimeWarning(_("Multiple devices found"))
+
+        if data is None:
+            raise RuntimeWarning(_("Device could not be found"))
+
+        fields = ('id', 'name', 'type', 'implementation')
+        values = (data.id, data.name, data.type, data.implementation)
+        return (fields, values)

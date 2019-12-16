@@ -16,12 +16,15 @@
 from cliff.command import Command
 
 from radloggerpy.cli.argument import Argument
-from radloggerpy.cli.v1.device.device_add import DeviceAdd
+from radloggerpy.cli.v1.device.device_add import DeviceAddCommand
 from radloggerpy.database.objects.serial_device import SerialDeviceObject
 from radloggerpy.types.device_types import DeviceTypes
+from radloggerpy.types.serial_bytesize import BYTESIZE_CHOICES
+from radloggerpy.types.serial_parity import PARITY_CHOICES
+from radloggerpy.types.serial_stopbit import STOPBIT_CHOICES
 
 
-class DeviceAddSerial(Command, DeviceAdd):
+class DeviceAddSerial(Command, DeviceAddCommand):
     """Command to add serial devices"""
 
     _arguments = None
@@ -40,13 +43,13 @@ class DeviceAddSerial(Command, DeviceAdd):
                          "in symbols per second (baud), typically 9600 Bd/s."),
                 '--bytesize': Argument(
                     '-b', default=8, type=int,
-                    choices=SerialDeviceObject.BYTESIZE_CHOICES),
+                    choices=BYTESIZE_CHOICES.values()),
                 '--parity': Argument(
                     '-p', default="none",
-                    choices=SerialDeviceObject.PARITY_CHOICES),
+                    choices=PARITY_CHOICES.values()),
                 '---stopbits': Argument(
                     '-s', default=1, type=float,
-                    choices=SerialDeviceObject.STOPBIT_CHOICES),
+                    choices=STOPBIT_CHOICES.values()),
                 '--timeout': Argument('-t', default=None),
             })
         return self._arguments
@@ -58,6 +61,6 @@ class DeviceAddSerial(Command, DeviceAdd):
         return parser
 
     def take_action(self, parsed_args):
-        test_obj = SerialDeviceObject(**dict(parsed_args._get_kwargs()))
-        test_obj.type = DeviceTypes.SERIAL
-        test_obj.add(self.app.database_session)
+        serial_obj = SerialDeviceObject(**dict(parsed_args._get_kwargs()))
+        serial_obj.type = DeviceTypes.SERIAL
+        return SerialDeviceObject.add(self.app.database_session, serial_obj)

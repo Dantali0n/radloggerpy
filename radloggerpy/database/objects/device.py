@@ -13,16 +13,13 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-import abc
-import six
-
 from radloggerpy.database.models.device import Device
 from radloggerpy.database.objects.base import DatabaseObject
+from radloggerpy.types.device_types import TYPE_CHOICES
 
 
-@six.add_metaclass(abc.ABCMeta)
 class DeviceObject(DatabaseObject):
-    """Abstract device object with basic model attributes"""
+    """device object with base model attributes"""
 
     id = None
     name = None
@@ -38,7 +35,55 @@ class DeviceObject(DatabaseObject):
             self.m_device.id = self.id
         if self.name:
             self.m_device.name = self.name
-        if self.type:
+
+        if self.type in TYPE_CHOICES.keys():
             self.m_device.type = self.type
+        elif self.type in TYPE_CHOICES.values():
+            index = list(TYPE_CHOICES.values()).index(self.type)
+            self.m_device.type = list(TYPE_CHOICES.keys())[index]
+
         if self.implementation:
             self.m_device.implementation = self.implementation
+
+    @staticmethod
+    def add(session, reference):
+        NotImplementedError()
+
+    @staticmethod
+    def update(session, reference, base, allow_multiple=False):
+        NotImplementedError()
+
+    @staticmethod
+    def delete(session, reference, allow_multiple=False):
+        NotImplementedError()
+
+    @staticmethod
+    def find(session, reference, allow_multiple=True):
+        reference._build_object()
+
+        filters = reference._filter(reference.m_device)
+        query = session.query(Device).filter_by(**filters)
+
+        if allow_multiple:
+            result = query.all()
+
+            if result is None:
+                return None
+        else:
+            result = query.one_or_none()
+
+            if result is None:
+                return None
+
+            result = DeviceObject(**reference._filter(result))
+            result.type = TYPE_CHOICES[result.type]
+            result.implementation = result.implementation.code
+            return result
+
+    @staticmethod
+    def find_all(session, references):
+        NotImplementedError()
+
+    @staticmethod
+    def add_all(session, references):
+        NotImplementedError()

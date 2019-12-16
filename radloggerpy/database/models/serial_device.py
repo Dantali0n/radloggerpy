@@ -17,9 +17,9 @@ from sqlalchemy import Column, Integer, ForeignKey, String, Enum
 from sqlalchemy.orm import relationship
 
 from radloggerpy.database.declarative_base import base
-from radloggerpy.types.serial_bytesize_types import SerialBytesizeTypes
-from radloggerpy.types.serial_parity_types import SerialParityTypes
-from radloggerpy.types.serial_stopbit_types import SerialStopbitTypes
+from radloggerpy.types.serial_bytesize import SerialBytesizeTypes
+from radloggerpy.types.serial_parity import SerialParityTypes
+from radloggerpy.types.serial_stopbit import SerialStopbitTypes
 
 
 class SerialDevice(base):

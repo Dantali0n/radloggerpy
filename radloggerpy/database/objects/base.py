@@ -27,8 +27,25 @@ class DatabaseObject(object):
     interactions allowing to obfuscate that many of the objects in the database
     are consistent of multiple models.
 
-    to commit an object to the database one would call:
-    `object.add(session)`
+    As an example, to commit an object to the database one would call:
+    ``DatabaseObject.add(session, object)``
+
+    Classes implementing these interfaces should implement at least
+    :py:func:`~add`, :py:func:`~update`, :py:func:`~delete` and
+    :py:func:`~find`, however, also implementing :py:func:`~find_all` and
+    :py:func:`~add_all` is preferred.
+
+    All reference objects used as parameter by static methods should be
+    instances of the implementing class itself. Likewise, find and find_all
+    should only return objects which are instances of the class itself.
+
+    Below is a demonstration of how interactions should look:
+    ``dbo = DatabaseObject(**{field1: value1, field2: value2})``
+    ``result = DatabaseObject.find(session, dbo)``
+    ``print(result.field1)``
+
+    For models using enums or choicetypes the values should be set as object
+    attributes while the keys should be used for internal models.
     """
 
     def __init__(self, **kwargs):
@@ -43,61 +60,89 @@ class DatabaseObject(object):
 
     @abc.abstractmethod
     def _build_object(self):
-        """Build the object with its given attributes for matching models"""
+        """Build the object with its given attributes for internal models"""
         pass
 
+    @staticmethod
+    def _filter(filter_object):
+        """Filters the object depending on it's set attributes"""
+
+        return {key: name for (key, name) in vars(filter_object).items()
+                if hasattr(filter_object.__class__, key)}
+
+    @staticmethod
     @abc.abstractmethod
-    def add(self, session):
-        """Add the current state of the object to the database
+    def add(session, reference):
+        """Add the reference object to the database
 
         :param session: an active :py:class:`sqlalchemy.orm.session.Session`
+        :param reference: add database entries based on this object
         """
         pass
 
+    @staticmethod
     @abc.abstractmethod
-    def update(self, session, reference, allow_multiple=False):
+    def update(session, reference, base, allow_multiple=False):
         """Find the reference(s) in the database and update with own state
 
         :param session: an active :py:class:`sqlalchemy.orm.session.Session`
-        :param reference: the reference to find to apply the update to
+        :param reference: the object with the desired changes
+        :param base: current state of the object in the database
         :param allow_multiple: if updating multiple database items is allowed
-        """
-        pass
-
-    @abc.abstractmethod
-    def remove(self, session, allow_multiple=False):
-        """Remove the object(s) that match the current state
-
-        :param session: an active :py:class:`sqlalchemy.orm.session.Session`
-        :param allow_multiple: if updating multiple database items is allowed
-        """
-        pass
-
-    @abc.abstractmethod
-    def find(self, session, allow_multiple=True):
-        """Return object(s) that match the current state
-
-        :param session: an active :py:class:`sqlalchemy.orm.session.Session`
-        :param allow_multiple: if updating multiple database items is allowed
+        :raises MultipleResultsFound: if multiple results were found with
+            allow_multiple as False of type
+            :py:class:`sqlalchemy.orm.exc.MultipleResultsFound`
         """
         pass
 
     @staticmethod
     @abc.abstractmethod
-    def find_all(session, objects):
+    def delete(session, reference, allow_multiple=False):
+        """Remove the object(s) that match the reference
+
+        :param session: an active :py:class:`sqlalchemy.orm.session.Session`
+        :param reference: remove database entries based on this object
+        :param allow_multiple: if updating multiple database items is allowed
+        :raises MultipleResultsFound: if multiple results were found with
+            allow_multiple as False of type
+            :py:class:`sqlalchemy.orm.exc.MultipleResultsFound`
+        """
+        pass
+
+    @staticmethod
+    @abc.abstractmethod
+    def find(session, reference, allow_multiple=True):
+        """Return object(s) that match the reference
+
+        :param session: an active :py:class:`sqlalchemy.orm.session.Session`
+        :param reference: find database results based on this object
+        :param allow_multiple: if updating multiple database items is allowed
+        :raises MultipleResultsFound: if multiple results were found with
+            allow_multiple as False of type
+            :py:class:`sqlalchemy.orm.exc.MultipleResultsFound`
+        :return: A single object, list of objects or none, all objects will be
+            instances of the class.
+        """
+        pass
+
+    @staticmethod
+    @abc.abstractmethod
+    def find_all(session, references):
         """For every specified object find all its matching database objects
 
         :param session: an active :py:class:`sqlalchemy.orm.session.Session`
-        :param objects: find database results based on these objects
+        :param references: find database results based on these objects
+        :return: list of objects or none, all objects will be instances of the
+            class.
         """
         pass
 
     @staticmethod
     @abc.abstractmethod
-    def add_all(session, objects):
+    def add_all(session, references):
         """Add all specified objects to the database
 
         :param session: an active :py:class:`sqlalchemy.orm.session.Session`
-        :param objects: add all these objects to the database
+        :param references: add all these objects to the database
         """
         pass

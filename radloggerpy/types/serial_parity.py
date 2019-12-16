@@ -18,13 +18,19 @@ from enum import unique
 
 
 @unique
-class DeviceTypes(Enum):
-    """Enum listing all possible supported types of device"""
-    SERIAL = 1
-    ETHERNET = 2
+class SerialParityTypes(Enum):
+    """Enum listing all possible supported types of serial parity"""
+    PARITY_NONE = 'N'
+    PARITY_EVEN = 'E'
+    PARITY_ODD = 'O'
+    PARITY_MARK = 'M'
+    PARITY_SPACE = 'S'
 
 
-TYPE_CHOICES = {
-    DeviceTypes.SERIAL: "serial",
-    DeviceTypes.ETHERNET: "ethernet"
+PARITY_CHOICES = {
+    SerialParityTypes.PARITY_NONE: "none",
+    SerialParityTypes.PARITY_ODD: "odd",
+    SerialParityTypes.PARITY_EVEN: "even",
+    SerialParityTypes.PARITY_MARK: "mark",
+    SerialParityTypes.PARITY_SPACE: "space"
 }

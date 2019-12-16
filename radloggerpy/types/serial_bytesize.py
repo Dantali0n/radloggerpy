@@ -18,10 +18,17 @@ from enum import unique
 
 
 @unique
-class SerialParityTypes(Enum):
-    """Enum listing all possible supported types of serial parity"""
-    PARITY_NONE = 'N'
-    PARITY_EVEN = 'E'
-    PARITY_ODD = 'O'
-    PARITY_MARK = 'M'
-    PARITY_SPACE = 'S'
+class SerialBytesizeTypes(Enum):
+    """Enum listing all possible supported types of serial byte sizes"""
+    FIVEBITS = 5
+    SIXBITS = 6
+    SEVENBITS = 7
+    EIGHTBITS = 8
+
+
+BYTESIZE_CHOICES = {
+    SerialBytesizeTypes.FIVEBITS: 5,
+    SerialBytesizeTypes.SIXBITS: 6,
+    SerialBytesizeTypes.SEVENBITS: 7,
+    SerialBytesizeTypes.EIGHTBITS: 8,
+}
