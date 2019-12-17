@@ -14,16 +14,14 @@
 # under the License.
 
 import mock
-import sqlalchemy
 
 from oslo_log import log
-from sqlalchemy_utils import ChoiceType
 
-from build.lib.radloggerpy.devices.arduino_geiger_pcb import ArduinoGeigerPCB
+
 from radloggerpy import config
-from radloggerpy.database import database_manager as dbm
 from radloggerpy.database.models.device import Device
 from radloggerpy.database.objects.device import DeviceObject
+from radloggerpy.device.devices.arduino_geiger_pcb import ArduinoGeigerPcb
 
 from radloggerpy.tests import base
 from radloggerpy.types.device_types import DeviceTypes
@@ -125,7 +123,7 @@ class TestDeviceObject(base.TestCase):
         self.assertEqual(1, result_obj.id)
         self.assertEqual("test", result_obj.name)
         self.assertEqual("serial", result_obj.type)
-        self.assertEqual(ArduinoGeigerPCB.NAME, result_obj.implementation)
+        self.assertEqual(ArduinoGeigerPcb.NAME, result_obj.implementation)
 
     def test_find_obj_none(self):
         m_query = mock.Mock()
@@ -166,12 +164,12 @@ class TestDeviceObject(base.TestCase):
         self.assertEqual(1, result_obj[0].id)
         self.assertEqual("test1", result_obj[0].name)
         self.assertEqual("serial", result_obj[0].type)
-        self.assertEqual(ArduinoGeigerPCB.NAME, result_obj[0].implementation)
+        self.assertEqual(ArduinoGeigerPcb.NAME, result_obj[0].implementation)
 
         self.assertEqual(2, result_obj[1].id)
         self.assertEqual("test2", result_obj[1].name)
         self.assertEqual("serial", result_obj[1].type)
-        self.assertEqual(ArduinoGeigerPCB.NAME, result_obj[1].implementation)
+        self.assertEqual(ArduinoGeigerPcb.NAME, result_obj[1].implementation)
 
     def test_find_obj_multiple_none(self):
         m_query = mock.Mock()
