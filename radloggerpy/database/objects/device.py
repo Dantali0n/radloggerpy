@@ -65,10 +65,19 @@ class DeviceObject(DatabaseObject):
         query = session.query(Device).filter_by(**filters)
 
         if allow_multiple:
-            result = query.all()
+            results = query.all()
 
-            if result is None:
+            if results is None:
                 return None
+
+            ret_results = list()
+            for result in results:
+                result = DeviceObject(**reference._filter(result))
+                result.type = TYPE_CHOICES[result.type]
+                result.implementation = result.implementation.code
+                ret_results.append(result)
+
+            return ret_results
         else:
             result = query.one_or_none()
 
