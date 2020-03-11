@@ -12,6 +12,9 @@
 # IDE
 .idea
 
+# Debugging
+.gdb_history
+
 # Bytecompiled Python
 *.py[cod]
 

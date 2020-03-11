@@ -65,7 +65,13 @@ class DatabaseObject(object):
 
     @staticmethod
     def _filter(filter_object):
-        """Filters the object depending on it's set attributes"""
+        """Filters the object depending on it's set attributes
+
+        **Does not remove any undesired attributes of object**
+        Returns a dictionary with all attributes that are not None
+
+        TODO(Dantali0n): Make this remove relationship attributes from models?
+        """
 
         return {key: name for (key, name) in vars(filter_object).items()
                 if hasattr(filter_object.__class__, key)}

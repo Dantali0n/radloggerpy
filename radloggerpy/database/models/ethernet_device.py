@@ -20,7 +20,7 @@ from radloggerpy.database.declarative_base import base
 
 
 class EthernetDevice(base):
-    id = Column(Integer, primary_key=True)
-    base_id = Column(Integer, ForeignKey('device.id'))
+    # id = Column(Integer, primary_key=True)
+    base_id = Column(Integer, ForeignKey('device.id'), primary_key=True)
     base_device = relationship(
         "Device", back_populates="ethernet")

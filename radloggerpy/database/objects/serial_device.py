@@ -13,8 +13,10 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+from radloggerpy.database.models.device import Device
 from radloggerpy.database.models.serial_device import SerialDevice
 from radloggerpy.database.objects.device import DeviceObject
+from radloggerpy.types.device_types import DeviceTypes
 from radloggerpy.types.serial_bytesize import BYTESIZE_CHOICES
 from radloggerpy.types.serial_parity import PARITY_CHOICES
 from radloggerpy.types.serial_stopbit import STOPBIT_CHOICES
@@ -27,7 +29,7 @@ class SerialDeviceObject(DeviceObject):
     sessions should be achieved using object which implement
     :py:class:`~.DatabaseObject`. These objects provide CRUD methods to handle
     interactions allowing to obfuscate that many of the objects in the database
-    are consistent of multiple models.
+    consist of multiple models.
 
     to commit an object to the database one would call:
     `object.add(session)`
@@ -104,7 +106,41 @@ class SerialDeviceObject(DeviceObject):
 
     @staticmethod
     def find(session, reference, allow_multiple=True):
-        NotImplementedError()
+        reference._build_object()
+
+        """Only look for serial devices"""
+        reference.m_device.type = DeviceTypes.SERIAL
+
+        base_filters = reference._filter(reference.m_device)
+        filters = reference._filter(reference.m_serial_device)
+
+        query = session.query(Device).filter_by(**base_filters)\
+            .join(SerialDevice).filter_by(**filters)
+
+        if allow_multiple:
+            results = query.all()
+
+            if results is None:
+                return None
+
+            ret_results = list()
+            for result in results:
+                attributes = DeviceObject._filter(result)
+                attributes.update(SerialDeviceObject._filter(result.serial))
+                result = SerialDeviceObject(**attributes)
+                ret_results.append(result)
+
+            return ret_results
+        else:
+            result = query.one_or_none()
+
+            if result is None:
+                return None
+
+            attributes = DeviceObject._filter(result)
+            attributes.update(SerialDeviceObject._filter(result.serial))
+            result = SerialDeviceObject(**attributes)
+            return result
 
     @staticmethod
     def find_all(session, references):

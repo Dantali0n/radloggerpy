@@ -104,18 +104,20 @@ class TestDeviceObject(base.TestCase):
         self.assertEqual(DeviceTypes.SERIAL, test_obj.m_device.type)
 
     def test_find_obj(self):
+
+        """Represents mocked device as it will be retrieved from db """
         m_device = Device()
-        m_query = mock.Mock()
-        m_session = mock.Mock()
-        m_session.query.return_value.filter_by.return_value = m_query
-
-        m_query.one_or_none.return_value = m_device
-
         m_device.id = 1
         m_device.name = "test"
         m_device.type = DeviceTypes.SERIAL
         m_device.implementation = mock.Mock(
             code="ArduinoGeigerPCB", value="arduinogeigerpcb")
+
+        """Setup query and session to return mocked device"""
+        m_query = mock.Mock()
+        m_session = mock.Mock()
+        m_session.query.return_value.filter_by.return_value = m_query
+        m_query.one_or_none.return_value = m_device
 
         test_obj = DeviceObject(**{"id": 1})
         result_obj = DeviceObject.find(m_session, test_obj, False)

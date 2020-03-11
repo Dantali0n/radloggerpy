@@ -20,6 +20,7 @@ from radloggerpy.database.declarative_base import base
 
 
 class DeviceAttribute(base):
+    # TODO(Dantali0n): Remove id as primary key by using base_id & key as key
     id = Column(Integer, primary_key=True)
     base_id = Column(Integer, ForeignKey('device.id'))
 

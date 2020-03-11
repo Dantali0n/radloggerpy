@@ -23,8 +23,8 @@ from radloggerpy.types.serial_stopbit import SerialStopbitTypes
 
 
 class SerialDevice(base):
-    id = Column(Integer(), primary_key=True)
-    base_id = Column(Integer, ForeignKey('device.id'))
+    # id = Column(Integer(), primary_key=True)
+    base_id = Column(Integer, ForeignKey('device.id'), primary_key=True)
 
     port = Column(String, unique=True)
     baudrate = Column(Integer())
