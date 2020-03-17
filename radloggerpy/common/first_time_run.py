@@ -113,7 +113,7 @@ class FirstTimeRun(object):
 
         :param all_to_init: True if all checks are required to init False if
                             one check is sufficient
-        :return True if first time init should be run False otherwise
+        :return: True if first time init should be run False otherwise
         """
 
         # store return values for all checks
