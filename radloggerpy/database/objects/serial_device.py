@@ -80,6 +80,26 @@ class SerialDeviceObject(DeviceObject):
         if self.timeout:
             self.m_serial_device.timeout = self.timeout
 
+    def _build_attributes(self):
+        super(SerialDeviceObject, self)._build_attributes()
+
+        if self.m_serial_device.port:
+            self.port = self.m_serial_device.port
+        if self.m_serial_device.baudrate:
+            self.baudrate = self.m_serial_device.baudrate
+
+        if self.m_serial_device.bytesize:
+            self.bytesize = BYTESIZE_CHOICES[self.m_serial_device.bytesize]
+
+        if self.m_serial_device.parity:
+            self.parity = PARITY_CHOICES[self.m_serial_device.parity]
+
+        if self.m_serial_device.stopbits:
+            self.stopbits = STOPBIT_CHOICES[self.m_serial_device.stopbits]
+
+        if self.m_serial_device.timeout:
+            self.timeout = self.m_serial_device.timeout
+
     @staticmethod
     def add(session, reference):
         reference._build_object()
@@ -125,10 +145,11 @@ class SerialDeviceObject(DeviceObject):
 
             ret_results = list()
             for result in results:
-                attributes = DeviceObject._filter(result)
-                attributes.update(SerialDeviceObject._filter(result.serial))
-                result = SerialDeviceObject(**attributes)
-                ret_results.append(result)
+                dev = SerialDeviceObject()
+                dev.m_device = result
+                dev.m_serial_device = result.serial
+                dev._build_attributes()
+                ret_results.append(dev)
 
             return ret_results
         else:
@@ -137,10 +158,11 @@ class SerialDeviceObject(DeviceObject):
             if result is None:
                 return None
 
-            attributes = DeviceObject._filter(result)
-            attributes.update(SerialDeviceObject._filter(result.serial))
-            result = SerialDeviceObject(**attributes)
-            return result
+            dev = SerialDeviceObject()
+            dev.m_device = result
+            dev.m_serial_device = result.serial
+            dev._build_attributes()
+            return dev
 
     @staticmethod
     def find_all(session, references):

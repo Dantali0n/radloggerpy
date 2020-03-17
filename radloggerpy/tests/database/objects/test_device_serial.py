@@ -203,53 +203,76 @@ class TestSerialDeviceObject(base.TestCase):
 
         self.assertEqual(1, result_obj.id)
         self.assertEqual("/dev/ttyUSB0", result_obj.port)
-        self.assertEqual(SerialBytesizeTypes.EIGHTBITS, result_obj.bytesize)
+        self.assertEqual(8, result_obj.bytesize)
+        self.assertEqual("odd", result_obj.parity)
+        self.assertEqual(1, result_obj.stopbits)
 
-    # def test_find_obj_none(self):
-    #     m_query = mock.Mock()
-    #     m_session = mock.Mock()
-    #     m_session.query.return_value.filter_by.return_value = m_query
-    #
-    #     m_query.one_or_none.return_value = None
-    #
-    #     test_obj = SerialDeviceObject(**{"id": 1})
-    #     result_obj = SerialDeviceObject.find(m_session, test_obj, False)
-    #
-    #     self.assertIsNone(result_obj)
-    #
-    # def test_find_obj_multiple(self):
-    #     m_device1 = Device()
-    #     m_device2 = Device()
-    #     m_query = mock.Mock()
-    #     m_session = mock.Mock()
-    #     m_session.query.return_value.filter_by.return_value = m_query
-    #
-    #     m_query.all.return_value = [m_device1, m_device2]
-    #
-    #     m_device1.id = 1
-    #     m_device1.name = "test1"
-    #     m_device1.type = DeviceTypes.SERIAL
-    #     m_device1.implementation = mock.Mock(
-    #         code="ArduinoGeigerPCB", value="arduinogeigerpcb")
-    #
-    #     m_device2.id = 2
-    #     m_device2.name = "test2"
-    #     m_device2.type = DeviceTypes.SERIAL
-    #     m_device2.implementation = mock.Mock(
-    #         code="ArduinoGeigerPCB", value="arduinogeigerpcb")
-    #
-    #     test_obj = SerialDeviceObject(**{"type": "serial"})
-    #     result_obj = SerialDeviceObject.find(m_session, test_obj, True)
-    #
-    #     self.assertEqual(1, result_obj[0].id)
-    #     self.assertEqual("test1", result_obj[0].name)
-    #     self.assertEqual("serial", result_obj[0].type)
-    #     self.assertEqual(ArduinoGeigerPcb.NAME, result_obj[0].implementation)
-    #
-    #     self.assertEqual(2, result_obj[1].id)
-    #     self.assertEqual("test2", result_obj[1].name)
-    #     self.assertEqual("serial", result_obj[1].type)
-    #     self.assertEqual(ArduinoGeigerPcb.NAME, result_obj[1].implementation)
+    def test_find_obj_none(self):
+
+        """Setup query and session to return mocked device"""
+        m_query = mock.Mock()
+        m_session = mock.Mock()
+        m_session.query.return_value.filter_by.return_value. \
+            join.return_value.filter_by.return_value = m_query
+        m_query.one_or_none.return_value = None
+
+        test_obj = SerialDeviceObject(**{"port": "/dev/ttyUSB0"})
+        result_obj = SerialDeviceObject.find(m_session, test_obj, False)
+
+        self.assertIsNone(result_obj)
+
+    def test_find_obj_multiple(self):
+        m_device1 = Device()
+        m_device2 = Device()
+        m_query = mock.Mock()
+        m_session = mock.Mock()
+        m_session.query.return_value.filter_by.return_value. \
+            join.return_value.filter_by.return_value = m_query
+
+        m_query.all.return_value = [m_device1, m_device2]
+
+        m_device1.id = 1
+        m_device1.name = "test1"
+        m_device1.type = DeviceTypes.SERIAL
+        m_device1.implementation = mock.Mock(
+            code="ArduinoGeigerPCB", value="arduinogeigerpcb")
+
+        m_device_serial1 = SerialDevice()
+        m_device_serial1.port = "/dev/ttyUSB0"
+        m_device_serial1.baudrate = 115200
+        m_device_serial1.bytesize = SerialBytesizeTypes.EIGHTBITS
+        m_device_serial1.parity = SerialParityTypes.PARITY_ODD
+        m_device_serial1.stopbits = SerialStopbitTypes.STOPBITS_ONE
+
+        m_device1.serial = m_device_serial1
+
+        m_device2.id = 2
+        m_device2.name = "test2"
+        m_device2.type = DeviceTypes.SERIAL
+        m_device2.implementation = mock.Mock(
+            code="ArduinoGeigerPCB", value="arduinogeigerpcb")
+
+        m_device_serial2 = SerialDevice()
+        m_device_serial2.port = "/dev/ttyUSB2"
+        m_device_serial2.baudrate = 9600
+        m_device_serial2.bytesize = SerialBytesizeTypes.EIGHTBITS
+        m_device_serial2.parity = SerialParityTypes.PARITY_ODD
+        m_device_serial2.stopbits = SerialStopbitTypes.STOPBITS_ONE
+
+        m_device2.serial = m_device_serial2
+
+        test_obj = SerialDeviceObject(**{"type": "serial"})
+        result_obj = SerialDeviceObject.find(m_session, test_obj, True)
+
+        self.assertEqual(1, result_obj[0].id)
+        self.assertEqual("test1", result_obj[0].name)
+        self.assertEqual("serial", result_obj[0].type)
+        self.assertEqual("/dev/ttyUSB0", result_obj[0].port)
+
+        self.assertEqual(2, result_obj[1].id)
+        self.assertEqual("test2", result_obj[1].name)
+        self.assertEqual("serial", result_obj[1].type)
+        self.assertEqual("/dev/ttyUSB2", result_obj[1].port)
     #
     # def test_find_obj_multiple_none(self):
     #     m_query = mock.Mock()

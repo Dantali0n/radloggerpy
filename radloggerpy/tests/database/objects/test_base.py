@@ -36,6 +36,9 @@ class TestDatabaseObject(base.TestCase):
         def _build_object(self):
             pass
 
+        def _build_attributes(self):
+            pass
+
         @staticmethod
         def add(session, reference):
             pass

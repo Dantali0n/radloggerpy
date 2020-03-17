@@ -45,6 +45,18 @@ class DeviceObject(DatabaseObject):
         if self.implementation:
             self.m_device.implementation = self.implementation
 
+    def _build_attributes(self):
+        if self.m_device.id:
+            self.id = self.m_device.id
+        if self.m_device.name:
+            self.name = self.m_device.name
+
+        if self.m_device.type:
+            self.type = TYPE_CHOICES[self.m_device.type]
+
+        if self.m_device.implementation:
+            self.implementation = self.m_device.implementation.code
+
     @staticmethod
     def add(session, reference):
         NotImplementedError()
@@ -72,10 +84,10 @@ class DeviceObject(DatabaseObject):
 
             ret_results = list()
             for result in results:
-                result = DeviceObject(**reference._filter(result))
-                result.type = TYPE_CHOICES[result.type]
-                result.implementation = result.implementation.code
-                ret_results.append(result)
+                dev = DeviceObject()
+                dev.m_device = result
+                dev._build_attributes()
+                ret_results.append(dev)
 
             return ret_results
         else:
@@ -84,10 +96,10 @@ class DeviceObject(DatabaseObject):
             if result is None:
                 return None
 
-            result = DeviceObject(**reference._filter(result))
-            result.type = TYPE_CHOICES[result.type]
-            result.implementation = result.implementation.code
-            return result
+            dev = DeviceObject()
+            dev.m_device = result
+            dev._build_attributes()
+            return dev
 
     @staticmethod
     def find_all(session, references):

@@ -63,6 +63,11 @@ class DatabaseObject(object):
         """Build the object with its given attributes for internal models"""
         pass
 
+    @abc.abstractmethod
+    def _build_attributes(self):
+        """Build the attributes for the given state of internal models"""
+        pass
+
     @staticmethod
     def _filter(filter_object):
         """Filters the object depending on it's set attributes
