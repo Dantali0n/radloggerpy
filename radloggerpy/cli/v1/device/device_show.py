@@ -17,8 +17,12 @@ from cliff.show import ShowOne
 from sqlalchemy.orm.exc import MultipleResultsFound
 
 from radloggerpy._i18n import _
+from radloggerpy.cli.argument import Argument
 from radloggerpy.cli.v1.device.device import DeviceCommand
 from radloggerpy.database.objects.device import DeviceObject
+from radloggerpy.database.objects.serial_device import SerialDeviceObject
+from radloggerpy.types.device_types import DeviceTypes
+from radloggerpy.types.device_types import TYPE_CHOICES
 
 
 class DeviceShow(ShowOne, DeviceCommand):
@@ -30,6 +34,11 @@ class DeviceShow(ShowOne, DeviceCommand):
     def arguments(self):
         if self._arguments is None:
             self._arguments = super().arguments
+            self._arguments.update({
+                '--detailed': Argument(
+                    '-d', help="Show details related to the device specific"
+                               "type if found.",
+                    action="store_true")})
         return self._arguments
 
     def get_parser(self, program_name):
@@ -40,7 +49,10 @@ class DeviceShow(ShowOne, DeviceCommand):
         return parser
 
     def take_action(self, parsed_args):
-        device_obj = DeviceObject(**dict(parsed_args._get_kwargs()))
+        args = dict(parsed_args._get_kwargs())
+        device_obj = DeviceObject(**args)
+
+        details = args['detailed']
 
         try:
             data = DeviceObject.find(
@@ -53,4 +65,13 @@ class DeviceShow(ShowOne, DeviceCommand):
 
         fields = ('id', 'name', 'type', 'implementation')
         values = (data.id, data.name, data.type, data.implementation)
+
+        if details and data.type == TYPE_CHOICES[DeviceTypes.SERIAL]:
+            data = SerialDeviceObject.find(
+                self.app.database_session, device_obj, False)
+            fields += ('port', 'baudrate', 'bytesize', 'parity',
+                       'stopbits', 'timeout')
+            values += (data.port, data.baudrate, data.bytesize, data.parity,
+                       data.stopbits, data.timeout)
+
         return (fields, values)

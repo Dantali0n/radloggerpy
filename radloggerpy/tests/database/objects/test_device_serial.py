@@ -255,9 +255,9 @@ class TestSerialDeviceObject(base.TestCase):
         m_device_serial2 = SerialDevice()
         m_device_serial2.port = "/dev/ttyUSB2"
         m_device_serial2.baudrate = 9600
-        m_device_serial2.bytesize = SerialBytesizeTypes.EIGHTBITS
-        m_device_serial2.parity = SerialParityTypes.PARITY_ODD
-        m_device_serial2.stopbits = SerialStopbitTypes.STOPBITS_ONE
+        m_device_serial2.bytesize = SerialBytesizeTypes.SEVENBITS
+        m_device_serial2.parity = SerialParityTypes.PARITY_EVEN
+        m_device_serial2.stopbits = SerialStopbitTypes.STOPBITS_TWO
 
         m_device2.serial = m_device_serial2
 
@@ -268,20 +268,27 @@ class TestSerialDeviceObject(base.TestCase):
         self.assertEqual("test1", result_obj[0].name)
         self.assertEqual("serial", result_obj[0].type)
         self.assertEqual("/dev/ttyUSB0", result_obj[0].port)
+        self.assertEqual(8, result_obj[0].bytesize)
+        self.assertEqual("odd", result_obj[0].parity)
+        self.assertEqual(1, result_obj[0].stopbits)
 
         self.assertEqual(2, result_obj[1].id)
         self.assertEqual("test2", result_obj[1].name)
         self.assertEqual("serial", result_obj[1].type)
         self.assertEqual("/dev/ttyUSB2", result_obj[1].port)
-    #
-    # def test_find_obj_multiple_none(self):
-    #     m_query = mock.Mock()
-    #     m_session = mock.Mock()
-    #     m_session.query.return_value.filter_by.return_value = m_query
-    #
-    #     m_query.all.return_value = None
-    #
-    #     test_obj = SerialDeviceObject(**{"id": 1})
-    #     result_obj = SerialDeviceObject.find(m_session, test_obj, True)
-    #
-    #     self.assertIsNone(result_obj)
+        self.assertEqual(7, result_obj[1].bytesize)
+        self.assertEqual("even", result_obj[1].parity)
+        self.assertEqual(2, result_obj[1].stopbits)
+
+    def test_find_obj_multiple_none(self):
+        m_query = mock.Mock()
+        m_session = mock.Mock()
+        m_session.query.return_value.filter_by.return_value. \
+            join.return_value.filter_by.return_value = m_query
+
+        m_query.all.return_value = None
+
+        test_obj = SerialDeviceObject(**{"type": "serial"})
+        result_obj = SerialDeviceObject.find(m_session, test_obj, True)
+
+        self.assertIsNone(result_obj)

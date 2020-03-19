@@ -132,7 +132,12 @@ class SerialDeviceObject(DeviceObject):
         reference.m_device.type = DeviceTypes.SERIAL
 
         base_filters = reference._filter(reference.m_device)
-        filters = reference._filter(reference.m_serial_device)
+
+        """Check if reference is base or child type when setting filters"""
+        if hasattr(reference, 'm_serial_device'):
+            filters = reference._filter(reference.m_serial_device)
+        else:
+            filters = {}
 
         query = session.query(Device).filter_by(**base_filters)\
             .join(SerialDevice).filter_by(**filters)
