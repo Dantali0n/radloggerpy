@@ -28,6 +28,8 @@ class DeviceObject(DatabaseObject):
 
     m_device = None
 
+    _relationships = None
+
     def _build_object(self):
         self.m_device = Device()
 
@@ -57,6 +59,15 @@ class DeviceObject(DatabaseObject):
         if self.m_device.implementation:
             self.implementation = self.m_device.implementation.code
 
+    @property
+    def relationships(self):
+        if self._relationships is None:
+            self._relationships = []
+            self._relationships.extend([
+                'attributes', 'serial', 'ethernet'
+            ])
+        return self._relationships
+
     @staticmethod
     def add(session, reference):
         NotImplementedError()
@@ -73,7 +84,8 @@ class DeviceObject(DatabaseObject):
     def find(session, reference, allow_multiple=True):
         reference._build_object()
 
-        filters = reference._filter(reference.m_device)
+        filters = reference._filter(reference.m_device,
+                                    reference.relationships)
         query = session.query(Device).filter_by(**filters)
 
         if allow_multiple:

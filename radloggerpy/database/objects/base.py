@@ -68,18 +68,21 @@ class DatabaseObject(object):
         """Build the attributes for the given state of internal models"""
         pass
 
+    @property
+    @abc.abstractmethod
+    def relationships(self) -> list:
+        """List property implemented to describe relationships"""
+        pass
+
     @staticmethod
-    def _filter(filter_object):
+    def _filter(filter_object, ignore=[]):
         """Filters the object depending on it's set attributes
 
-        **Does not remove any undesired attributes of object**
-        Returns a dictionary with all attributes that are not None
-
-        TODO(Dantali0n): Make this remove relationship attributes from models?
+        TODO(Dantali0n):This method is a filthy hack and it needs to be removed.
         """
 
         return {key: name for (key, name) in vars(filter_object).items()
-                if hasattr(filter_object.__class__, key)}
+                if hasattr(filter_object.__class__, key) and key not in ignore}
 
     @staticmethod
     @abc.abstractmethod

@@ -13,19 +13,14 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from cliff.show import ShowOne
 from sqlalchemy.orm.exc import MultipleResultsFound
 
 from radloggerpy._i18n import _
-from radloggerpy.cli.argument import Argument
-from radloggerpy.cli.v1.device.device import DeviceCommand
-from radloggerpy.database.objects.device import DeviceObject
+from radloggerpy.cli.v1.device.device_show import DeviceShow
 from radloggerpy.database.objects.serial_device import SerialDeviceObject
-from radloggerpy.types.device_types import DeviceTypes
-from radloggerpy.types.device_types import TYPE_CHOICES
 
 
-class DeviceShow(ShowOne, DeviceCommand):
+class DeviceShowSerial(DeviceShow):
     """Command to show information about devices"""
 
     _arguments = None
@@ -34,11 +29,6 @@ class DeviceShow(ShowOne, DeviceCommand):
     def arguments(self):
         if self._arguments is None:
             self._arguments = super().arguments
-            self._arguments.update({
-                '--detailed': Argument(
-                    '-d', help="Show details related to the specific device "
-                               "type if found.",
-                    action="store_true")})
         return self._arguments
 
     def get_parser(self, program_name):
@@ -50,12 +40,10 @@ class DeviceShow(ShowOne, DeviceCommand):
 
     def take_action(self, parsed_args):
         args = dict(parsed_args._get_kwargs())
-        device_obj = DeviceObject(**args)
-
-        details = args['detailed']
+        device_obj = SerialDeviceObject(**args)
 
         try:
-            data = DeviceObject.find(
+            data = SerialDeviceObject.find(
                 self.app.database_session, device_obj, False)
         except MultipleResultsFound:
             raise RuntimeWarning(_("Multiple devices found"))
@@ -63,17 +51,10 @@ class DeviceShow(ShowOne, DeviceCommand):
         if data is None:
             raise RuntimeWarning(_("Device could not be found"))
 
-        fields = ('id', 'name', 'type', 'implementation')
-        values = (data.id, data.name, data.type, data.implementation)
-
-        if details and data.type == TYPE_CHOICES[DeviceTypes.SERIAL]:
-            data = SerialDeviceObject.find(
-                self.app.database_session, device_obj, False)
-            fields += ('port', 'baudrate', 'bytesize', 'parity',
-                       'stopbits', 'timeout')
-            values += (data.port, data.baudrate, data.bytesize, data.parity,
-                       data.stopbits, data.timeout)
-        elif details and data.type == TYPE_CHOICES[DeviceTypes.ETHERNET]:
-            pass
+        fields = ('id', 'name', 'type', 'implementation', 'port', 'baudrate',
+                  'bytesize', 'parity', 'stopbits', 'timeout')
+        values = (data.id, data.name, data.type, data.implementation,
+                  data.port, data.baudrate, data.bytesize, data.parity,
+                  data.stopbits, data.timeout)
 
         return (fields, values)
