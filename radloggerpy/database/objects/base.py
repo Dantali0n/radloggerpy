@@ -78,7 +78,8 @@ class DatabaseObject(object):
     def _filter(filter_object, ignore=[]):
         """Filters the object depending on it's set attributes
 
-        TODO(Dantali0n):This method is a filthy hack and it needs to be removed.
+        TODO(Dantali0n):This method is a filthy hack and it needs to be
+                        removed.
         """
 
         return {key: name for (key, name) in vars(filter_object).items()
