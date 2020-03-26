@@ -33,21 +33,11 @@ class TestDatabaseObject(base.TestCase):
 
         m_model = None
 
-        _relationships = None
-
         def _build_object(self):
             pass
 
         def _build_attributes(self):
             pass
-
-        def relationships(self):
-            if self._relationships is None:
-                self._relationships = []
-                self._relationships.extend([
-                    'base_device'
-                ])
-            return self._relationships
 
         @staticmethod
         def add(session, reference):

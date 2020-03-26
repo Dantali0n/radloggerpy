@@ -16,6 +16,13 @@
 import abc
 import six
 
+from oslo_log import log
+
+from radloggerpy._i18n import _
+from radloggerpy.common.common import seq_but_not_str
+
+LOG = log.getLogger(__name__)
+
 
 @six.add_metaclass(abc.ABCMeta)
 class DatabaseObject(object):
@@ -68,22 +75,21 @@ class DatabaseObject(object):
         """Build the attributes for the given state of internal models"""
         pass
 
-    @property
-    @abc.abstractmethod
-    def relationships(self) -> list:
-        """List property implemented to describe relationships"""
-        pass
-
     @staticmethod
     def _filter(filter_object, ignore=[]):
         """Filters the object depending on it's set attributes
 
-        TODO(Dantali0n):This method is a filthy hack and it needs to be
-                        removed.
+        Removes certain empty objects such as empty collections but not empty
+        strings or byte arrays.
         """
 
+        if ignore:
+            LOG.warning(_("Use of deprecated ignore parameter on database "
+                          "object filter!"))
+
         return {key: name for (key, name) in vars(filter_object).items()
-                if hasattr(filter_object.__class__, key) and key not in ignore}
+                if hasattr(filter_object.__class__, key) and
+                (key not in ignore or (seq_but_not_str(key and key)))}
 
     @staticmethod
     @abc.abstractmethod

@@ -45,13 +45,10 @@ class SerialDeviceObject(DeviceObject):
 
     m_serial_device = None
 
-    _relationships = None
-
     def _build_object(self):
         super(SerialDeviceObject, self)._build_object()
 
         self.m_serial_device = SerialDevice()
-        self.m_serial_device.base_device = self.m_device
 
         if self.port:
             self.m_serial_device.port = self.port
@@ -102,15 +99,6 @@ class SerialDeviceObject(DeviceObject):
         if self.m_serial_device.timeout:
             self.timeout = self.m_serial_device.timeout
 
-    @property
-    def relationships(self):
-        if self._relationships is None:
-            self._relationships = super().relationships
-            self._relationships.extend([
-                'base_device'
-            ])
-        return self._relationships
-
     @staticmethod
     def add(session, reference):
         reference._build_object()
@@ -142,17 +130,11 @@ class SerialDeviceObject(DeviceObject):
         """Only look for serial devices"""
         reference.m_device.type = DeviceTypes.SERIAL
 
-        # import pdb; pdb.set_trace()
-
-        base_filters = reference._filter(reference.m_device,
-                                         reference.relationships)
-        # del base_filters['serial']
+        base_filters = reference._filter(reference.m_device)
 
         """Check if reference is base or child type when setting filters"""
         if hasattr(reference, 'm_serial_device'):
-            filters = reference._filter(reference.m_serial_device,
-                                        reference.relationships)
-            # del filters['base_device']
+            filters = reference._filter(reference.m_serial_device)
         else:
             filters = {}
 
