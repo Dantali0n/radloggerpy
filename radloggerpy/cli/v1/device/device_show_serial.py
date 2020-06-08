@@ -16,8 +16,12 @@
 from sqlalchemy.orm.exc import MultipleResultsFound
 
 from radloggerpy._i18n import _
+from radloggerpy.cli.argument import Argument
 from radloggerpy.cli.v1.device.device_show import DeviceShow
 from radloggerpy.database.objects.serial_device import SerialDeviceObject
+from radloggerpy.types.serial_bytesize import BYTESIZE_CHOICES
+from radloggerpy.types.serial_parity import PARITY_CHOICES
+from radloggerpy.types.serial_stopbit import STOPBIT_CHOICES
 
 
 class DeviceShowSerial(DeviceShow):
@@ -29,11 +33,34 @@ class DeviceShowSerial(DeviceShow):
     def arguments(self):
         if self._arguments is None:
             self._arguments = super().arguments
+            self._arguments.update({
+                '--port': Argument(
+                    help="Symbolic name of the serial port to be translated "
+                         "to the physical device, such as /dev/ttyUSB0 or "
+                         "COM1.",
+                    default=None),
+                '--baudrate': Argument(
+                    '-r', default=None,
+                    help="The speed at which the device sends data expressed "
+                         "in symbols per second (baud), typically 9600 Bd/s."
+                    ),
+                '--bytesize': Argument(
+                    '-b', default=None, type=int,
+                    choices=BYTESIZE_CHOICES.values()),
+                '--parity': Argument(
+                    '-p', default="none",
+                    choices=PARITY_CHOICES.values()),
+                '---stopbits': Argument(
+                    '-s', default=None, type=float,
+                    choices=STOPBIT_CHOICES.values()),
+                '--timeout': Argument('-t', default=None),
+            })
+            if '--type' in self._arguments:
+                del self._arguments['--type']
         return self._arguments
 
     def get_parser(self, program_name):
         parser = super(DeviceShow, self).get_parser(program_name)
-        self._add_types()
         self._add_implementations()
         self.register_arguments(parser)
         return parser

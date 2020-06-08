@@ -189,7 +189,7 @@ class TestSerialDeviceObject(base.TestCase):
         m_device_serial.parity = SerialParityTypes.PARITY_ODD
         m_device_serial.stopbits = SerialStopbitTypes.STOPBITS_ONE
 
-        m_device.serial = m_device_serial
+        m_device.serial = [m_device_serial]
 
         """Setup query and session to return mocked device"""
         m_query = mock.Mock()
@@ -244,7 +244,7 @@ class TestSerialDeviceObject(base.TestCase):
         m_device_serial1.parity = SerialParityTypes.PARITY_ODD
         m_device_serial1.stopbits = SerialStopbitTypes.STOPBITS_ONE
 
-        m_device1.serial = m_device_serial1
+        m_device1.serial = [m_device_serial1]
 
         m_device2.id = 2
         m_device2.name = "test2"
@@ -259,7 +259,7 @@ class TestSerialDeviceObject(base.TestCase):
         m_device_serial2.parity = SerialParityTypes.PARITY_EVEN
         m_device_serial2.stopbits = SerialStopbitTypes.STOPBITS_TWO
 
-        m_device2.serial = m_device_serial2
+        m_device2.serial = [m_device_serial2]
 
         test_obj = SerialDeviceObject(**{"type": "serial"})
         result_obj = SerialDeviceObject.find(m_session, test_obj, True)

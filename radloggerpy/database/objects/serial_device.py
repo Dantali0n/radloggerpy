@@ -105,6 +105,8 @@ class SerialDeviceObject(DeviceObject):
 
         session.add(reference.m_device)
 
+        reference.m_serial_device.base_device = reference.m_device
+
         session.add(reference.m_serial_device)
 
         try:
@@ -151,7 +153,7 @@ class SerialDeviceObject(DeviceObject):
             for result in results:
                 dev = SerialDeviceObject()
                 dev.m_device = result
-                dev.m_serial_device = result.serial
+                dev.m_serial_device = result.serial[0]
                 dev._build_attributes()
                 ret_results.append(dev)
 
@@ -164,7 +166,7 @@ class SerialDeviceObject(DeviceObject):
 
             dev = SerialDeviceObject()
             dev.m_device = result
-            dev.m_serial_device = result.serial
+            dev.m_serial_device = result.serial[0]
             dev._build_attributes()
             return dev
 
