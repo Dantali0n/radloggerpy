@@ -15,17 +15,44 @@
 
 from cliff.lister import Lister
 
+from radloggerpy._i18n import _
+from radloggerpy.cli.v1.device.device import DeviceCommand
+from radloggerpy.database.objects.device import DeviceObject
 
-class DeviceList(Lister):
-    """Command to show, add, remove devices"""
+
+class DeviceList(Lister, DeviceCommand):
+    """Command to show lists of devices"""
+
+    _arguments = None
+
+    @property
+    def arguments(self):
+        if self._arguments is None:
+            self._arguments = super().arguments
+        return self._arguments
 
     def get_parser(self, program_name):
         parser = super(DeviceList, self).get_parser(program_name)
-        parser.add_argument('id', nargs='?', default=None)
+        self._add_types()
+        self._add_implementations()
+        self.register_arguments(parser)
         return parser
 
     def take_action(self, parsed_args):
-        self.app.LOG.info(self.app.database_session)
-        columns = ["action"]
-        data = [parsed_args.action]
-        return (columns, data)
+        args = dict(parsed_args._get_kwargs())
+        device_obj = DeviceObject(**args)
+
+        data = DeviceObject.find(
+            self.app.database_session, device_obj, True)
+
+        if len(data) == 0:
+            raise RuntimeWarning(_("No devices found"))
+
+        fields = ('id', 'name', 'type', 'implementation')
+        values = []
+        for result in data:
+            value = (result.id, result.name, result.type,
+                     result.implementation)
+            values.append(value)
+
+        return [fields, values]

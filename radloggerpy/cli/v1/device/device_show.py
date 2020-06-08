@@ -26,7 +26,7 @@ from radloggerpy.types.device_types import TYPE_CHOICES
 
 
 class DeviceShow(ShowOne, DeviceCommand):
-    """Command to show information about devices"""
+    """Command to show information about a device"""
 
     _arguments = None
 

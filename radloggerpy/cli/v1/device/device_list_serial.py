@@ -1,5 +1,5 @@
 # -*- encoding: utf-8 -*-
-# Copyright (c) 2019 Dantali0n
+# Copyright (c) 2020 Dantali0n
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
 # not use this file except in compliance with the License. You may obtain
@@ -13,11 +13,11 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from sqlalchemy.orm.exc import MultipleResultsFound
+from cliff.lister import Lister
 
 from radloggerpy._i18n import _
 from radloggerpy.cli.argument import Argument
-from radloggerpy.cli.v1.device.device_show import DeviceShow
+from radloggerpy.cli.v1.device.device import DeviceCommand
 from radloggerpy.database.objects.serial_device import SerialDeviceObject
 from radloggerpy.types.device_types import DeviceTypes
 from radloggerpy.types.serial_bytesize import BYTESIZE_CHOICES
@@ -25,8 +25,8 @@ from radloggerpy.types.serial_parity import PARITY_CHOICES
 from radloggerpy.types.serial_stopbit import STOPBIT_CHOICES
 
 
-class DeviceShowSerial(DeviceShow):
-    """Command to show information about devices"""
+class DeviceListSerial(Lister, DeviceCommand):
+    """Command to show lists of serial devices"""
 
     _arguments = None
 
@@ -61,7 +61,7 @@ class DeviceShowSerial(DeviceShow):
         return self._arguments
 
     def get_parser(self, program_name):
-        parser = super(DeviceShow, self).get_parser(program_name)
+        parser = super(DeviceListSerial, self).get_parser(program_name)
         self._add_implementations(DeviceTypes.SERIAL)
         self.register_arguments(parser)
         return parser
@@ -70,19 +70,20 @@ class DeviceShowSerial(DeviceShow):
         args = dict(parsed_args._get_kwargs())
         device_obj = SerialDeviceObject(**args)
 
-        try:
-            data = SerialDeviceObject.find(
-                self.app.database_session, device_obj, False)
-        except MultipleResultsFound:
-            raise RuntimeWarning(_("Multiple devices found"))
+        data = SerialDeviceObject.find(
+            self.app.database_session, device_obj, True)
 
-        if data is None:
-            raise RuntimeWarning(_("Device could not be found"))
+        if len(data) == 0:
+            raise RuntimeWarning(_("No devices found"))
 
         fields = ('id', 'name', 'type', 'implementation', 'port', 'baudrate',
                   'bytesize', 'parity', 'stopbits', 'timeout')
-        values = (data.id, data.name, data.type, data.implementation,
-                  data.port, data.baudrate, data.bytesize, data.parity,
-                  data.stopbits, data.timeout)
+        values = []
+        for result in data:
+            value = (result.id, result.name, result.type,
+                     result.implementation, result.port, result.baudrate,
+                     result.bytesize, result.parity, result.stopbits,
+                     result.timeout)
+            values.append(value)
 
-        return (fields, values)
+        return [fields, values]
