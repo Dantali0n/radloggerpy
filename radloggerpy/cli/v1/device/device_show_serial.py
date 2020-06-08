@@ -19,6 +19,7 @@ from radloggerpy._i18n import _
 from radloggerpy.cli.argument import Argument
 from radloggerpy.cli.v1.device.device_show import DeviceShow
 from radloggerpy.database.objects.serial_device import SerialDeviceObject
+from radloggerpy.types.device_types import DeviceTypes
 from radloggerpy.types.serial_bytesize import BYTESIZE_CHOICES
 from radloggerpy.types.serial_parity import PARITY_CHOICES
 from radloggerpy.types.serial_stopbit import STOPBIT_CHOICES
@@ -61,7 +62,7 @@ class DeviceShowSerial(DeviceShow):
 
     def get_parser(self, program_name):
         parser = super(DeviceShow, self).get_parser(program_name)
-        self._add_implementations()
+        self._add_implementations(DeviceTypes.SERIAL)
         self.register_arguments(parser)
         return parser
 

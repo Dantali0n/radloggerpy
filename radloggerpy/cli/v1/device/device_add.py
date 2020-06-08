@@ -17,15 +17,17 @@ import abc
 import six
 
 from radloggerpy.cli.argument import Argument
-from radloggerpy.cli.argument_helper import ArgumentHelper
-from radloggerpy.device.device_manager import DeviceManager
+from radloggerpy.cli.v1.device.device_helper import DeviceHelper
 
 
 @six.add_metaclass(abc.ABCMeta)
-class DeviceAddCommand(ArgumentHelper):
+class DeviceAddCommand(DeviceHelper):
     """Abstract command to add devices"""
 
     _arguments = None
+
+    # override key as it has changed compared to baseclass
+    _implementation_key = 'implementation'
 
     @property
     def arguments(self):
@@ -39,10 +41,3 @@ class DeviceAddCommand(ArgumentHelper):
                          "device see documentation for supported models."),
             })
         return self._arguments
-
-    def _add_implementations(self, device_type):
-        self.arguments['implementation'].add_kwarg(
-            'choices',
-            [dev.NAME for dev in DeviceManager.get_device_implementations()
-             if dev.TYPE == device_type]
-        )

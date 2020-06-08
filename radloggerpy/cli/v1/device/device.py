@@ -17,13 +17,12 @@ import abc
 import six
 
 from radloggerpy.cli.argument import Argument
-from radloggerpy.cli.argument_helper import ArgumentHelper
-from radloggerpy.device.device_manager import DeviceManager
+from radloggerpy.cli.v1.device.device_helper import DeviceHelper
 from radloggerpy.types.device_types import TYPE_CHOICES
 
 
 @six.add_metaclass(abc.ABCMeta)
-class DeviceCommand(ArgumentHelper):
+class DeviceCommand(DeviceHelper):
     """Abstract command to interface with devices"""
 
     _arguments = None
@@ -52,10 +51,4 @@ class DeviceCommand(ArgumentHelper):
         self.arguments['--type'].add_kwarg(
             'choices',
             TYPE_CHOICES.values()
-        )
-
-    def _add_implementations(self):
-        self.arguments['--implementation'].add_kwarg(
-            'choices',
-            [dev.NAME for dev in DeviceManager.get_device_implementations()]
         )

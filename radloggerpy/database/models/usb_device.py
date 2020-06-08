@@ -1,5 +1,5 @@
 # -*- encoding: utf-8 -*-
-# Copyright (c) 2019 Dantali0n
+# Copyright (c) 2020 Dantali0n
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
 # not use this file except in compliance with the License. You may obtain
@@ -13,14 +13,18 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from sqlalchemy import Column, Integer, ForeignKey
+from sqlalchemy import Column, Integer, ForeignKey, LargeBinary
 from sqlalchemy.orm import relationship
 
 from radloggerpy.database.declarative_base import base
 
 
-class EthernetDevice(base):
+class UsbDevice(base):
     id = Column(Integer, primary_key=True)
     base_id = Column(Integer, ForeignKey('device.id'))
+
+    vendor_id = Column(LargeBinary(length=2))
+    product_id = Column(LargeBinary(length=2))
+
     base_device = relationship(
-        "Device", back_populates="ethernet", single_parent=True)
+        "Device", back_populates="usb", single_parent=True)

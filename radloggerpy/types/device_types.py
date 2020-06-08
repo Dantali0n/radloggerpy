@@ -20,11 +20,13 @@ from enum import unique
 @unique
 class DeviceTypes(Enum):
     """Enum listing all possible supported types of device"""
-    SERIAL = 1
-    ETHERNET = 2
+    ETHERNET = 1
+    SERIAL = 2
+    USB = 3
 
 
 TYPE_CHOICES = {
+    DeviceTypes.ETHERNET: "ethernet",
     DeviceTypes.SERIAL: "serial",
-    DeviceTypes.ETHERNET: "ethernet"
+    DeviceTypes.USB: "usb"
 }

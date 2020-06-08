@@ -1,5 +1,5 @@
 # -*- encoding: utf-8 -*-
-# Copyright (c) 2019 Dantali0n
+# Copyright (c) 2020 Dantali0n
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
 # not use this file except in compliance with the License. You may obtain
@@ -13,14 +13,19 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from sqlalchemy import Column, Integer, ForeignKey
-from sqlalchemy.orm import relationship
+import abc
+import six
 
-from radloggerpy.database.declarative_base import base
+from radloggerpy.device import device
+from radloggerpy.types.device_types import DeviceTypes
 
 
-class EthernetDevice(base):
-    id = Column(Integer, primary_key=True)
-    base_id = Column(Integer, ForeignKey('device.id'))
-    base_device = relationship(
-        "Device", back_populates="ethernet", single_parent=True)
+@six.add_metaclass(abc.ABCMeta)
+class EthernetDevice(device.Device):
+    """EthernetDevice base class"""
+
+    NAME = "EthernetDevice"
+    TYPE = DeviceTypes.ETHERNET
+
+    def __init__(self):
+        super(EthernetDevice, self).__init__()

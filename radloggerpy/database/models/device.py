@@ -33,7 +33,9 @@ class Device(base):
 
     attributes = relationship(
         "DeviceAttribute", back_populates="base_device")
+    ethernet = relationship(
+        "EthernetDevice", back_populates="base_device", single_parent=True)
     serial = relationship(
         "SerialDevice", back_populates="base_device", single_parent=True)
-    ethernet = relationship(
-        "EthernetDevice", uselist=False, back_populates="base_device")
+    usb = relationship(
+        "UsbDevice", back_populates="base_device", single_parent=True)
