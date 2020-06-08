@@ -13,14 +13,18 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+import gettext
 import mock
 import os
 
-from babel import localedata
+import locale
 import oslo_i18n
+from oslo_i18n._gettextutils import _BABEL_ALIASES
+from oslo_i18n import _locale
 
 import radloggerpy
 from radloggerpy import _i18n
+from radloggerpy._i18n import DOMAIN
 
 from radloggerpy.tests import base
 
@@ -35,7 +39,7 @@ class Testi18n(base.TestCase):
 
     @mock.patch.object(oslo_i18n._gettextutils, '_AVAILABLE_LANGUAGES')
     @mock.patch.object(os, 'environ')
-    def test_translate(self, m_environ, m_languages_get):
+    def test_translate_nl(self, m_environ, m_languages_get):
         m_languages_get.return_value = None
         m_environ.get.side_effect = [
             'nl', 'nl', 'nl', 'nl', 'radloggerpy/locale'
@@ -65,7 +69,9 @@ class Testi18n(base.TestCase):
         m_environ.get.return_value = 'radloggerpy/locale'
 
         m_languages = ['en_US']
-        locale_identifiers = localedata.locale_identifiers()
+        locale_identifiers = set(locale.windows_locale.values())
+        localedir = os.environ.get(
+            _locale.get_locale_dir_variable_name(DOMAIN))
 
         m_locale = radloggerpy.__path__[0] + '/locale'
         m_locale_dirs = [o for o in os.listdir(m_locale)
@@ -74,5 +80,10 @@ class Testi18n(base.TestCase):
         for m_locale_dir in m_locale_dirs:
             m_languages.extend(language for language in locale_identifiers
                                if m_locale_dir in language)
+
+        m_languages.extend(
+            alias for alias, _ in _BABEL_ALIASES.items() if gettext.find(
+                DOMAIN, localedir=localedir, languages=[alias])
+        )
 
         self.assertItemsEqual(m_languages, _i18n.get_available_languages())
