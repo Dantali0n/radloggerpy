@@ -23,7 +23,5 @@ class EthernetDevice(base):
     id = Column(Integer, primary_key=True)
     base_id = Column(Integer, ForeignKey('device.id'))
 
-
-
     base_device = relationship(
         "Device", back_populates="ethernet", single_parent=True)

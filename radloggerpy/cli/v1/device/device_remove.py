@@ -49,7 +49,7 @@ class DeviceRemove(ShowOne, DeviceCommand):
             raise RuntimeWarning(
                 _("Either the id or name must be specified to "
                   "remove a device"))
-        
+
         try:
             data = DeviceObject.delete(
                 self.app.database_session, device_obj, False)
