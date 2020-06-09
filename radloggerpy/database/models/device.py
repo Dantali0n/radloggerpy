@@ -32,10 +32,14 @@ class Device(base):
     implementation = Column(ChoiceType(IMPLEMENTATION_CHOICES))
 
     attributes = relationship(
-        "DeviceAttribute", back_populates="base_device")
+        "DeviceAttribute", back_populates="base_device",
+        cascade="all, delete-orphan")
     ethernet = relationship(
-        "EthernetDevice", back_populates="base_device", single_parent=True)
+        "EthernetDevice", back_populates="base_device", single_parent=True,
+        cascade="all, delete-orphan")
     serial = relationship(
-        "SerialDevice", back_populates="base_device", single_parent=True)
+        "SerialDevice", back_populates="base_device", single_parent=True,
+        cascade="all, delete-orphan")
     usb = relationship(
-        "UsbDevice", back_populates="base_device", single_parent=True)
+        "UsbDevice", back_populates="base_device", single_parent=True,
+        cascade="all, delete-orphan")

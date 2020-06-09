@@ -13,19 +13,54 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from cliff.command import Command
+from cliff.show import ShowOne
+from sqlalchemy.orm.exc import MultipleResultsFound
+
+from radloggerpy._i18n import _
+from radloggerpy.cli.v1.device.device import DeviceCommand
+from radloggerpy.database.objects.device import DeviceObject
 
 
-class DeviceRemove(Command):
-    """Command to add devices"""
+class DeviceRemove(ShowOne, DeviceCommand):
+    """Command to remove device"""
+
+    _arguments = None
+
+    @property
+    def arguments(self):
+        if self._arguments is None:
+            self._arguments = super().arguments
+            if '--type' in self._arguments:
+                del self._arguments['--type']
+            if '--implementation' in self._arguments:
+                del self._arguments['--implementation']
+        return self._arguments
 
     def get_parser(self, program_name):
         parser = super(DeviceRemove, self).get_parser(program_name)
-        parser.add_argument('id', nargs='?', default=None)
+        self.register_arguments(parser)
         return parser
 
     def take_action(self, parsed_args):
-        self.app.LOG.info(self.app.database_session)
-        columns = ["action"]
-        data = [parsed_args.action]
-        return (columns, data)
+        args = dict(parsed_args._get_kwargs())
+        device_obj = DeviceObject(**args)
+
+        if device_obj.id is None and device_obj.name is None:
+            raise RuntimeWarning(
+                _("Either the id or name must be specified to "
+                  "remove a device"))
+        
+        try:
+            data = DeviceObject.delete(
+                self.app.database_session, device_obj, False)
+        except MultipleResultsFound:
+            raise RuntimeWarning(_("Multiple devices found"))
+
+        if data is None:
+            raise RuntimeWarning(_("Device could not be found"))
+
+        fields = ('id', 'name', 'type', 'implementation')
+        values = (data.id, data.name, data.type, data.implementation)
+
+        self.app.LOG.info(_("Device removed successfully"))
+        return (fields, values)

@@ -67,7 +67,45 @@ class DeviceObject(DatabaseObject):
 
     @staticmethod
     def delete(session, reference, allow_multiple=False):
-        NotImplementedError()
+        reference._build_object()
+
+        filters = reference._filter(reference.m_device)
+        query = session.query(Device).filter_by(**filters)
+
+        if allow_multiple:
+            results = query.all()
+
+            if results is None:
+                return None
+
+            ret_results = list()
+            for result in results:
+                dev = DeviceObject()
+                dev.m_device = result
+                dev._build_attributes()
+                ret_results.append(dev)
+
+            return ret_results
+        else:
+            result = query.one_or_none()
+
+            if result is None:
+                return None
+
+            dev = DeviceObject()
+            dev.m_device = result
+            dev._build_attributes()
+
+            session.delete(result)
+            try:
+                session.commit()
+            except Exception as e:
+                session.rollback()
+                # TODO(Dantali0n): These errors are horrendous for users to
+                #                  understand an error abstraction is needed.
+                raise
+
+            return dev
 
     @staticmethod
     def find(session, reference, allow_multiple=True):
