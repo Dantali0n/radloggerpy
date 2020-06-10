@@ -13,8 +13,8 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-import mock
 import time
+from unittest import mock
 
 from radloggerpy.models import timestamp
 from radloggerpy.tests import base

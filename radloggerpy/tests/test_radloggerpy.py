@@ -13,9 +13,9 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-import mock
-
 import errno
+from unittest import mock
+
 from serial.serialutil import SerialException
 
 from radloggerpy import radloggerpy

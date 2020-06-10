@@ -14,8 +14,8 @@
 # under the License.
 
 import gettext
-import mock
 import os
+from unittest import mock
 
 import locale
 import oslo_i18n

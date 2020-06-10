@@ -13,7 +13,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-import mock
+from unittest import mock
 
 from radloggerpy.cli.argument import Argument
 from radloggerpy.cli.argument_helper import ArgumentHelper

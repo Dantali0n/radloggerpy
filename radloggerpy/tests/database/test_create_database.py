@@ -14,8 +14,9 @@
 # under the License.
 
 import importlib
-import mock
 import pkgutil
+from unittest import mock
+
 
 from oslo_log import log
 from radloggerpy import config
