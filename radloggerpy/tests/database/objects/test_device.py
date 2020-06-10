@@ -103,6 +103,72 @@ class TestDeviceObject(base.TestCase):
         self.assertEqual("value2", test_obj.m_device.name)
         self.assertEqual(DeviceTypes.SERIAL, test_obj.m_device.type)
 
+    def test_delete(self):
+        m_session = mock.Mock()
+
+        # TODO(Dantali0n): change into setting attributes directly
+        m_atribs = {
+            "id": 1,
+            "name": "test1",
+            "type": DeviceTypes.SERIAL,
+            "implementation": "ArduinoGeigerPCB",
+        }
+
+        m_query = mock.Mock()
+        m_device = Device()
+        m_device.id = 1
+        m_device.name = "test1"
+        m_device.type = DeviceTypes.SERIAL
+        m_device.implementation = mock.Mock(
+            code="ArduinoGeigerPCB", value="arduinogeigerpcb")
+
+        m_session.query.return_value.filter_by.return_value = m_query
+        m_query.one_or_none.return_value = m_device
+
+        test_obj = DeviceObject(**m_atribs)
+        DeviceObject.delete(m_session, test_obj)
+
+        m_session.delete.assert_has_calls(
+            [
+                mock.call(m_device),
+            ],
+            any_order=True
+        )
+        m_session.commit.assert_called_once()
+
+    def test_delete_all(self):
+        m_session = mock.Mock()
+
+        # TODO(Dantali0n): change into setting attributes directly
+        m_atribs = {
+            "id": 1,
+            "name": "test1",
+            "type": DeviceTypes.SERIAL,
+            "implementation": "ArduinoGeigerPCB",
+        }
+
+        m_query = mock.Mock()
+        m_device = Device()
+        m_device.id = 1
+        m_device.name = "test1"
+        m_device.type = DeviceTypes.SERIAL
+        m_device.implementation = mock.Mock(
+            code="ArduinoGeigerPCB", value="arduinogeigerpcb")
+
+        m_session.query.return_value.filter_by.return_value = m_query
+        m_query.all.return_value = [m_device]
+
+        test_obj = DeviceObject(**m_atribs)
+        DeviceObject.delete(m_session, test_obj, True)
+
+        m_session.delete.assert_has_calls(
+            [
+                mock.call(m_device),
+            ],
+            any_order=True
+        )
+        m_session.commit.assert_called_once()
+
     def test_find_obj(self):
 
         """Represents mocked device as it will be retrieved from db """

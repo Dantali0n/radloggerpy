@@ -78,14 +78,14 @@ class DeviceObject(DatabaseObject):
             if results is None:
                 return None
 
-            ret_results = list()
+            devs = list()
+
             for result in results:
                 dev = DeviceObject()
                 dev.m_device = result
+                session.delete(result)
                 dev._build_attributes()
-                ret_results.append(dev)
-
-            return ret_results
+                devs.append(dev)
         else:
             result = query.one_or_none()
 
@@ -95,16 +95,19 @@ class DeviceObject(DatabaseObject):
             dev = DeviceObject()
             dev.m_device = result
             dev._build_attributes()
-
             session.delete(result)
-            try:
-                session.commit()
-            except Exception as e:
-                session.rollback()
-                # TODO(Dantali0n): These errors are horrendous for users to
-                #                  understand an error abstraction is needed.
-                raise
 
+        try:
+            session.commit()
+        except Exception as e:
+            session.rollback()
+            # TODO(Dantali0n): These errors are horrendous for users to
+            #                  understand an error abstraction is needed.
+            raise
+
+        if allow_multiple:
+            return devs
+        else:
             return dev
 
     @staticmethod
