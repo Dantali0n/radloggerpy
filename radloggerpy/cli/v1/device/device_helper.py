@@ -26,8 +26,8 @@ class DeviceHelper(ArgumentHelper):
 
     _arguments = None
 
-    # can be overridden by child classes in case key changes
-    _implementation_key = '--implementation'
+    # Should be overridden by child classes
+    _implementation_key = ''
 
     @property
     def arguments(self):

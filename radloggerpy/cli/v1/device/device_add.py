@@ -32,7 +32,7 @@ class DeviceAddCommand(DeviceHelper):
     @property
     def arguments(self):
         if self._arguments is None:
-            self._arguments = dict()
+            self._arguments = super().arguments
             self._arguments.update({
                 'name': Argument(
                     help="Unique name to help identify this device."),

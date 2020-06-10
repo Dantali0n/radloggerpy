@@ -27,10 +27,12 @@ class DeviceCommand(DeviceHelper):
 
     _arguments = None
 
+    _implementation_key = '--implementation'
+
     @property
     def arguments(self):
         if self._arguments is None:
-            self._arguments = dict()
+            self._arguments = super().arguments
             self._arguments.update({
                 '--id': Argument(
                     '-i', help="Database id associated with this object",
