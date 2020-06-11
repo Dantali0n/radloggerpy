@@ -75,5 +75,7 @@ class DeviceShow(ShowOne, DeviceCommand):
                        data.stopbits, data.timeout)
         elif details and data.type == TYPE_CHOICES[DeviceTypes.ETHERNET]:
             pass
+        elif details and data.type == TYPE_CHOICES[DeviceTypes.USB]:
+            pass
 
         return (fields, values)

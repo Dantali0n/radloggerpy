@@ -24,16 +24,8 @@ from radloggerpy.device.device_manager import DeviceManager
 class DeviceHelper(ArgumentHelper):
     """Abstract helper for shared device interface"""
 
-    _arguments = None
-
     # Should be overridden by child classes
     _implementation_key = ''
-
-    @property
-    def arguments(self):
-        if self._arguments is None:
-            self._arguments = dict()
-        return self._arguments
 
     def _add_implementations(self, device_type=None):
 

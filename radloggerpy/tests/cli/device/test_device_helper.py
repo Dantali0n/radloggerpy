@@ -32,7 +32,7 @@ class TestDeviceHelper(base.TestCase):
         @property
         def arguments(self):
             if self._arguments is None:
-                self._arguments = super().arguments
+                self._arguments = dict()
                 self._arguments.update({
                     'test': Argument('-t'),
                     'impexp': Argument('-i')
