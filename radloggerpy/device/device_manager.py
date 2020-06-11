@@ -108,8 +108,8 @@ class DeviceManager(object):
     def get_device_implementations():
         """Return a collection of all device implementations
 
-        Access implementations their TYPE to determine how they map to
-        :py:class:`radloggerpy.types.device_types.DeviceTypes`
+        Access implementations their INTERFACE to determine how they map to
+        :py:class:`radloggerpy.types.device_interfaces.DeviceInterfaces`
 
         :return:
         :rtype:
@@ -126,9 +126,9 @@ class DeviceManager(object):
 
         The dictionary structure follows the following schema:
 
-        ``OrderedDict([ (DeviceTypes.SERIAL, [devices.ArduinoGeigerPcb]) ])``
+        ``OrderedDict([(DeviceInterfaces.SERIAL,[devices.ArduinoGeigerPcb])])``
 
-        :return: Ordered dictionary mapping DeviceType enums to concrete
+        :return: Ordered dictionary mapping DeviceInterface enums to concrete
                  classes
         :rtype: OrderedDict with DeviceTypes as key and lists as values
         """
