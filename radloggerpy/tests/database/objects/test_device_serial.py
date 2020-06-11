@@ -23,7 +23,7 @@ from radloggerpy.database.models.serial_device import SerialDevice
 from radloggerpy.database.objects.serial_device import SerialDeviceObject
 
 from radloggerpy.tests import base
-from radloggerpy.types.device_types import DeviceTypes
+from radloggerpy.types.device_interfaces import DeviceInterfaces
 from radloggerpy.types.serial_bytesize import SerialBytesizeTypes
 from radloggerpy.types.serial_parity import SerialParityTypes
 from radloggerpy.types.serial_stopbit import SerialStopbitTypes
@@ -178,7 +178,7 @@ class TestSerialDeviceObject(base.TestCase):
         m_device = Device()
         m_device.id = 1
         m_device.name = "value2"
-        m_device.type = DeviceTypes.SERIAL
+        m_device.interface = DeviceInterfaces.SERIAL
         m_device.implementation = mock.Mock(
             code="ArduinoGeigerPCB", value="arduinogeigerpcb")
 
@@ -233,7 +233,7 @@ class TestSerialDeviceObject(base.TestCase):
 
         m_device1.id = 1
         m_device1.name = "test1"
-        m_device1.type = DeviceTypes.SERIAL
+        m_device1.interface = DeviceInterfaces.SERIAL
         m_device1.implementation = mock.Mock(
             code="ArduinoGeigerPCB", value="arduinogeigerpcb")
 
@@ -248,7 +248,7 @@ class TestSerialDeviceObject(base.TestCase):
 
         m_device2.id = 2
         m_device2.name = "test2"
-        m_device2.type = DeviceTypes.SERIAL
+        m_device2.interface = DeviceInterfaces.SERIAL
         m_device2.implementation = mock.Mock(
             code="ArduinoGeigerPCB", value="arduinogeigerpcb")
 
@@ -261,12 +261,12 @@ class TestSerialDeviceObject(base.TestCase):
 
         m_device2.serial = [m_device_serial2]
 
-        test_obj = SerialDeviceObject(**{"type": "serial"})
+        test_obj = SerialDeviceObject(**{"interface": "serial"})
         result_obj = SerialDeviceObject.find(m_session, test_obj, True)
 
         self.assertEqual(1, result_obj[0].id)
         self.assertEqual("test1", result_obj[0].name)
-        self.assertEqual("serial", result_obj[0].type)
+        self.assertEqual("serial", result_obj[0].interface)
         self.assertEqual("/dev/ttyUSB0", result_obj[0].port)
         self.assertEqual(8, result_obj[0].bytesize)
         self.assertEqual("odd", result_obj[0].parity)
@@ -274,7 +274,7 @@ class TestSerialDeviceObject(base.TestCase):
 
         self.assertEqual(2, result_obj[1].id)
         self.assertEqual("test2", result_obj[1].name)
-        self.assertEqual("serial", result_obj[1].type)
+        self.assertEqual("serial", result_obj[1].interface)
         self.assertEqual("/dev/ttyUSB2", result_obj[1].port)
         self.assertEqual(7, result_obj[1].bytesize)
         self.assertEqual("even", result_obj[1].parity)
@@ -288,7 +288,7 @@ class TestSerialDeviceObject(base.TestCase):
 
         m_query.all.return_value = None
 
-        test_obj = SerialDeviceObject(**{"type": "serial"})
+        test_obj = SerialDeviceObject(**{"interface": "serial"})
         result_obj = SerialDeviceObject.find(m_session, test_obj, True)
 
         self.assertIsNone(result_obj)

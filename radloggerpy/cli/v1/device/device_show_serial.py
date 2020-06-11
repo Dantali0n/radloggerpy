@@ -19,7 +19,7 @@ from radloggerpy._i18n import _
 from radloggerpy.cli.argument import Argument
 from radloggerpy.cli.v1.device.device_show import DeviceShow
 from radloggerpy.database.objects.serial_device import SerialDeviceObject
-from radloggerpy.types.device_types import DeviceTypes
+from radloggerpy.types.device_interfaces import DeviceInterfaces
 from radloggerpy.types.serial_bytesize import BYTESIZE_CHOICES
 from radloggerpy.types.serial_parity import PARITY_CHOICES
 from radloggerpy.types.serial_stopbit import STOPBIT_CHOICES
@@ -56,13 +56,13 @@ class DeviceShowSerial(DeviceShow):
                     choices=STOPBIT_CHOICES.values()),
                 '--timeout': Argument('-t', default=None),
             })
-            if '--type' in self._arguments:
-                del self._arguments['--type']
+            if '--interface' in self._arguments:
+                del self._arguments['--interface']
         return self._arguments
 
     def get_parser(self, program_name):
         parser = super(DeviceShow, self).get_parser(program_name)
-        self._add_implementations(DeviceTypes.SERIAL)
+        self._add_implementations(DeviceInterfaces.SERIAL)
         self.register_arguments(parser)
         return parser
 
@@ -79,9 +79,9 @@ class DeviceShowSerial(DeviceShow):
         if data is None:
             raise RuntimeWarning(_("Device could not be found"))
 
-        fields = ('id', 'name', 'type', 'implementation', 'port', 'baudrate',
-                  'bytesize', 'parity', 'stopbits', 'timeout')
-        values = (data.id, data.name, data.type, data.implementation,
+        fields = ('id', 'name', 'interface', 'implementation', 'port',
+                  'baudrate', 'bytesize', 'parity', 'stopbits', 'timeout')
+        values = (data.id, data.name, data.interface, data.implementation,
                   data.port, data.baudrate, data.bytesize, data.parity,
                   data.stopbits, data.timeout)
 

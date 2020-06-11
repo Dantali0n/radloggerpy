@@ -23,8 +23,8 @@ from radloggerpy.cli.v1.device import device_show
 from radloggerpy.device.device_manager import DeviceManager as dm
 
 from radloggerpy.tests import base
-from radloggerpy.types.device_types import DeviceTypes
-from radloggerpy.types.device_types import TYPE_CHOICES
+from radloggerpy.types.device_interfaces import DeviceInterfaces
+from radloggerpy.types.device_interfaces import INTERFACE_CHOICES
 from radloggerpy.types.serial_bytesize import SerialBytesizeTypes
 from radloggerpy.types.serial_parity import SerialParityTypes
 from radloggerpy.types.serial_stopbit import SerialStopbitTypes
@@ -50,13 +50,13 @@ class TestDeviceShow(base.TestCase):
             m_base.is_local = True
             t_device = device_show.DeviceShow()
 
-            t_device._add_types = mock.Mock()
+            t_device._add_interfaces = mock.Mock()
             t_device._add_implementations = mock.Mock()
             t_device.register_arguments = mock.Mock()
 
             t_device.get_parser("test")
 
-            t_device._add_types.assert_called_once()
+            t_device._add_interfaces.assert_called_once()
             t_device._add_implementations.assert_called_once()
             t_device.register_arguments.assert_called_once_with(m_parser)
 
@@ -75,7 +75,7 @@ class TestDeviceShow(base.TestCase):
         m_mod_dev = mock.Mock()
         m_mod_dev.id = 1
         m_mod_dev.name = 'test'
-        m_mod_dev.type = DeviceTypes.SERIAL
+        m_mod_dev.interface = DeviceInterfaces.SERIAL
         m_mod_dev.implementation = dm.get_device_implementations()[0].NAME
         m_dev_obj.find.return_value = m_mod_dev
 
@@ -90,7 +90,7 @@ class TestDeviceShow(base.TestCase):
             t_result = t_device.take_action(m_args)
             self.assertEqual(t_result[1][0], m_mod_dev.id)
             self.assertEqual(t_result[1][1], m_mod_dev.name)
-            self.assertEqual(t_result[1][2], m_mod_dev.type)
+            self.assertEqual(t_result[1][2], m_mod_dev.interface)
             self.assertEqual(t_result[1][3], m_mod_dev.implementation)
 
         # ensure that is_local on the patch does not modify the actual bases
@@ -109,7 +109,7 @@ class TestDeviceShow(base.TestCase):
         m_mod_dev = mock.Mock()
         m_mod_dev.id = 1
         m_mod_dev.name = 'test'
-        m_mod_dev.type = TYPE_CHOICES[DeviceTypes.SERIAL]
+        m_mod_dev.interface = INTERFACE_CHOICES[DeviceInterfaces.SERIAL]
         m_mod_dev.implementation = dm.get_device_implementations()[0].NAME
 
         m_dev_obj.find.return_value = m_mod_dev
@@ -135,7 +135,7 @@ class TestDeviceShow(base.TestCase):
             t_result = t_device.take_action(m_args)
             self.assertEqual(t_result[1][0], m_mod_dev.id)
             self.assertEqual(t_result[1][1], m_mod_dev.name)
-            self.assertEqual(t_result[1][2], m_mod_dev.type)
+            self.assertEqual(t_result[1][2], m_mod_dev.interface)
             self.assertEqual(t_result[1][3], m_mod_dev.implementation)
             self.assertEqual(t_result[1][4], m_mod_ser_dev.port)
             self.assertEqual(t_result[1][5], m_mod_ser_dev.baudrate)

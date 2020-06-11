@@ -1,5 +1,5 @@
 # -*- encoding: utf-8 -*-
-# Copyright (c) 2019 Dantali0n
+# Copyright (c) 2020 Dantali0n
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
 # not use this file except in compliance with the License. You may obtain
@@ -13,20 +13,19 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from enum import Enum
-from enum import unique
+import abc
+import six
+
+from radloggerpy.device import device
+from radloggerpy.types.device_interfaces import DeviceInterfaces
 
 
-@unique
-class DeviceTypes(Enum):
-    """Enum listing all possible supported types of device"""
-    ETHERNET = 1
-    SERIAL = 2
-    USB = 3
+@six.add_metaclass(abc.ABCMeta)
+class UsbDevice(device.Device):
+    """UsbDevice base class"""
 
+    NAME = "UsbDevice"
+    INTERFACE = DeviceInterfaces.USB
 
-TYPE_CHOICES = {
-    DeviceTypes.ETHERNET: "ethernet",
-    DeviceTypes.SERIAL: "serial",
-    DeviceTypes.USB: "usb"
-}
+    def __init__(self):
+        super(UsbDevice, self).__init__()

@@ -18,7 +18,7 @@ import six
 
 from radloggerpy.cli.argument import Argument
 from radloggerpy.cli.v1.device.device_helper import DeviceHelper
-from radloggerpy.types.device_types import TYPE_CHOICES
+from radloggerpy.types.device_interfaces import INTERFACE_CHOICES
 
 
 @six.add_metaclass(abc.ABCMeta)
@@ -39,8 +39,8 @@ class DeviceCommand(DeviceHelper):
                     type=int),
                 '--name': Argument(
                     '-n', help="Unique name to help identify this device."),
-                '--type': Argument(
-                    '-t', help="Type of interface to communicate with the "
+                '--interface': Argument(
+                    '-f', help="Type of interface to communicate with the "
                                "radiation monitoring device."),
                 '--implementation': Argument(
                     '-m', help="The specific implementation of radiation "
@@ -49,8 +49,8 @@ class DeviceCommand(DeviceHelper):
             })
         return self._arguments
 
-    def _add_types(self):
-        self.arguments['--type'].add_kwarg(
+    def _add_interfaces(self):
+        self.arguments['--interface'].add_kwarg(
             'choices',
-            TYPE_CHOICES.values()
+            INTERFACE_CHOICES.values()
         )

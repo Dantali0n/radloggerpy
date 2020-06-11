@@ -32,7 +32,7 @@ class ArgumentHelper(object):
 
     The expected structure of :py:attr:`arguments` could look as follows:
 
-    `{  'name' : Argument(),  '--type' : Argument('-t', required=True)  }`
+    `{  'name' : Argument(),  '--interface' : Argument('-i', required=True)  }`
 
     When the extend of certain Argument parameters is not known at compile time
     these parameters can be added using

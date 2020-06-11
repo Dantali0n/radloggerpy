@@ -18,7 +18,7 @@ from cliff.command import Command
 from radloggerpy.cli.argument import Argument
 from radloggerpy.cli.v1.device.device_add import DeviceAddCommand
 from radloggerpy.database.objects.serial_device import SerialDeviceObject
-from radloggerpy.types.device_types import DeviceTypes
+from radloggerpy.types.device_interfaces import DeviceInterfaces
 from radloggerpy.types.serial_bytesize import BYTESIZE_CHOICES
 from radloggerpy.types.serial_parity import PARITY_CHOICES
 from radloggerpy.types.serial_stopbit import STOPBIT_CHOICES
@@ -56,11 +56,11 @@ class DeviceAddSerial(Command, DeviceAddCommand):
 
     def get_parser(self, program_name):
         parser = super(DeviceAddSerial, self).get_parser(program_name)
-        self._add_implementations(DeviceTypes.SERIAL)
+        self._add_implementations(DeviceInterfaces.SERIAL)
         self.register_arguments(parser)
         return parser
 
     def take_action(self, parsed_args):
         serial_obj = SerialDeviceObject(**dict(parsed_args._get_kwargs()))
-        serial_obj.type = DeviceTypes.SERIAL
+        serial_obj.interface = DeviceInterfaces.SERIAL
         return SerialDeviceObject.add(self.app.database_session, serial_obj)

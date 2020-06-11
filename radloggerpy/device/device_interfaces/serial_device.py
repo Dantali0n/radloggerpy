@@ -17,7 +17,7 @@ import abc
 import six
 
 from radloggerpy.device import device
-from radloggerpy.types.device_types import DeviceTypes
+from radloggerpy.types.device_interfaces import DeviceInterfaces
 
 
 @six.add_metaclass(abc.ABCMeta)
@@ -39,7 +39,7 @@ class SerialDevice(device.Device):
     #                  interfacing classes(add_devices(session, [device])).
 
     NAME = "SerialDevice"
-    TYPE = DeviceTypes.SERIAL
+    INTERFACE = DeviceInterfaces.SERIAL
 
     def __init__(self):
         super(SerialDevice, self).__init__()

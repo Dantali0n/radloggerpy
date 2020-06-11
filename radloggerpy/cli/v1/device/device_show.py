@@ -21,8 +21,8 @@ from radloggerpy.cli.argument import Argument
 from radloggerpy.cli.v1.device.device import DeviceCommand
 from radloggerpy.database.objects.device import DeviceObject
 from radloggerpy.database.objects.serial_device import SerialDeviceObject
-from radloggerpy.types.device_types import DeviceTypes
-from radloggerpy.types.device_types import TYPE_CHOICES
+from radloggerpy.types.device_interfaces import DeviceInterfaces
+from radloggerpy.types.device_interfaces import INTERFACE_CHOICES
 
 
 class DeviceShow(ShowOne, DeviceCommand):
@@ -43,7 +43,7 @@ class DeviceShow(ShowOne, DeviceCommand):
 
     def get_parser(self, program_name):
         parser = super(DeviceShow, self).get_parser(program_name)
-        self._add_types()
+        self._add_interfaces()
         self._add_implementations()
         self.register_arguments(parser)
         return parser
@@ -63,19 +63,22 @@ class DeviceShow(ShowOne, DeviceCommand):
         if data is None:
             raise RuntimeWarning(_("Device could not be found"))
 
-        fields = ('id', 'name', 'type', 'implementation')
-        values = (data.id, data.name, data.type, data.implementation)
+        fields = ('id', 'name', 'interface', 'implementation')
+        values = (data.id, data.name, data.interface, data.implementation)
 
-        if details and data.type == TYPE_CHOICES[DeviceTypes.SERIAL]:
+        if details and data.interface == \
+                INTERFACE_CHOICES[DeviceInterfaces.SERIAL]:
             data = SerialDeviceObject.find(
                 self.app.database_session, device_obj, False)
             fields += ('port', 'baudrate', 'bytesize', 'parity',
                        'stopbits', 'timeout')
             values += (data.port, data.baudrate, data.bytesize, data.parity,
                        data.stopbits, data.timeout)
-        elif details and data.type == TYPE_CHOICES[DeviceTypes.ETHERNET]:
+        elif details and data.interface == \
+                INTERFACE_CHOICES[DeviceInterfaces.ETHERNET]:
             pass
-        elif details and data.type == TYPE_CHOICES[DeviceTypes.USB]:
+        elif details and data.interface == \
+                INTERFACE_CHOICES[DeviceInterfaces.USB]:
             pass
 
         return (fields, values)

@@ -19,7 +19,7 @@ from sqlalchemy_utils import ChoiceType
 
 from radloggerpy.database.declarative_base import base
 from radloggerpy.types.device_implementations import IMPLEMENTATION_CHOICES
-from radloggerpy.types.device_types import DeviceTypes
+from radloggerpy.types.device_interfaces import DeviceInterfaces
 
 
 class Device(base):
@@ -27,7 +27,7 @@ class Device(base):
 
     name = Column(String, unique=True)
 
-    type = Column(Enum(DeviceTypes))
+    interface = Column(Enum(DeviceInterfaces))
 
     implementation = Column(ChoiceType(IMPLEMENTATION_CHOICES))
 

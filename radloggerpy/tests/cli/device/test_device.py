@@ -16,7 +16,7 @@
 from radloggerpy.cli.v1.device import device
 
 from radloggerpy.tests import base
-from radloggerpy.types.device_types import TYPE_CHOICES
+from radloggerpy.types.device_interfaces import INTERFACE_CHOICES
 
 
 class TestDeviceCommand(base.TestCase):
@@ -34,12 +34,12 @@ class TestDeviceCommand(base.TestCase):
     def setUp(self):
         super(TestDeviceCommand, self).setUp()
 
-    def test_add_types(self):
+    def test_add_interfaces(self):
         dev_command = TestDeviceCommand.DevCommandExp()
 
-        dev_command._add_types()
+        dev_command._add_interfaces()
 
         self.assertItemsEqual(
-            TYPE_CHOICES.values(), dev_command.arguments[
-                '--type'].kwargs()['choices']
+            INTERFACE_CHOICES.values(), dev_command.arguments[
+                '--interface'].kwargs()['choices']
         )

@@ -30,8 +30,8 @@ class DeviceRemove(ShowOne, DeviceCommand):
     def arguments(self):
         if self._arguments is None:
             self._arguments = super().arguments
-            if '--type' in self._arguments:
-                del self._arguments['--type']
+            if '--interface' in self._arguments:
+                del self._arguments['--interface']
             if '--implementation' in self._arguments:
                 del self._arguments['--implementation']
         return self._arguments
@@ -59,8 +59,8 @@ class DeviceRemove(ShowOne, DeviceCommand):
         if data is None:
             raise RuntimeWarning(_("Device could not be found"))
 
-        fields = ('id', 'name', 'type', 'implementation')
-        values = (data.id, data.name, data.type, data.implementation)
+        fields = ('id', 'name', 'interface', 'implementation')
+        values = (data.id, data.name, data.interface, data.implementation)
 
         self.app.LOG.info(_("Device removed successfully"))
         return (fields, values)

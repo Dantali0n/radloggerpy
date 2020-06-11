@@ -24,7 +24,7 @@ from radloggerpy.database.objects.device import DeviceObject
 from radloggerpy.device.devices.arduino_geiger_pcb import ArduinoGeigerPcb
 
 from radloggerpy.tests import base
-from radloggerpy.types.device_types import DeviceTypes
+from radloggerpy.types.device_interfaces import DeviceInterfaces
 
 LOG = log.getLogger(__name__)
 CONF = config.CONF
@@ -68,7 +68,7 @@ class TestDeviceObject(base.TestCase):
 
         self.assertIsNone(None, test_obj.m_device.id)
         self.assertIsNone(None, test_obj.m_device.name)
-        self.assertIsNone(None, test_obj.m_device.type)
+        self.assertIsNone(None, test_obj.m_device.interface)
         self.assertIsNone(None, test_obj.m_device.implementation)
 
     def test_build_object_values(self):
@@ -76,7 +76,7 @@ class TestDeviceObject(base.TestCase):
         m_atribs = {
             "id": 1,
             "name": "value1",
-            "type": "serial",
+            "interface": "serial",
             "implementation": "ArduinoGeigerPCB",
         }
 
@@ -85,14 +85,14 @@ class TestDeviceObject(base.TestCase):
 
         self.assertEqual(1, test_obj.m_device.id)
         self.assertEqual("value1", test_obj.m_device.name)
-        self.assertEqual(DeviceTypes.SERIAL, test_obj.m_device.type)
+        self.assertEqual(DeviceInterfaces.SERIAL, test_obj.m_device.interface)
 
     def test_build_object_keys(self):
 
         m_atribs = {
             "id": 2,
             "name": "value2",
-            "type": DeviceTypes.SERIAL,
+            "interface": DeviceInterfaces.SERIAL,
             "implementation": "ArduinoGeigerPCB",
         }
 
@@ -101,7 +101,7 @@ class TestDeviceObject(base.TestCase):
 
         self.assertEqual(2, test_obj.m_device.id)
         self.assertEqual("value2", test_obj.m_device.name)
-        self.assertEqual(DeviceTypes.SERIAL, test_obj.m_device.type)
+        self.assertEqual(DeviceInterfaces.SERIAL, test_obj.m_device.interface)
 
     def test_delete(self):
         m_session = mock.Mock()
@@ -110,7 +110,7 @@ class TestDeviceObject(base.TestCase):
         m_atribs = {
             "id": 1,
             "name": "test1",
-            "type": DeviceTypes.SERIAL,
+            "interface": DeviceInterfaces.SERIAL,
             "implementation": "ArduinoGeigerPCB",
         }
 
@@ -118,7 +118,7 @@ class TestDeviceObject(base.TestCase):
         m_device = Device()
         m_device.id = 1
         m_device.name = "test1"
-        m_device.type = DeviceTypes.SERIAL
+        m_device.interface = DeviceInterfaces.SERIAL
         m_device.implementation = mock.Mock(
             code="ArduinoGeigerPCB", value="arduinogeigerpcb")
 
@@ -143,7 +143,7 @@ class TestDeviceObject(base.TestCase):
         m_atribs = {
             "id": 1,
             "name": "test1",
-            "type": DeviceTypes.SERIAL,
+            "interface": DeviceInterfaces.SERIAL,
             "implementation": "ArduinoGeigerPCB",
         }
 
@@ -151,7 +151,7 @@ class TestDeviceObject(base.TestCase):
         m_device = Device()
         m_device.id = 1
         m_device.name = "test1"
-        m_device.type = DeviceTypes.SERIAL
+        m_device.interface = DeviceInterfaces.SERIAL
         m_device.implementation = mock.Mock(
             code="ArduinoGeigerPCB", value="arduinogeigerpcb")
 
@@ -175,7 +175,7 @@ class TestDeviceObject(base.TestCase):
         m_device = Device()
         m_device.id = 1
         m_device.name = "test"
-        m_device.type = DeviceTypes.SERIAL
+        m_device.interface = DeviceInterfaces.SERIAL
         m_device.implementation = mock.Mock(
             code="ArduinoGeigerPCB", value="arduinogeigerpcb")
 
@@ -190,7 +190,7 @@ class TestDeviceObject(base.TestCase):
 
         self.assertEqual(1, result_obj.id)
         self.assertEqual("test", result_obj.name)
-        self.assertEqual("serial", result_obj.type)
+        self.assertEqual("serial", result_obj.interface)
         self.assertEqual(ArduinoGeigerPcb.NAME, result_obj.implementation)
 
     def test_find_obj_none(self):
@@ -216,27 +216,27 @@ class TestDeviceObject(base.TestCase):
 
         m_device1.id = 1
         m_device1.name = "test1"
-        m_device1.type = DeviceTypes.SERIAL
+        m_device1.interface = DeviceInterfaces.SERIAL
         m_device1.implementation = mock.Mock(
             code="ArduinoGeigerPCB", value="arduinogeigerpcb")
 
         m_device2.id = 2
         m_device2.name = "test2"
-        m_device2.type = DeviceTypes.SERIAL
+        m_device2.interface = DeviceInterfaces.SERIAL
         m_device2.implementation = mock.Mock(
             code="ArduinoGeigerPCB", value="arduinogeigerpcb")
 
-        test_obj = DeviceObject(**{"type": "serial"})
+        test_obj = DeviceObject(**{"interface": "serial"})
         result_obj = DeviceObject.find(m_session, test_obj, True)
 
         self.assertEqual(1, result_obj[0].id)
         self.assertEqual("test1", result_obj[0].name)
-        self.assertEqual("serial", result_obj[0].type)
+        self.assertEqual("serial", result_obj[0].interface)
         self.assertEqual(ArduinoGeigerPcb.NAME, result_obj[0].implementation)
 
         self.assertEqual(2, result_obj[1].id)
         self.assertEqual("test2", result_obj[1].name)
-        self.assertEqual("serial", result_obj[1].type)
+        self.assertEqual("serial", result_obj[1].interface)
         self.assertEqual(ArduinoGeigerPcb.NAME, result_obj[1].implementation)
 
     def test_find_obj_multiple_none(self):

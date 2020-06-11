@@ -27,15 +27,15 @@ class DeviceHelper(ArgumentHelper):
     # Should be overridden by child classes
     _implementation_key = ''
 
-    def _add_implementations(self, device_type=None):
+    def _add_implementations(self, device_interface=None):
 
-        if device_type is None:
+        if device_interface is None:
             choices = [dev.NAME for dev in
                        DeviceManager.get_device_implementations()]
         else:
             choices = [dev.NAME for dev in
                        DeviceManager.get_device_implementations()
-                       if dev.TYPE == device_type]
+                       if dev.INTERFACE == device_interface]
 
         self.arguments[self._implementation_key].add_kwarg(
             'choices', choices

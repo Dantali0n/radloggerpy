@@ -19,8 +19,8 @@ from unittest import mock
 from oslo_log import log
 from radloggerpy import config
 
+from radloggerpy.device import device_interfaces as di
 from radloggerpy.device import device_manager as dm
-from radloggerpy.device import device_types as dt
 from radloggerpy.device import devices as dev
 from radloggerpy.tests import base
 
@@ -76,9 +76,9 @@ class TestDeviceManager(base.TestCase):
     @mock.patch.object(dm.DeviceManager, '_get_device_module')
     def test_get_device_types(self, m_get_device_module):
         """Assert get_device_types called with correct module"""
-        dm.DeviceManager.get_device_types()
+        dm.DeviceManager.get_device_interfaces()
 
-        m_get_device_module.assert_called_once_with(dt)
+        m_get_device_module.assert_called_once_with(di)
 
     @mock.patch.object(dm.DeviceManager, '_get_device_module')
     def test_get_device_implementations(self, m_get_device_module):

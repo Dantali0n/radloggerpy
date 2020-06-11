@@ -1,5 +1,5 @@
 # -*- encoding: utf-8 -*-
-# Copyright (c) 2020 Dantali0n
+# Copyright (c) 2019 Dantali0n
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
 # not use this file except in compliance with the License. You may obtain
@@ -13,19 +13,22 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-import abc
-import six
+from cliff.lister import Lister
 
-from radloggerpy.device import device
-from radloggerpy.types.device_types import DeviceTypes
+from radloggerpy.device.device_manager import DeviceManager
 
 
-@six.add_metaclass(abc.ABCMeta)
-class EthernetDevice(device.Device):
-    """EthernetDevice base class"""
+class DeviceModels(Lister):
+    """Command to list available device interfaces and implementations"""
 
-    NAME = "EthernetDevice"
-    TYPE = DeviceTypes.ETHERNET
+    def take_action(self, parsed_args):
+        columns = ("interface", 'implementation')
 
-    def __init__(self):
-        super(EthernetDevice, self).__init__()
+        # Convert data from device_map
+        map = DeviceManager.get_device_map()
+        data = []
+        for key, values in map.items():
+            for value in values:
+                data.append((key, value.NAME))
+
+        return (columns, data)

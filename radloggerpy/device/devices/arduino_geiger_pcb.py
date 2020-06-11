@@ -15,7 +15,7 @@
 
 import time
 
-from radloggerpy.device.device_types.serial_device import SerialDevice
+from radloggerpy.device.device_interfaces.serial_device import SerialDevice
 
 
 class ArduinoGeigerPcb(SerialDevice):

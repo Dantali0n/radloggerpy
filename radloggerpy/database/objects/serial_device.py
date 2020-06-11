@@ -16,7 +16,7 @@
 from radloggerpy.database.models.device import Device
 from radloggerpy.database.models.serial_device import SerialDevice
 from radloggerpy.database.objects.device import DeviceObject
-from radloggerpy.types.device_types import DeviceTypes
+from radloggerpy.types.device_interfaces import DeviceInterfaces
 from radloggerpy.types.serial_bytesize import BYTESIZE_CHOICES
 from radloggerpy.types.serial_parity import PARITY_CHOICES
 from radloggerpy.types.serial_stopbit import STOPBIT_CHOICES
@@ -130,7 +130,7 @@ class SerialDeviceObject(DeviceObject):
         reference._build_object()
 
         """Only look for serial devices"""
-        reference.m_device.type = DeviceTypes.SERIAL
+        reference.m_device.interface = DeviceInterfaces.SERIAL
 
         base_filters = reference._filter(reference.m_device)
 

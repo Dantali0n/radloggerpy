@@ -24,7 +24,7 @@ import futurist
 from radloggerpy._i18n import _
 from radloggerpy.common.dynamic_import import import_modules
 from radloggerpy.common.dynamic_import import list_module_names
-from radloggerpy.device import device_types as dt
+from radloggerpy.device import device_interfaces as di
 from radloggerpy.device import devices as dev
 
 LOG = log.getLogger(__name__)
@@ -74,7 +74,7 @@ class DeviceManager(object):
 
     @staticmethod
     def _get_device_module(module):
-        device_types = []
+        device_modules = []
 
         # discover the path for the module directory and the package
         package_path = module.__path__[0]
@@ -87,22 +87,22 @@ class DeviceManager(object):
         imported_modules = import_modules(
             modules, package, fetch_attribute=True)
         for module, attribute in imported_modules:
-            device_types.append(getattr(module, attribute))
+            device_modules.append(getattr(module, attribute))
 
-        return device_types
+        return device_modules
 
     @staticmethod
-    def get_device_types():
-        """Return a collection of all device types their abstract classes
+    def get_device_interfaces():
+        """Return a collection of all device interfaces their abstract classes
 
-        Access abstract classes their TYPE to determine how they map to
-        :py:class:`radloggerpy.types.device_types.DeviceTypes`
+        Access abstract classes their INTERFACE to determine how they map to
+        :py:class:`radloggerpy.types.device_interfaces.DeviceInterfaces`
 
         :return:
         :rtype:
         """
 
-        return DeviceManager._get_device_module(dt)
+        return DeviceManager._get_device_module(di)
 
     @staticmethod
     def get_device_implementations():
@@ -138,13 +138,13 @@ class DeviceManager(object):
 
         device_map = OrderedDict()
 
-        d_types = DeviceManager.get_device_types()
-        for d_type in d_types:
-            device_map[d_type.TYPE] = []
+        d_interfaces = DeviceManager.get_device_interfaces()
+        for d_interface in d_interfaces:
+            device_map[d_interface.INTERFACE] = []
 
         implementations = DeviceManager.get_device_implementations()
         for implementation in implementations:
-            device_map[implementation.TYPE].append(implementation)
+            device_map[implementation.INTERFACE].append(implementation)
 
         DeviceManager._DEVICE_MAP = device_map
         return DeviceManager._DEVICE_MAP

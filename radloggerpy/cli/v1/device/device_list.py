@@ -33,7 +33,7 @@ class DeviceList(Lister, DeviceCommand):
 
     def get_parser(self, program_name):
         parser = super(DeviceList, self).get_parser(program_name)
-        self._add_types()
+        self._add_interfaces()
         self._add_implementations()
         self.register_arguments(parser)
         return parser
@@ -48,10 +48,10 @@ class DeviceList(Lister, DeviceCommand):
         if len(data) == 0:
             raise RuntimeWarning(_("No devices found"))
 
-        fields = ('id', 'name', 'type', 'implementation')
+        fields = ('id', 'name', 'interface', 'implementation')
         values = []
         for result in data:
-            value = (result.id, result.name, result.type,
+            value = (result.id, result.name, result.interface,
                      result.implementation)
             values.append(value)
 

@@ -76,8 +76,8 @@ class TestDeviceHelper(base.TestCase):
         helper = TestDeviceHelper.TestDevHelper()
 
         m_dev_manager.get_device_implementations.return_value = [
-            mock.Mock(NAME='example1', TYPE='have'),
-            mock.Mock(NAME='example2', TYPE='filter'),
+            mock.Mock(NAME='example1', INTERFACE='have'),
+            mock.Mock(NAME='example2', INTERFACE='filter'),
         ]
 
         helper._add_implementations('have')
