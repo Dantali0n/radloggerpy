@@ -19,8 +19,8 @@ Contents:
 
    readme
    install/index
-   library/index
    configuration/index
    cli/index
    user/index
+   developer/index
    source_documentation/index
