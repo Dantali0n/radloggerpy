@@ -83,6 +83,12 @@ pygments_style = 'sphinx'
 # html_static_path = ['static']
 html_theme = "sphinx_rtd_theme"
 
+html_static_path = ['static']
+
+html_css_files = [
+    'css/custom.css',
+]
+
 # Output file base name for HTML help builder.
 htmlhelp_basename = '%sdoc' % project
 
