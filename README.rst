@@ -15,6 +15,9 @@ RadLoggerPy
     :target: https://twitter.com/D4ntali0n
     :alt: Follow the main developer Dantalion on twitter.
 
+RadLoggerPy is a radiation logging and monitoring solution, primarily,
+designed to be used with background radiation measuring devices.
+
 * Free software: Apache license
 * Source: https://github.com/Dantali0n/RadLoggerPy
 * Bugs: https://github.com/Dantali0n/RadLoggerPy/issues

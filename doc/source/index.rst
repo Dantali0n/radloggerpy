@@ -22,5 +22,6 @@ Contents:
    configuration/index
    cli/index
    user/index
+   developer/roadmap
    developer/index
    source_documentation/index

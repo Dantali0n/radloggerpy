@@ -44,3 +44,4 @@ not shown here.
 Upon encountering a device error several methods will be available to notify
 users. These can be enabled in the configuration along with any configuration
 parameters required.
+
