@@ -29,6 +29,7 @@ from radloggerpy.common import ascii_logo
 from radloggerpy.common.first_time_run import FirstTimeRun
 from radloggerpy.config import config as configurator
 from radloggerpy.database import database_manager
+from radloggerpy.database.objects.measurement import MeasurementObject
 
 LOG = log.getLogger(__name__)
 CONF = config.CONF
@@ -74,12 +75,17 @@ def main():
         database_manager.close_lingering_sessions()
         return
 
+    sess = database_manager.create_session()
     string = ""
     while True:
         while ser.inWaiting() > 0:
             char = ser.read(1).decode("utf-8")
             if char == '\n':
                 print(string)
+                measure = MeasurementObject()
+                measure.device_id = 1
+                measure.cpm = int(string)
+                MeasurementObject.add(sess, measure)
                 string = ""
             elif char == '\r':
                 pass

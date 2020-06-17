@@ -55,7 +55,7 @@ class TestRadloggerpy(base.TestCase):
         m_serial_instance = mock.Mock()
         m_serial_instance.inWaiting.side_effect = [11, 1, 0]
         m_serial_instance.read.side_effect = [
-            "hello world".encode('utf-8'),
+            "14".encode('utf-8'),
             '\n'.encode('utf-8')
         ]
 

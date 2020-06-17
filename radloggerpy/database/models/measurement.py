@@ -1,5 +1,5 @@
 # -*- encoding: utf-8 -*-
-# Copyright (c) 2019 Dantali0n
+# Copyright (c) 2020 Dantali0n
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
 # not use this file except in compliance with the License. You may obtain
@@ -13,17 +13,24 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from sqlalchemy import Column, Integer, ForeignKey, String
+from datetime import datetime
+
+from sqlalchemy import Column, Integer, ForeignKey, Float, DateTime
 from sqlalchemy.orm import relationship
 
 from radloggerpy.database.declarative_base import base
 
 
-class DeviceAttribute(base):
+class Measurement(base):
     id = Column(Integer, primary_key=True)
-    base_id = Column(Integer, ForeignKey('device.id'))
+    device_id = Column(Integer, ForeignKey('device.id'))
+    timestamp = Column(DateTime, default=datetime.utcnow)
 
-    key = Column(String)
-    value = Column(String)
+    cpm = Column(Integer, nullable=True)
+    svh = Column(Float, nullable=True)
 
-    base_device = relationship("Device", back_populates="attributes")
+    bq = Column(Integer, nullable=True)
+    cpkg = Column(Integer, nullable=True)
+    gray = Column(Integer, nullable=True)
+
+    base_device = relationship("Device", single_parent=True)
