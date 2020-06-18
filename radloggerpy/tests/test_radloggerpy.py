@@ -19,7 +19,6 @@ from unittest import mock
 from serial.serialutil import SerialException
 
 from radloggerpy import radloggerpy
-from radloggerpy.database.objects import measurement
 
 from radloggerpy.tests import base
 
