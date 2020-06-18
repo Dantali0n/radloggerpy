@@ -19,6 +19,7 @@ from unittest import mock
 from serial.serialutil import SerialException
 
 from radloggerpy import radloggerpy
+from radloggerpy.database.objects import measurement
 
 from radloggerpy.tests import base
 
@@ -49,7 +50,8 @@ class TestRadloggerpy(base.TestCase):
         self.addCleanup(self.p_serial.stop)
 
     @mock.patch.object(radloggerpy.time, 'sleep')
-    def test_run_main(self, m_sleep):
+    @mock.patch.object(radloggerpy, 'MeasurementObject')
+    def test_run_main(self, m_measurement, m_sleep):
         m_sleep.side_effect = InterruptedError
 
         m_serial_instance = mock.Mock()
@@ -63,6 +65,7 @@ class TestRadloggerpy(base.TestCase):
 
         self.assertRaises(InterruptedError, radloggerpy.main)
         m_sleep.assert_called_once()
+        m_measurement.add.assert_called_once()
 
     def test_run_main_err_no_device(self):
         m_execption = SerialException

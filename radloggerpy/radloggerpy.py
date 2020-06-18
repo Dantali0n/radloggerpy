@@ -29,6 +29,7 @@ from radloggerpy.common import ascii_logo
 from radloggerpy.common.first_time_run import FirstTimeRun
 from radloggerpy.config import config as configurator
 from radloggerpy.database import database_manager
+from radloggerpy.database.objects.device import DeviceObject
 from radloggerpy.database.objects.measurement import MeasurementObject
 
 LOG = log.getLogger(__name__)
@@ -83,7 +84,7 @@ def main():
             if char == '\n':
                 print(string)
                 measure = MeasurementObject()
-                measure.device_id = 1
+                measure.device = DeviceObject(**{'id': 1})
                 measure.cpm = int(string)
                 MeasurementObject.add(sess, measure)
                 string = ""

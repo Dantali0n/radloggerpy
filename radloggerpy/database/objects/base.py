@@ -29,7 +29,7 @@ class DatabaseObject(object):
     """Abstract database object providing abstract CRUD interfaces
 
     When using SQLAlchemy database sessions all interactions with these
-    sessions should be achieved using object which implement
+    sessions should be achieved using objects which implement
     :py:class:`~.DatabaseObject`. These objects provide CRUD methods to handle
     interactions allowing to obfuscate that many of the objects in the database
     are consistent of multiple models.
@@ -51,12 +51,18 @@ class DatabaseObject(object):
     ``result = DatabaseObject.find(session, dbo)``
     ``print(result.field1)``
 
+    Alternatively the fields can be set after the object is instantiated:
+    ``dbo = DatabaseObject()``
+    ``dbo.field1 = 'hello world'``
+    ``result = DatabaseObject.find(session, dbo)``
+    ``print(result.field1)``
+
     For models using enums or choicetypes the values should be set as object
     attributes while the keys should be used for internal models.
     """
 
     def __init__(self, **kwargs):
-        """Initialize the object matching its arguments
+        """Initialize the class attributes matching its arguments
 
         :param kwargs: named arguments
         """

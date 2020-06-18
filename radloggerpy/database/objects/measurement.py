@@ -13,29 +13,30 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+from radloggerpy.database.models.device import Device
 from radloggerpy.database.models.measurement import Measurement
 from radloggerpy.database.objects.base import DatabaseObject
+from radloggerpy.database.objects.device import DeviceObject
 
 
 class MeasurementObject(DatabaseObject):
-    """device object with base model attributes
+    """Measurement object with base model attributes
 
-    Setting the ``device`` or ``device_id`` attributes will configure the
-    device relation this measurement object belongs to. Setting ``device_id``
-    will take precedence over setting ``device``. Additionally, ``device``
-    will **not** be set by ``_build_attributes`` only ``device_id`` will.
+    The device attribute can be set to an instance of
+    :py:class:`radloggerpy.database.objects.device.DeviceObject` with any
+    desired attribute set. When this is set it will be used by methods if
+    applicable.
     """
 
-    id = None
-    timestamp = None
+    id = None  # Type: int
+    timestamp = None  # Type: datetime.datetime
 
-    cpm = None
-    svh = None
+    cpm = None  # Type: int
+    svh = None  # Type: float
 
-    device = None
-    device_id = None
+    device = None  # Type: DeviceObject
 
-    m_measurement = None
+    m_measurement = None  # Type: Measurement
 
     def _build_object(self):
         self.m_measurement = Measurement()
@@ -45,10 +46,8 @@ class MeasurementObject(DatabaseObject):
         if self.timestamp:
             self.m_measurement.timestamp = self.timestamp
 
-        if self.device_id:
-            self.m_measurement.device_id = self.device_id
-        elif self.device:
-            self.m_measurement.base_device = self.device
+        if self.device:
+            self.device._build_object()
 
         if self.cpm:
             self.m_measurement.cpm = self.cpm
@@ -61,10 +60,11 @@ class MeasurementObject(DatabaseObject):
         if self.m_measurement.timestamp:
             self.timestamp = self.m_measurement.timestamp
 
-        if self.m_measurement.device_id:
-            self.device_id = self.m_measurement.device_id
-        elif self.m_measurement.base_device.id:
-            self.device_id = self.m_measurement.base_device.id
+        if self.m_measurement.base_device:
+            dev_obj = DeviceObject()
+            dev_obj.m_device = self.m_measurement.base_device
+            dev_obj._build_attributes()
+            self.device = dev_obj
 
         if self.m_measurement.cpm:
             self.cpm = self.m_measurement.cpm
@@ -74,6 +74,18 @@ class MeasurementObject(DatabaseObject):
     @staticmethod
     def add(session, reference):
         reference._build_object()
+
+        """Measurement.device_id must be set to populate the field"""
+        if reference.m_measurement.device_id is None \
+                and hasattr(reference.device, 'id') and reference.device.id:
+            """If no device_id is set find it through device id"""
+            reference.m_measurement.device_id = reference.device.id
+        elif reference.m_measurement.device_id is None and reference.device:
+            """If no device_id find it through device"""
+            dev = DeviceObject.find(session, reference.device, False)
+            if dev is None:
+                raise
+            reference.m_measurement.device_id = dev.id
 
         session.add(reference.m_measurement)
 
@@ -140,6 +152,12 @@ class MeasurementObject(DatabaseObject):
 
         filters = reference._filter(reference.m_measurement)
         query = session.query(Measurement).filter_by(**filters)
+
+        if reference.device:
+            dev_filter = reference.device._filter(
+                reference.device.m_device)
+            query = session.query(Measurement).filter_by(**filters)\
+                .join(Device).filter_by(**dev_filter)
 
         if allow_multiple:
             results = query.all()

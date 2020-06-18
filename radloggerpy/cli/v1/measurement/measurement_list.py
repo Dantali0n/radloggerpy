@@ -17,6 +17,7 @@ from cliff.lister import Lister
 
 from radloggerpy._i18n import _
 from radloggerpy.cli.v1.measurement.measurement import MeasurementCommand
+from radloggerpy.database.objects.device import DeviceObject
 from radloggerpy.database.objects.measurement import MeasurementObject
 
 
@@ -39,8 +40,16 @@ class MeasurementList(Lister, MeasurementCommand):
     def take_action(self, parsed_args):
         args = dict(parsed_args._get_kwargs())
 
-        if args['device']:
-            args['device_id'] = args['device']
+        if args['device'] or args['name']:
+            """Set device for MeasurementObject if any device params are set"""
+            dev_obj = DeviceObject()
+            if args['device']:
+                dev_obj.id = args['device']
+                del args['device']
+            if args['name']:
+                dev_obj.name = args['name']
+                del args['name']
+            args['device'] = dev_obj
 
         measure_obj = MeasurementObject(**args)
 
@@ -53,7 +62,7 @@ class MeasurementList(Lister, MeasurementCommand):
         fields = ('timestamp', 'device', 'cpm', 'μSv/h')
         values = []
         for result in data:
-            value = (result.timestamp, result.device_id, result.cpm,
+            value = (result.timestamp, result.device.id, result.cpm,
                      result.svh)
             values.append(value)
 

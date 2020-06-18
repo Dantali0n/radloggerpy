@@ -4,6 +4,7 @@ RoadMap
 
 - Backup facilities for measurement database
 - Importing and exporting configuration
+- Importing and exporting measurements (csv, xml, json)
 - Distinquish between different types of measurements
 
   - Continuous / incident measurements, measure each
