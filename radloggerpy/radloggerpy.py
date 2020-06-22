@@ -51,14 +51,6 @@ def main():
     # Perform first time initialization if required
     FirstTimeRun()
 
-    # device = Device(type=DeviceTypes.SERIAL)
-    # serial_device = SerialDevice(base_device=device)
-    # device.serial = serial_device
-    #
-    # session = database_manager.create_session()
-    # session.add(device)
-    # session.add(serial_device)
-    # session.commit()
     try:
         ser = serial.Serial(port='/dev/ttyUSB0', baudrate=9600,
                             parity=serial.PARITY_NONE,

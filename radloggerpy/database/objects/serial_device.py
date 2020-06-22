@@ -13,6 +13,9 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+from oslo_log import log
+
+from radloggerpy._i18n import _
 from radloggerpy.database.models.device import Device
 from radloggerpy.database.models.serial_device import SerialDevice
 from radloggerpy.database.objects.device import DeviceObject
@@ -20,6 +23,8 @@ from radloggerpy.types.device_interfaces import DeviceInterfaces
 from radloggerpy.types.serial_bytesize import BYTESIZE_CHOICES
 from radloggerpy.types.serial_parity import PARITY_CHOICES
 from radloggerpy.types.serial_stopbit import STOPBIT_CHOICES
+
+LOG = log.getLogger(__name__)
 
 
 class SerialDeviceObject(DeviceObject):
@@ -138,6 +143,7 @@ class SerialDeviceObject(DeviceObject):
         if hasattr(reference, 'm_serial_device'):
             filters = reference._filter(reference.m_serial_device)
         else:
+            LOG.warning(_("Reference should be of type SerialDeviceObject"))
             filters = {}
 
         query = session.query(Device).filter_by(**base_filters)\
