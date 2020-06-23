@@ -204,6 +204,82 @@ class TestMeasurementObject(base.TestCase):
         m_session.commit.assert_called_once()
         m_session.rollback.assert_called_once()
 
+    def test_delete_obj(self):
+        m_date = datetime.utcnow()
+
+        """Represents mocked device as it will be retrieved from db """
+        m_measurement = Measurement()
+        m_measurement.id = 1
+        m_measurement.timestamp = m_date
+        m_measurement.cpm = 12
+        m_measurement.svh = 0.0045
+        m_measurement.base_device = Device()
+        m_measurement.base_device.id = 1
+
+        """Setup query and session to return mocked device"""
+        m_query = mock.Mock()
+        m_session = mock.Mock()
+        m_session.query.return_value.filter_by.return_value = m_query
+        m_query.one_or_none.return_value = m_measurement
+
+        test_obj = ms.MeasurementObject(
+            **{"device": device.DeviceObject(**{'id': 1})})
+        result_obj = ms.MeasurementObject.delete(m_session, test_obj, False)
+
+        m_session.delete.assert_has_calls(
+            [
+                mock.call(m_measurement),
+            ],
+            any_order=True
+        )
+        m_session.commit.assert_called_once()
+
+        self.assertEqual(1, result_obj.id)
+        self.assertEqual(m_date, result_obj.timestamp)
+        self.assertEqual(12, result_obj.cpm)
+        self.assertEqual(0.0045, result_obj.svh)
+        self.assertEqual(1, result_obj.device.id)
+
+    def test_delete_obj_multiple(self):
+        m_measurement_1 = Measurement()
+        m_measurement_1.id = 1
+        m_measurement_1.cpm = 12
+        m_measurement_1.base_device = Device()
+        m_measurement_1.base_device.id = 1
+
+        m_measurement_2 = Measurement()
+        m_measurement_2.id = 2
+        m_measurement_2.cpm = 34
+        m_measurement_2.base_device = Device()
+        m_measurement_2.base_device.id = 1
+
+        m_query = mock.Mock()
+        m_session = mock.Mock()
+        m_session.query.return_value.filter_by.return_value = m_query
+
+        m_query.all.return_value = [m_measurement_1, m_measurement_2]
+
+        test_obj = ms.MeasurementObject(
+            **{"device": device.DeviceObject(**{'id': 1})})
+        result_obj = ms.MeasurementObject.delete(m_session, test_obj, True)
+
+        m_session.delete.assert_has_calls(
+            [
+                mock.call(m_measurement_1),
+                mock.call(m_measurement_2),
+            ],
+            any_order=True
+        )
+        m_session.commit.assert_called_once()
+
+        self.assertEqual(1, result_obj[0].id)
+        self.assertEqual(12, result_obj[0].cpm)
+        self.assertEqual(1, result_obj[0].device.id)
+
+        self.assertEqual(2, result_obj[1].id)
+        self.assertEqual(34, result_obj[1].cpm)
+        self.assertEqual(1, result_obj[1].device.id)
+
     def test_find_obj(self):
         m_date = datetime.utcnow()
 
