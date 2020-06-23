@@ -13,6 +13,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+from radloggerpy._i18n import _
 from radloggerpy.database.models.device import Device
 from radloggerpy.database.models.measurement import Measurement
 from radloggerpy.database.objects.base import DatabaseObject
@@ -84,7 +85,7 @@ class MeasurementObject(DatabaseObject):
             """If no device_id find it through device"""
             dev = DeviceObject.find(session, reference.device, False)
             if dev is None:
-                raise
+                raise RuntimeError(_("No associateable Device found"))
             reference.m_measurement.device_id = dev.id
 
         session.add(reference.m_measurement)

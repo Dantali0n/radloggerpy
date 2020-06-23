@@ -12,7 +12,7 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-
+from datetime import datetime
 from unittest import mock
 
 from oslo_log import log
@@ -20,7 +20,7 @@ from oslo_log import log
 from radloggerpy import config
 from radloggerpy.database.models.device import Device
 from radloggerpy.database.models.measurement import Measurement
-from radloggerpy.database.objects.device import DeviceObject
+from radloggerpy.database.objects import device
 from radloggerpy.database.objects import measurement as ms
 
 from radloggerpy.tests import base
@@ -77,9 +77,12 @@ class TestMeasurementObject(base.TestCase):
 
         m_device = mock.Mock()
 
+        m_date = datetime.utcnow()
+
         m_atribs = {
             "cpm": 12,
             "svh": 0.0045,
+            "timestamp": m_date,
             "device": m_device
         }
 
@@ -88,6 +91,7 @@ class TestMeasurementObject(base.TestCase):
 
         self.assertEqual(12, test_obj.m_measurement.cpm)
         self.assertEqual(0.0045, test_obj.m_measurement.svh)
+        self.assertEqual(m_date, test_obj.m_measurement.timestamp)
         m_device._build_object.assert_called_once()
 
     def test_build_attributes_none(self):
@@ -105,10 +109,14 @@ class TestMeasurementObject(base.TestCase):
     def test_add(self):
         m_session = mock.Mock()
 
+        m_date = datetime.utcnow()
+
         # TODO(Dantali0n): change into setting attributes directly
         m_atribs = {
             "cpm": 12,
-            "device": DeviceObject(**{'id': 1})
+            "svh": 0.0045,
+            "timestamp": m_date,
+            "device": device.DeviceObject(**{'id': 1})
         }
 
         test_obj = ms.MeasurementObject(**m_atribs)
@@ -122,6 +130,57 @@ class TestMeasurementObject(base.TestCase):
         )
         m_session.commit.assert_called_once()
 
+    def test_add_find_device(self):
+        m_session = mock.Mock()
+        m_date = datetime.utcnow()
+
+        # TODO(Dantali0n): change into setting attributes directly
+        m_atribs = {
+            "cpm": 12,
+            "svh": 0.0045,
+            "timestamp": m_date,
+            "device": device.DeviceObject(**{'name': 'test'})
+        }
+
+        with mock.patch.object(ms, 'DeviceObject') as m_find:
+            test_obj = ms.MeasurementObject(**m_atribs)
+
+            m_dev = Device()
+            m_dev.id = 1
+            m_find.find.return_value = m_dev
+
+            ms.MeasurementObject.add(m_session, test_obj)
+
+            m_session.add.assert_has_calls(
+                [
+                    mock.call(test_obj.m_measurement),
+                ],
+                any_order=True
+            )
+            m_session.commit.assert_called_once()
+
+        m_find.find.assert_called_once()
+
+    def test_add_find_device_error(self):
+        m_session = mock.Mock()
+        m_date = datetime.utcnow()
+
+        # TODO(Dantali0n): change into setting attributes directly
+        m_atribs = {
+            "cpm": 12,
+            "svh": 0.0045,
+            "timestamp": m_date,
+            "device": device.DeviceObject(**{'name': 'test'})
+        }
+
+        with mock.patch.object(ms, 'DeviceObject') as m_find:
+            test_obj = ms.MeasurementObject(**m_atribs)
+            m_find.find.return_value = None
+            self.assertRaises(
+                RuntimeError, ms.MeasurementObject.add, m_session, test_obj)
+
+        m_find.find.assert_called_once()
+
     def test_add_error(self):
         m_session = mock.Mock()
         m_session.commit.side_effect = RuntimeError
@@ -129,7 +188,7 @@ class TestMeasurementObject(base.TestCase):
         # TODO(Dantali0n): change into setting attributes directly
         m_atribs = {
             "cpm": 12,
-            "device": DeviceObject(**{'id': 1})
+            "device": device.DeviceObject(**{'id': 1})
         }
 
         test_obj = ms.MeasurementObject(**m_atribs)
@@ -146,11 +205,14 @@ class TestMeasurementObject(base.TestCase):
         m_session.rollback.assert_called_once()
 
     def test_find_obj(self):
+        m_date = datetime.utcnow()
 
         """Represents mocked device as it will be retrieved from db """
         m_measurement = Measurement()
         m_measurement.id = 1
+        m_measurement.timestamp = m_date
         m_measurement.cpm = 12
+        m_measurement.svh = 0.0045
         m_measurement.base_device = Device()
         m_measurement.base_device.id = 1
 
@@ -162,11 +224,13 @@ class TestMeasurementObject(base.TestCase):
         m_query.one_or_none.return_value = m_measurement
 
         test_obj = ms.MeasurementObject(
-            **{"device": DeviceObject(**{'id': 1})})
+            **{"device": device.DeviceObject(**{'id': 1})})
         result_obj = ms.MeasurementObject.find(m_session, test_obj, False)
 
         self.assertEqual(1, result_obj.id)
+        self.assertEqual(m_date, result_obj.timestamp)
         self.assertEqual(12, result_obj.cpm)
+        self.assertEqual(0.0045, result_obj.svh)
         self.assertEqual(1, result_obj.device.id)
 
     def test_find_obj_none(self):
@@ -203,7 +267,7 @@ class TestMeasurementObject(base.TestCase):
         m_query.all.return_value = [m_measurement_1, m_measurement_2]
 
         test_obj = ms.MeasurementObject(
-            **{"device": DeviceObject(**{'id': 1})})
+            **{"device": device.DeviceObject(**{'id': 1})})
         result_obj = ms.MeasurementObject.find(m_session, test_obj, True)
 
         self.assertEqual(1, result_obj[0].id)
@@ -223,7 +287,7 @@ class TestMeasurementObject(base.TestCase):
         m_query.all.return_value = None
 
         test_obj = ms.MeasurementObject(
-            **{"device": DeviceObject(**{'id': 1})})
+            **{"device": device.DeviceObject(**{'id': 1})})
         result_obj = ms.MeasurementObject.find(m_session, test_obj, True)
 
         self.assertIsNone(result_obj)
