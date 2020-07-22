@@ -36,6 +36,28 @@ class TestDeviceShowSerial(base.TestCase):
         super(TestDeviceShowSerial, self).setUp()
 
     @mock.patch.object(dss, 'super')
+    def test_arguments(self, m_super):
+        m_super.return_value = mock.Mock(arguments={})
+
+        bases = copy(ds.DeviceShow.__bases__)
+        f_bases = tuple(base for base in bases if base != ShowOne)
+
+        m_base = mock.patch.object(
+            ds.DeviceShow, '__bases__', f_bases)
+        with m_base:
+            m_base.is_local = True
+            t_device = dss.DeviceShowSerial()
+            t_device.register_arguments(mock.Mock())
+
+            m_super.assert_called_once()
+
+            self.assertTrue('--port' in t_device._arguments.keys())
+            self.assertFalse('--interface' in t_device._arguments.keys())
+
+        # ensure that is_local on the patch does not modify the actual bases
+        self.assertEqual(bases, ds.DeviceShow.__bases__)
+
+    @mock.patch.object(dss, 'super')
     def test_parser(self, m_super):
 
         m_parser = mock.Mock()
