@@ -40,7 +40,7 @@ class MeasurementList(Lister, MeasurementCommand):
     def take_action(self, parsed_args):
         args = dict(parsed_args._get_kwargs())
 
-        if args['device'] or args['name']:
+        if 'device' in args or 'name' in args:
             """Set device for MeasurementObject if any device params are set"""
             dev_obj = DeviceObject()
             if args['device']:

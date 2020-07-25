@@ -33,6 +33,23 @@ class TestDeviceAddSerial(base.TestCase):
     def setUp(self):
         super(TestDeviceAddSerial, self).setUp()
 
+    def test_arguments_base(self):
+        bases = copy(device_add_serial.DeviceAddSerial.__bases__)
+        f_bases = tuple(base for base in bases if base != Command)
+
+        m_base = mock.patch.object(
+            device_add_serial.DeviceAddSerial, '__bases__', f_bases)
+        with m_base:
+            m_base.is_local = True
+            t_device = device_add_serial.DeviceAddSerial()
+            t_device.register_arguments(mock.Mock())
+
+            self.assertTrue('name' in t_device._arguments.keys())
+            self.assertTrue('implementation' in t_device._arguments.keys())
+
+        # ensure that is_local on the patch does not modify the actual bases
+        self.assertEqual(bases, device_add_serial.DeviceAddSerial.__bases__)
+
     @mock.patch.object(device_add_serial, 'super')
     def test_arguments(self, m_super):
         m_super.return_value = mock.Mock(arguments={})
