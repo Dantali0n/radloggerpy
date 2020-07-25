@@ -32,6 +32,7 @@ class DeviceAddSerial(Command, DeviceAddCommand):
     @property
     def arguments(self):
         if self._arguments is None:
+            # retrieve existing arguments from baseclass
             self._arguments = super().arguments
             self._arguments.update({
                 'port': Argument(

@@ -33,6 +33,7 @@ class DeviceShowSerial(DeviceShow):
     @property
     def arguments(self):
         if self._arguments is None:
+            # retrieve existing arguments from baseclass
             self._arguments = super().arguments
             self._arguments.update({
                 '--port': Argument(
@@ -56,6 +57,7 @@ class DeviceShowSerial(DeviceShow):
                     choices=STOPBIT_CHOICES.values()),
                 '--timeout': Argument('-t', default=None),
             })
+            # remove interface argument as serial is predefined interface type
             if '--interface' in self._arguments:
                 del self._arguments['--interface']
         return self._arguments
