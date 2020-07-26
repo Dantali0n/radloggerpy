@@ -27,7 +27,7 @@ CONF = config.CONF
 
 
 @six.add_metaclass(abc.ABCMeta)
-class StateMachine:
+class StateMachine(object):
     """Abstract class to provide a state machine to any object"""
 
     _state = None
@@ -67,8 +67,8 @@ class StateMachine:
                     _("Not all states have required valid transition set"))
             for s in self.TRANSITIONS[t]:
                 if not isinstance(s, self._sclass):
-                    raise RuntimeError(_("Not all members of transition set are"
-                                         "of same type as state"))
+                    raise RuntimeError(_("Not all members of transition set"
+                                         "are of same type as state"))
 
     def reset_state(self):
         """Reset state to the initial state"""
@@ -93,5 +93,5 @@ class StateMachine:
             self._state = state
         else:
             raise RuntimeWarning(
-                _("Transition from {0} to {1} state is not valid".format(
-                    self._state, state)))
+                _("Transition from {0} to {1} state is not valid").format(
+                    self._state, state))

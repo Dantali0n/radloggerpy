@@ -13,8 +13,8 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from enum import unique, Enum
-from unittest import mock
+from enum import Enum
+from enum import unique
 
 from oslo_log import log
 from radloggerpy import config
