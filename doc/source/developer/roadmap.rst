@@ -3,9 +3,10 @@ RoadMap
 =======
 
 - Backup facilities for measurement database
+- Communication mechanism between cli and service (API)(pipes, dbus)
 - Importing and exporting configuration
 - Importing and exporting measurements (csv, xml, json)
-- Distinquish between different types of measurements
+- Distinguish between different types of measurements
 
   - Continuous / incident measurements, measure each
     detection event separately optionally with its

@@ -28,7 +28,10 @@ This operation concerns the ``radloggerpy`` service beginning when the service
 is launched. The service loads configuration and sets up logging, afterwards
 the logo is displayed depending on the settings. When this basic initialization
 is finalized all devices are initialized as shown in the flow-chart below. Here
-the :boldorange:`orange` line indicates the launch of a new thread. After the
+the :boldorange:`orange` line indicates the launch of a new thread, however,
+the number of threads spawned is user configurable. The underlying threadpool
+will decide when devices are scheduled unto the configured threads if the
+number of devices exceeds the configured maximum number of threads. After the
 basic initialization of a device it enters an active loop from which it still
 can enter an error state if problems are encountered. The active loop itself is
 not shown here.
@@ -45,3 +48,13 @@ Upon encountering a device error several methods will be available to notify
 users. These can be enabled in the configuration along with any configuration
 parameters required.
 
+The state transition diagram below shows the different states devices can be in
+and how they can transition between states.
+
+..
+    st-device-states.xml
+
+.. image:: /images/st-device-states.svg
+    :align: center
+    :width: 100%
+    :alt: Device state transition diagram
