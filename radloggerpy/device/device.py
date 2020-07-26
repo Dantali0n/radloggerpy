@@ -20,23 +20,36 @@ from oslo_log import log
 from radloggerpy import config
 
 from radloggerpy._i18n import _C
+from radloggerpy.common.state_machine import StateMachine
 from radloggerpy.datastructures.device_data_buffer import DeviceDataBuffer
+from radloggerpy.types.device_states import DeviceStates
 
 LOG = log.getLogger(__name__)
 CONF = config.CONF
 
 
 @six.add_metaclass(abc.ABCMeta)
-class Device(object):
+class Device(StateMachine):
     """Abstract class all radiation monitoring devices should implement"""
 
-    "Each radiation monitoring device should have a unique name"
     NAME = "Device"
+    """Each radiation monitoring device should have a unique name"""
 
-    "Each radiation monitoring device should use a specific interface"
     INTERFACE = None
+    """Each radiation monitoring device should use a specific interface"""
+
+    POSSIBLE_STATES = DeviceStates.STOPPED
+    """Default state and possible state types"""
+
+    _transitions = {
+        DeviceStates.STOPPED: {DeviceStates.INITIALIZING},
+        DeviceStates.INITIALIZING: {DeviceStates.RUNNING, DeviceStates.ERROR},
+        DeviceStates.RUNNING: {DeviceStates.STOPPED, DeviceStates.ERROR},
+        DeviceStates.ERROR: {DeviceStates.STOPPED}
+    }
 
     def __init__(self):
+        super(Device, self).__init__(self._transitions)
         self.data = DeviceDataBuffer()
 
     @abc.abstractmethod
