@@ -19,7 +19,8 @@ import six
 from oslo_log import log
 from radloggerpy import config
 
-from radloggerpy._i18n import _C, _
+from radloggerpy._i18n import _
+from radloggerpy._i18n import _C
 from radloggerpy.common.state_machine import StateMachine
 from radloggerpy.datastructures.device_data_buffer import DeviceDataBuffer
 from radloggerpy.types.device_states import DeviceStates

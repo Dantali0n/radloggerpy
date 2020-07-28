@@ -18,6 +18,7 @@ import enum
 import six
 
 from radloggerpy._i18n import _
+from radloggerpy._i18n import _C
 
 from oslo_log import log
 from radloggerpy import config
@@ -93,5 +94,5 @@ class StateMachine(object):
             self._state = state
         else:
             raise RuntimeWarning(
-                _("Transition from {0} to {1} state is not valid").format(
-                    self._state, state))
+                _C("Transition from {0} to {1} state is not valid",
+                   (self._state, state)))
