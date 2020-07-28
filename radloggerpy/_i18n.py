@@ -26,10 +26,10 @@ _translators = oslo_i18n.TranslatorFactory(domain=DOMAIN)
 _ = _translators.primary
 
 # The contextual translation function using the name "_C"
-_C = _translators.contextual_form
+# _C = _translators.contextual_form
 
 # The plural translation function using the name "_P"
-_P = _translators.plural_form
+# _P = _translators.plural_form
 
 oslo_i18n.enable_lazy()
 

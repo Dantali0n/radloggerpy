@@ -7,9 +7,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: RadLoggerPy 0.0.1.dev82\n"
+"Project-Id-Version: RadLoggerPy 0.0.1.dev114\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-06-08 12:55+0200\n"
+"POT-Creation-Date: 2020-07-28 15:07+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,20 +18,20 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.8.0\n"
 
-#: radloggerpy/radloggerpy.py:47 radloggerpy/tests/test_i18n.py:45
+#: radloggerpy/radloggerpy.py:49 radloggerpy/tests/test_i18n.py:49
 #, python-format
 msgid "Starting RadLoggerPy service on PID %s"
 msgstr ""
 
-#: radloggerpy/radloggerpy.py:67
+#: radloggerpy/radloggerpy.py:61
 msgid "Insufficient permissions to open device."
 msgstr ""
 
-#: radloggerpy/radloggerpy.py:70
+#: radloggerpy/radloggerpy.py:64
 msgid "Device does not exist"
 msgstr ""
 
-#: radloggerpy/radloggerpy.py:72
+#: radloggerpy/radloggerpy.py:66
 #, python-format
 msgid "Device error %d"
 msgstr ""
@@ -46,14 +46,33 @@ msgstr ""
 msgid "Exception raised: %s"
 msgstr ""
 
+#: radloggerpy/cli/v1/device/device_list.py:49
+#: radloggerpy/cli/v1/device/device_list_serial.py:77
+msgid "No devices found"
+msgstr ""
+
+#: radloggerpy/cli/v1/device/device_remove.py:50
+msgid "Either the id or name must be specified to remove a device"
+msgstr ""
+
+#: radloggerpy/cli/v1/device/device_remove.py:57
 #: radloggerpy/cli/v1/device/device_show.py:61
-#: radloggerpy/cli/v1/device/device_show_serial.py:76
+#: radloggerpy/cli/v1/device/device_show_serial.py:79
 msgid "Multiple devices found"
 msgstr ""
 
+#: radloggerpy/cli/v1/device/device_remove.py:60
 #: radloggerpy/cli/v1/device/device_show.py:64
-#: radloggerpy/cli/v1/device/device_show_serial.py:79
+#: radloggerpy/cli/v1/device/device_show_serial.py:82
 msgid "Device could not be found"
+msgstr ""
+
+#: radloggerpy/cli/v1/device/device_remove.py:65
+msgid "Device removed successfully"
+msgstr ""
+
+#: radloggerpy/cli/v1/measurement/measurement_list.py:60
+msgid "No measurements found"
 msgstr ""
 
 #: radloggerpy/common/first_time_run.py:85
@@ -92,6 +111,23 @@ msgstr ""
 msgid "Task %s was not of type method"
 msgstr ""
 
+#: radloggerpy/common/state_machine.py:67
+msgid "Not all states have required valid transition set"
+msgstr ""
+
+#: radloggerpy/common/state_machine.py:70
+msgid "Not all members of transition set are of same type as state"
+msgstr ""
+
+#: radloggerpy/common/state_machine.py:90
+msgid "State is not of same type as POSSIBLE_STATES"
+msgstr ""
+
+#: radloggerpy/common/state_machine.py:96
+#, python-format
+msgid "Transition from %(initial)s to %(to)s state is not valid"
+msgstr ""
+
 #: radloggerpy/database/database_manager.py:51
 #, python-format
 msgid "Failed to create session due to exception: %s"
@@ -119,8 +155,34 @@ msgstr ""
 msgid "Failed to create database due to error: %s"
 msgstr ""
 
-#: radloggerpy/database/objects/base.py:87
+#: radloggerpy/database/objects/base.py:93
 msgid "Use of deprecated ignore parameter on database object filter!"
+msgstr ""
+
+#: radloggerpy/database/objects/measurement.py:88
+msgid "No associateable Device found"
+msgstr ""
+
+#: radloggerpy/database/objects/serial_device.py:146
+msgid "Reference should be of type SerialDeviceObject"
+msgstr ""
+
+#: radloggerpy/datastructures/device_data_buffer.py:59
+#, python-format
+msgid "Element: %s, is not of type RadiationReading"
+msgstr ""
+
+#: radloggerpy/device/device.py:88
+msgid "Restarting device from previous error state"
+msgstr ""
+
+#: radloggerpy/device/device.py:92
+msgid "Can not start same device multiple times"
+msgstr ""
+
+#: radloggerpy/device/device.py:133
+#, python-format
+msgid "Unable to retrieve data for: %s"
 msgstr ""
 
 #: radloggerpy/device/device_manager.py:69
@@ -132,7 +194,7 @@ msgstr ""
 msgid "RadiationReading can not have negative cpm"
 msgstr ""
 
-#: radloggerpy/tests/test_i18n.py:44
+#: radloggerpy/tests/test_i18n.py:48
 #, python-format
 msgid "RadLoggerPy opstarten met PID %s"
 msgstr ""

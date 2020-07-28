@@ -20,7 +20,7 @@ from radloggerpy import config
 
 from readerwriterlock import rwlock
 
-from radloggerpy._i18n import _C
+from radloggerpy._i18n import _
 from radloggerpy.models.radiationreading import RadiationReading
 
 LOG = log.getLogger(__name__)
@@ -56,8 +56,8 @@ class DeviceDataBuffer(object):
 
         for e in readings:
             if not isinstance(e, RadiationReading):
-                LOG.error(_C("Element: {0}, is not of type \
-                             RadiationReading", e))
+                LOG.error(_("Element: %s, is not of type "
+                            "RadiationReading") % e)
                 readings.remove(e)
 
         lock = self.rwlock.gen_rlock()

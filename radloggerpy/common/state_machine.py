@@ -18,7 +18,6 @@ import enum
 import six
 
 from radloggerpy._i18n import _
-from radloggerpy._i18n import _C
 
 from oslo_log import log
 from radloggerpy import config
@@ -68,7 +67,7 @@ class StateMachine(object):
                     _("Not all states have required valid transition set"))
             for s in self.TRANSITIONS[t]:
                 if not isinstance(s, self._sclass):
-                    raise RuntimeError(_("Not all members of transition set"
+                    raise RuntimeError(_("Not all members of transition set "
                                          "are of same type as state"))
 
     def reset_state(self):
@@ -94,5 +93,5 @@ class StateMachine(object):
             self._state = state
         else:
             raise RuntimeWarning(
-                _C("Transition from {0} to {1} state is not valid",
-                   (self._state, state)))
+                _("Transition from %(initial)s to %(to)s state is not valid") %
+                {'initial': self._state, 'to': state})

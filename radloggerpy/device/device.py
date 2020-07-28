@@ -20,7 +20,6 @@ from oslo_log import log
 from radloggerpy import config
 
 from radloggerpy._i18n import _
-from radloggerpy._i18n import _C
 from radloggerpy.common.state_machine import StateMachine
 from radloggerpy.datastructures.device_data_buffer import DeviceDataBuffer
 from radloggerpy.types.device_states import DeviceStates
@@ -131,5 +130,5 @@ class Device(StateMachine):
         if got_data:
             return got_data
         else:
-            LOG.error(_C("Unable to retrieve data for: {0}", self.NAME))
+            LOG.error(_("Unable to retrieve data for: %s") % self.NAME)
             return []
