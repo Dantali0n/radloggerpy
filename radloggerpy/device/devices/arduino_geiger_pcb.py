@@ -23,9 +23,17 @@ class ArduinoGeigerPcb(SerialDevice):
 
     NAME = "ArduinoGeigerPCB"
 
+    _halt = False
+
     def __init__(self):
         super(ArduinoGeigerPcb, self).__init__()
 
-    def run(self):
-        while True:
+    def _init(self):
+        pass
+
+    def _run(self):
+        while not self._halt:
             time.sleep(0.1)
+
+    def stop(self):
+        self._halt = True

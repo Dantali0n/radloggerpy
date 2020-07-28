@@ -13,6 +13,8 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+from unittest import mock
+
 from concurrent.futures import ThreadPoolExecutor
 import time
 
@@ -22,6 +24,7 @@ from radloggerpy import config
 from radloggerpy.device.device import Device
 from radloggerpy.models.radiationreading import RadiationReading
 from radloggerpy.tests import base
+from radloggerpy.types.device_states import DeviceStates
 
 LOG = log.getLogger(__name__)
 CONF = config.CONF
@@ -37,7 +40,10 @@ class TestDevice(base.TestCase):
         def __init__(self):
             super(TestDevice.FakeDevice, self).__init__()
 
-        def run(self):
+        def _init(self):
+            self.runner = True
+
+        def _run(self):
             """Add RadiationReading element"""
             for i in range(2):
                 self.data.add_readings([RadiationReading()])
@@ -47,26 +53,175 @@ class TestDevice(base.TestCase):
                 """Keep running until stopped externally"""
                 time.sleep(0.1)
 
+        def stop(self):
+            self.runner = False
+
     def setUp(self):
         super(TestDevice, self).setUp()
-        self.m_device = self.FakeDevice()
 
     def test_run_sequential(self):
-        self.m_device.runner = False
-        self.m_device.run()
+        m_device = self.FakeDevice()
+        m_device.runner = False
+        m_device._run()
 
-        self.assertEqual(2, len(self.m_device.get_data()))
+        self.assertEqual(2, len(m_device.get_data()))
 
     def test_run_runner(self):
+        m_device = self.FakeDevice()
+        self.assertEqual(DeviceStates.STOPPED, m_device.get_state())
 
         executor = ThreadPoolExecutor(max_workers=1)
-        future = executor.submit(self.m_device.run)
+        future = executor.submit(m_device.run)
 
         time.sleep(0.5)
 
-        self.assertEqual(2, len(self.m_device.get_data()))
+        self.assertEqual(2, len(m_device.get_data()))
         self.assertFalse(future.done())
 
-        self.m_device.runner = False
+        m_device.runner = False
+        time.sleep(0.5)
+        self.assertTrue(future.done())
+        self.assertEqual(DeviceStates.STOPPED, m_device.get_state())
+
+    def test_run_error(self):
+        m_device = self.FakeDevice()
+        self.assertEqual(DeviceStates.STOPPED, m_device.get_state())
+
+        m_error = RuntimeError()
+        m_init = mock.Mock()
+        m_init.side_effect = m_error
+        m_device._init = m_init
+
+        executor = ThreadPoolExecutor(max_workers=1)
+        future = executor.submit(m_device.run)
+
+        time.sleep(0.5)
+
+        self.assertEqual(DeviceStates.ERROR, m_device.get_state())
+        self.assertEqual(m_error, future.exception())
+
+    def test_run_stop(self):
+        m_device = self.FakeDevice()
+        self.assertEqual(DeviceStates.STOPPED, m_device.get_state())
+
+        executor = ThreadPoolExecutor(max_workers=1)
+        future = executor.submit(m_device.run)
+
+        time.sleep(0.5)
+
+        self.assertEqual(2, len(m_device.get_data()))
+        self.assertFalse(future.done())
+        self.assertEqual(DeviceStates.RUNNING, m_device.get_state())
+
+        m_device.stop()
+        time.sleep(0.5)
+        self.assertTrue(future.done())
+        self.assertEqual(DeviceStates.STOPPED, m_device.get_state())
+
+    def test_run_double(self):
+        m_device = self.FakeDevice()
+        self.assertEqual(DeviceStates.STOPPED, m_device.get_state())
+
+        executor = ThreadPoolExecutor(max_workers=2)
+        future = executor.submit(m_device.run)
+
+        time.sleep(0.5)
+
+        self.assertEqual(2, len(m_device.get_data()))
+        self.assertFalse(future.done())
+        self.assertEqual(DeviceStates.RUNNING, m_device.get_state())
+
+        future2 = executor.submit(m_device.run)
+        time.sleep(0.5)
+        self.assertIsInstance(future2.exception(), RuntimeError)
+        self.assertEqual(DeviceStates.RUNNING, m_device.get_state())
+
+        m_device.stop()
+        time.sleep(0.5)
+        self.assertTrue(future.done())
+        self.assertEqual(DeviceStates.STOPPED, m_device.get_state())
+
+    def test_run_stop_run(self):
+        m_device = self.FakeDevice()
+        executor = ThreadPoolExecutor(max_workers=1)
+        future = executor.submit(m_device.run)
+
+        time.sleep(0.5)
+
+        self.assertEqual(2, len(m_device.get_data()))
+        self.assertFalse(future.done())
+
+        m_device.stop()
+        time.sleep(0.5)
+        self.assertTrue(future.done())
+
+        future = executor.submit(m_device.run)
+
+        time.sleep(0.5)
+
+        self.assertEqual(2, len(m_device.get_data()))
+        self.assertFalse(future.done())
+
+        m_device.stop()
+        time.sleep(0.5)
+        self.assertTrue(future.done())
+
+    def test_init_error_run(self):
+        m_device = self.FakeDevice()
+        executor = ThreadPoolExecutor(max_workers=1)
+
+        r_init = m_device._init
+        m_error = RuntimeError()
+        m_init = mock.Mock()
+        m_init.side_effect = m_error
+        m_device._init = m_init
+
+        future = executor.submit(m_device.run)
+
+        time.sleep(0.5)
+
+        self.assertEqual(DeviceStates.ERROR, m_device.get_state())
+        self.assertEqual(m_error, future.exception())
+
+        m_device._init = r_init
+
+        future = executor.submit(m_device.run)
+
+        time.sleep(0.5)
+
+        self.assertEqual(2, len(m_device.get_data()))
+        self.assertFalse(future.done())
+
+        m_device.stop()
+        time.sleep(0.5)
+        self.assertTrue(future.done())
+
+    def test_run_error_run(self):
+        m_device = self.FakeDevice()
+        executor = ThreadPoolExecutor(max_workers=1)
+
+        r_run = m_device._run
+        m_error = RuntimeError()
+        m_run = mock.Mock()
+        m_run.side_effect = m_error
+        m_device._run = m_run
+
+        future = executor.submit(m_device.run)
+
+        time.sleep(0.5)
+
+        self.assertEqual(DeviceStates.ERROR, m_device.get_state())
+        self.assertEqual(m_error, future.exception())
+
+        m_device._run = r_run
+
+        future = executor.submit(m_device.run)
+
+        time.sleep(0.5)
+
+        self.assertEqual(2, len(m_device.get_data()))
+        self.assertFalse(future.done())
+
+        m_device.stop()
         time.sleep(0.5)
         self.assertTrue(future.done())

@@ -19,7 +19,7 @@ import six
 from oslo_log import log
 from radloggerpy import config
 
-from radloggerpy._i18n import _C
+from radloggerpy._i18n import _C, _
 from radloggerpy.common.state_machine import StateMachine
 from radloggerpy.datastructures.device_data_buffer import DeviceDataBuffer
 from radloggerpy.types.device_states import DeviceStates
@@ -39,7 +39,9 @@ class Device(StateMachine):
     """Each radiation monitoring device should use a specific interface"""
 
     POSSIBLE_STATES = DeviceStates.STOPPED
-    """Default state and possible state types"""
+    """Initial state and possible state types"""
+
+    _stop = False
 
     _transitions = {
         DeviceStates.STOPPED: {DeviceStates.INITIALIZING},
@@ -53,14 +55,66 @@ class Device(StateMachine):
         self.data = DeviceDataBuffer()
 
     @abc.abstractmethod
-    def run(self):
+    def _init(self):
+        """Method to perform device initialization
+
+        Devices are allowed to clear any flags or variables set when stop() was
+        called previously inside of this method.
+        """
+
+    @abc.abstractmethod
+    def _run(self):
         """Method to be called to run continuously in its own thread
 
-        Devices should not leave this method unless the intent is for the
+        Devices should not return from this method unless the intent is for the
         device to stop retrieving data. Data can be gathered by either polling
         or using events / wait if the external system supports to do so.
         Timers may also be used, please be sure to honor:
         CONF.devices.minimal_polling_delay
+        """
+
+    def run(self):
+        """Entry point for devices to initialize and start running
+
+        Serves as the entry point for devices and calls _init and _run. In
+        addition handles any required state transitions
+
+        Any exception encountered will be raised so DeviceManager can handle it
+        appropriately.
+        """
+
+        if self.get_state() is DeviceStates.ERROR:
+            "Recover device from error state"
+            LOG.info(_("Restarting device from previous error state"))
+            self.reset_state()
+        elif self.get_state() is not DeviceStates.STOPPED:
+            "Not logging a message here, DeviceManager can easily do that"
+            raise RuntimeError(_("Can not start same device multiple times"))
+
+        try:
+            self.transition(DeviceStates.INITIALIZING)
+            self._init()
+        except RuntimeError:
+            self.transition(DeviceStates.ERROR)
+            raise
+
+        try:
+            self.transition(DeviceStates.RUNNING)
+            self._run()
+        except RuntimeError:
+            self.transition(DeviceStates.ERROR)
+            raise
+
+        if self.get_state() is DeviceStates.RUNNING:
+            self.transition(DeviceStates.STOPPED)
+
+    @abc.abstractmethod
+    def stop(self):
+        """Method when called that should halt operation of device asap
+
+        Halting can be achieved by setting a variable and checking this
+        variable inside a loop in the _run method. Other methods include using
+        conditions to notify the _run method.
         """
 
     def get_data(self):
