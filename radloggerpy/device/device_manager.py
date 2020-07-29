@@ -58,13 +58,13 @@ class DeviceManager(object):
 
     """
 
-    """Private Map of device types and corresponding implementations"""
     _DEVICE_MAP = None
+    """Private Map of device types and corresponding implementations"""
 
     def __init__(self):
         num_workers = CONF.devices.concurrent_worker_amount
 
-        if num_workers == -1:
+        if num_workers is -1:
             num_workers = multiprocessing.cpu_count()
             LOG.info(_("Configured device manager for %d workers")
                      % num_workers)

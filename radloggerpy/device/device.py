@@ -15,12 +15,15 @@
 
 import abc
 import six
+from typing import Type
+from typing import TypeVar
 
 from oslo_log import log
 from radloggerpy import config
 
 from radloggerpy._i18n import _
 from radloggerpy.common.state_machine import StateMachine
+from radloggerpy.database.objects.device import DeviceObject
 from radloggerpy.datastructures.device_data_buffer import DeviceDataBuffer
 from radloggerpy.types.device_states import DeviceStates
 
@@ -41,17 +44,21 @@ class Device(StateMachine):
     POSSIBLE_STATES = DeviceStates.STOPPED
     """Initial state and possible state types"""
 
-    _stop = False
-
     _transitions = {
         DeviceStates.STOPPED: {DeviceStates.INITIALIZING},
         DeviceStates.INITIALIZING: {DeviceStates.RUNNING, DeviceStates.ERROR},
         DeviceStates.RUNNING: {DeviceStates.STOPPED, DeviceStates.ERROR},
         DeviceStates.ERROR: {DeviceStates.STOPPED}
     }
+    """Possible states and subsequent transitions"""
 
-    def __init__(self):
+    U = TypeVar('U', bound=DeviceObject)
+    """This is what makes type hinting ugly and clunky in Python"""
+
+    def __init__(self, info: Type[U]):
         super(Device, self).__init__(self._transitions)
+
+        self.info = info
         self.data = DeviceDataBuffer()
 
     @abc.abstractmethod

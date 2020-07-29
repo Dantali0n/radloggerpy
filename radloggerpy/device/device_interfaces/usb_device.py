@@ -16,6 +16,7 @@
 import abc
 import six
 
+from radloggerpy.database.objects.device import DeviceObject
 from radloggerpy.device import device
 from radloggerpy.types.device_interfaces import DeviceInterfaces
 
@@ -27,5 +28,5 @@ class UsbDevice(device.Device):
     NAME = "UsbDevice"
     INTERFACE = DeviceInterfaces.USB
 
-    def __init__(self):
-        super(UsbDevice, self).__init__()
+    def __init__(self, info: DeviceObject):
+        super(UsbDevice, self).__init__(info)

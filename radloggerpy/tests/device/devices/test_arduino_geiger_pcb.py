@@ -17,6 +17,7 @@ from unittest import mock
 
 from oslo_log import log
 from radloggerpy import config
+from radloggerpy.database.objects.serial_device import SerialDeviceObject
 
 from radloggerpy.device.devices import arduino_geiger_pcb as agpcb
 from radloggerpy.tests import base
@@ -29,14 +30,15 @@ class TestArduinoGeigerPcb(base.TestCase):
 
     def setUp(self):
         super(TestArduinoGeigerPcb, self).setUp()
+        self.m_info = SerialDeviceObject()
 
     def test_name(self):
-        m_device = agpcb.ArduinoGeigerPcb()
+        m_device = agpcb.ArduinoGeigerPcb(self.m_info)
         self.assertEqual(agpcb.ArduinoGeigerPcb.NAME, m_device.NAME)
 
     @mock.patch.object(agpcb, 'time')
     def test_run(self, m_time):
         m_time.sleep.side_effect = [InterruptedError]
-        m_device = agpcb.ArduinoGeigerPcb()
+        m_device = agpcb.ArduinoGeigerPcb(self.m_info)
 
         self.assertRaises(InterruptedError, m_device.run)

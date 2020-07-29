@@ -20,6 +20,7 @@ import time
 
 from oslo_log import log
 from radloggerpy import config
+from radloggerpy.database.objects.device import DeviceObject
 
 from radloggerpy.device.device import Device
 from radloggerpy.models.radiationreading import RadiationReading
@@ -38,7 +39,8 @@ class TestDevice(base.TestCase):
         runner = True
 
         def __init__(self):
-            super(TestDevice.FakeDevice, self).__init__()
+            m_dev = DeviceObject()
+            super(TestDevice.FakeDevice, self).__init__(m_dev)
 
         def _init(self):
             self.runner = True

@@ -15,7 +15,14 @@
 
 import time
 
+from oslo_log import log
+from radloggerpy import config
+from radloggerpy.database.objects.serial_device import SerialDeviceObject
+
 from radloggerpy.device.device_interfaces.serial_device import SerialDevice
+
+LOG = log.getLogger(__name__)
+CONF = config.CONF
 
 
 class ArduinoGeigerPcb(SerialDevice):
@@ -25,8 +32,8 @@ class ArduinoGeigerPcb(SerialDevice):
 
     _halt = False
 
-    def __init__(self):
-        super(ArduinoGeigerPcb, self).__init__()
+    def __init__(self, info: SerialDeviceObject):
+        super(ArduinoGeigerPcb, self).__init__(info)
 
     def _init(self):
         pass

@@ -16,6 +16,7 @@
 import abc
 import six
 
+from radloggerpy.database.objects.serial_device import SerialDeviceObject
 from radloggerpy.device import device
 from radloggerpy.types.device_interfaces import DeviceInterfaces
 
@@ -41,5 +42,5 @@ class SerialDevice(device.Device):
     NAME = "SerialDevice"
     INTERFACE = DeviceInterfaces.SERIAL
 
-    def __init__(self):
-        super(SerialDevice, self).__init__()
+    def __init__(self, info: SerialDeviceObject):
+        super(SerialDevice, self).__init__(info)
