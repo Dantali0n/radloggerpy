@@ -13,3 +13,4 @@ stestr>=1.0.0 # Apache-2.0
 testscenarios>=0.5.0 # Apache-2.0/BSD
 testtools>=1.4.0 # MIT
 bandit>=1.6.0 # Apache-2.0
+flake8>=3.8.3 # MIT
