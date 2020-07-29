@@ -16,16 +16,7 @@
 import os
 import re
 
-
-def flake8ext(f):
-    """Decorator to indicate flake8 extension.
-
-    This is borrowed from hacking.core.flake8ext(), but at now it is used
-    only for unit tests to know which are watcher flake8 extensions.
-    """
-    f.name = __name__
-    return f
-
+from hacking import core
 
 # Guidelines for writing new hacking checks
 #
@@ -54,7 +45,7 @@ log_warn = re.compile(r"(.)*LOG\.(warn)\(\s*('|\"|_)")
 re_redundant_import_alias = re.compile(r".*import (.+) as \1$")
 
 
-@flake8ext
+@core.flake8ext
 def no_translate_debug_logs(logical_line, filename):
     """Check for 'LOG.debug(_(' and 'LOG.debug(_Lx('
 
@@ -65,7 +56,7 @@ def no_translate_debug_logs(logical_line, filename):
             yield(0, "N319 Don't translate debug level logs")
 
 
-@flake8ext
+@core.flake8ext
 def check_assert_called_once_with(logical_line, filename):
     # Try to detect nonexistent mock methods like:
     #    assertCalledOnceWith
@@ -88,14 +79,14 @@ def check_assert_called_once_with(logical_line, filename):
             yield (0, msg)
 
 
-@flake8ext
+@core.flake8ext
 def check_python3_xrange(logical_line):
     if re.search(r"\bxrange\s*\(", logical_line):
         yield(0, "N325: Do not use xrange. Use range, or six.moves.range for "
                  "large loops.")
 
 
-@flake8ext
+@core.flake8ext
 def check_no_basestring(logical_line):
     if re.search(r"\bbasestring\b", logical_line):
         msg = ("N326: basestring is not Python3-compatible, use "
@@ -103,14 +94,14 @@ def check_no_basestring(logical_line):
         yield(0, msg)
 
 
-@flake8ext
+@core.flake8ext
 def check_python3_no_iteritems(logical_line):
     if re.search(r".*\.iteritems\(\)", logical_line):
         msg = ("N327: Use six.iteritems() instead of dict.iteritems().")
         yield(0, msg)
 
 
-@flake8ext
+@core.flake8ext
 def check_assert_true(logical_line, filename):
     if 'radloggerpy/tests/' in filename:
         if re.search(r"assertEqual\(\s*True,[^,]*(,[^,]*)?\)", logical_line):
@@ -119,7 +110,7 @@ def check_assert_true(logical_line, filename):
             yield (0, msg)
 
 
-@flake8ext
+@core.flake8ext
 def check_assert_false(logical_line, filename):
     if 'radloggerpy/tests/' in filename:
         if re.search(r"assertEqual\(\s*False,[^,]*(,[^,]*)?\)", logical_line):
@@ -128,7 +119,7 @@ def check_assert_false(logical_line, filename):
             yield (0, msg)
 
 
-@flake8ext
+@core.flake8ext
 def check_assert_empty(logical_line, filename):
     if 'radloggerpy/tests/' in filename:
         msg = ("N330: Use assertEqual(*empty*, observed) instead of "
@@ -140,7 +131,7 @@ def check_assert_empty(logical_line, filename):
             yield (0, msg)
 
 
-@flake8ext
+@core.flake8ext
 def check_assert_is_instance(logical_line, filename):
     if 'radloggerpy/tests/' in filename:
         if re.search(r"assertTrue\(\s*isinstance\(\s*[^,]*,\s*[^,]*\)\)",
@@ -150,7 +141,7 @@ def check_assert_is_instance(logical_line, filename):
             yield (0, msg)
 
 
-@flake8ext
+@core.flake8ext
 def check_log_warn_deprecated(logical_line, filename):
     """LOG.warn is deprecated but still possible
 
@@ -163,7 +154,7 @@ def check_log_warn_deprecated(logical_line, filename):
         yield (0, msg)
 
 
-@flake8ext
+@core.flake8ext
 def check_oslo_i18n_wrapper(logical_line, filename, noqa):
     """Check for radloggerpy.i18n usage.
 
@@ -189,7 +180,7 @@ def check_oslo_i18n_wrapper(logical_line, filename, noqa):
             yield (0, msg)
 
 
-@flake8ext
+@core.flake8ext
 def check_builtins_gettext(logical_line, tokens, filename, lines, noqa):
     """Check usage of builtins gettext _().
 
@@ -228,7 +219,7 @@ def check_builtins_gettext(logical_line, tokens, filename, lines, noqa):
             yield (0, msg)
 
 
-@flake8ext
+@core.flake8ext
 def no_redundant_import_alias(logical_line):
     """Checking no redundant import alias.
 
@@ -238,19 +229,3 @@ def no_redundant_import_alias(logical_line):
 
     if re.match(re_redundant_import_alias, logical_line):
         yield(0, "N342: No redundant import alias.")
-
-
-def factory(register):
-    register(check_assert_called_once_with)
-    register(check_python3_xrange)
-    register(check_no_basestring)
-    register(check_python3_no_iteritems)
-    register(check_assert_true)
-    register(check_assert_false)
-    register(check_assert_empty)
-    register(check_assert_is_instance)
-    register(check_log_warn_deprecated)
-    register(check_oslo_i18n_wrapper)
-    register(check_builtins_gettext)
-    register(no_translate_debug_logs)
-    register(no_redundant_import_alias)

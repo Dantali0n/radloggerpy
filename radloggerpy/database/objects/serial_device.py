@@ -116,7 +116,7 @@ class SerialDeviceObject(DeviceObject):
 
         try:
             return session.commit()
-        except Exception as e:
+        except Exception:
             session.rollback()
             # TODO(Dantali0n): These errors are horrendous for users to
             #                  understand an error abstraction is needed.
