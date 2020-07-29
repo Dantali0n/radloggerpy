@@ -36,7 +36,7 @@ autoprogram_cliff_ignored = []
 
 apidoc_module_dir = '../../radloggerpy'
 apidoc_output_dir = 'source_documentation'
-apidoc_excluded_paths = ['tests']
+apidoc_excluded_paths = ['tests', 'hacking']
 apidoc_separate_modules = True
 apidoc_toc_file = False
 # This should include private methods but does not work
