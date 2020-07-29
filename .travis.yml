@@ -5,7 +5,7 @@ language: python
 #   - os distribution (xenial, trusty)
 #   - osx image (xcode7.2)
 #   - environment variables (CODECOV_TOKEN)
-#   - language runtime (python: "3.7")
+#   - language runtime (python: "3.8")
 # Failure to have all of these attributes identical will result in separate
 # caches and files not being available between jobs & stages!
 # Travis offers no method to override how caches are shared.
@@ -19,7 +19,7 @@ jobs:
     - stage: linting
       name: "Linting"
       python:
-        - "3.7"
+        - "3.8"
       install:
         - pip install tox
       script:
@@ -33,9 +33,9 @@ jobs:
       script:
         - tox -e tenv python setup.py compile_catalog
     - stage: locale
-      name: "Locale py37"
+      name: "Locale py38"
       python:
-        - "3.7"
+        - "3.8"
       install:
         - pip install tox
       script:
@@ -56,10 +56,18 @@ jobs:
         - pip install tox
       script:
         - tox -e py37
+    - stage: test
+      name: "Unit test py38"
+      python:
+        - "3.8"
+      install:
+        - pip install tox
+      script:
+        - tox -e py38
     - stage: cover
       name: "Coverage report"
       python:
-        - "3.7"
+        - "3.8"
       install:
         - pip install tox
         - pip install codecov
@@ -71,7 +79,7 @@ jobs:
       name: "Sphinx documentation"
       if: branch = master OR type = pull_request
       python:
-        - "3.7"
+        - "3.8"
       install:
         - pip install tox
       script:
@@ -89,7 +97,7 @@ jobs:
       name: "Generated configuration"
       if: branch = master OR type = pull_request
       python:
-        - "3.7"
+        - "3.8"
       install:
         - pip install tox
       script:
