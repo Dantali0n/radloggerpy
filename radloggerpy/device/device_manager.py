@@ -15,6 +15,9 @@
 
 from collections import OrderedDict
 import multiprocessing
+from threading import Condition
+from typing import Type
+from typing import TypeVar
 
 from oslo_log import log
 from radloggerpy import config
@@ -24,8 +27,11 @@ import futurist
 from radloggerpy._i18n import _
 from radloggerpy.common.dynamic_import import import_modules
 from radloggerpy.common.dynamic_import import list_module_names
+from radloggerpy.database.objects.device import DeviceObject
+from radloggerpy.device.device import Device
 from radloggerpy.device import device_interfaces as di
 from radloggerpy.device import devices as dev
+from radloggerpy.types.device_interfaces import INTERFACE_CHOICES_R
 
 LOG = log.getLogger(__name__)
 CONF = config.CONF
@@ -69,8 +75,25 @@ class DeviceManager(object):
             LOG.info(_("Configured device manager for %d workers")
                      % num_workers)
 
-        self._threadpool = futurist.GreenThreadPoolExecutor(
+        self._condition = Condition()
+
+        self._futures = []
+        self._threadpool = futurist.ThreadPoolExecutor(
             max_workers=num_workers)
+        # self._threadpool = futurist.GreenThreadPoolExecutor(
+        #    max_workers=num_workers)
+
+        self.get_device_map()
+
+    _I = TypeVar('_I', bound=Device)
+
+    _U = TypeVar('_U', bound=DeviceObject)
+    """This is what makes type hinting ugly and clunky in Python"""
+
+    def launch_device(self, device_obj: Type[_U]):
+        dev_class = self.get_device_class(device_obj)
+        dev_inst = dev_class(device_obj, self._condition)
+        self._futures.append(self._threadpool.submit(dev_inst.run))
 
     @staticmethod
     def _get_device_module(module):
@@ -148,3 +171,17 @@ class DeviceManager(object):
 
         DeviceManager._DEVICE_MAP = device_map
         return DeviceManager._DEVICE_MAP
+
+    @staticmethod
+    def get_device_class(device_obj: Type[_U]) -> _I:
+        """Determines the matching device class for a device object
+
+        The device object must specify a concrete implementation
+        """
+
+        map = DeviceManager.get_device_map()
+        interfaces_inverse = INTERFACE_CHOICES_R
+        implementations = map[interfaces_inverse[device_obj.interface]]
+        for x in implementations:
+            if x.NAME == device_obj.implementation:
+                return x

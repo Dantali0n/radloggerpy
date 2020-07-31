@@ -30,3 +30,6 @@ INTERFACE_CHOICES = {
     DeviceInterfaces.SERIAL: "serial",
     DeviceInterfaces.USB: "usb"
 }
+
+INTERFACE_CHOICES_R = {value: key for (key, value) in
+                       INTERFACE_CHOICES.items()}

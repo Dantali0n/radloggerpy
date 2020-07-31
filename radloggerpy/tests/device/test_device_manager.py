@@ -47,7 +47,7 @@ class TestDeviceManager(base.TestCase):
 
         self.m_dmanager = dm.DeviceManager()
 
-        m_futurist.GreenThreadPoolExecutor.\
+        m_futurist.ThreadPoolExecutor.\
             assert_called_once_with(max_workers=2)
 
     @mock.patch.object(dm, 'import_modules')

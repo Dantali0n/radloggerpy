@@ -14,6 +14,8 @@
 # under the License.
 
 import abc
+from threading import Condition
+
 import six
 from typing import Type
 from typing import TypeVar
@@ -52,12 +54,13 @@ class Device(StateMachine):
     }
     """Possible states and subsequent transitions"""
 
-    U = TypeVar('U', bound=DeviceObject)
+    _U = TypeVar('_U', bound=DeviceObject)
     """This is what makes type hinting ugly and clunky in Python"""
 
-    def __init__(self, info: Type[U]):
+    def __init__(self, info: Type[_U], condition: Condition):
         super(Device, self).__init__(self._transitions)
 
+        self.condition = condition
         self.info = info
         self.data = DeviceDataBuffer()
 
@@ -123,6 +126,18 @@ class Device(StateMachine):
         variable inside a loop in the _run method. Other methods include using
         conditions to notify the _run method.
         """
+
+    @abc.abstractmethod
+    def is_stopping(self):
+        """Should return true if in the progress of stopping false otherwise
+
+        :return: True if stopping, false otherwise
+        """
+
+    def has_data(self):
+        """Wrapper around internal buffer"""
+
+        return self.data.has_readings()
 
     def get_data(self):
         """Return a collection of radiation monitoring data if any is available

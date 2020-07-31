@@ -40,6 +40,7 @@ class DeviceDataBuffer(object):
     """
 
     def __init__(self):
+        self.has_reading = False
         self.data = list()
         self.rwlock = rwlock.RWLockRead()
 
@@ -64,11 +65,19 @@ class DeviceDataBuffer(object):
         try:
             if lock.acquire():
                 self.data.extend(readings)
+                self.has_reading = True
                 return True
         finally:
             lock.release()
 
         return False
+
+    def has_readings(self):
+        """Indicate if the buffer is not empty
+
+        :return: True if one or more entries in buffer, false otherwise
+        """
+        return self.has_reading
 
     def fetch_clear_readings(self):
         """Retrieve all the readings from the buffer and clear the buffer
@@ -85,9 +94,9 @@ class DeviceDataBuffer(object):
         lock = self.rwlock.gen_wlock()
         try:
             if lock.acquire():
+                self.has_reading = False
                 ref = copy.copy(self.data)
-                # replace with self.data.clear() when deprecating python 2.7
-                del self.data[:]
+                self.data.clear()
                 return ref
         finally:
             lock.release()

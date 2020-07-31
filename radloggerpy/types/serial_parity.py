@@ -34,3 +34,6 @@ PARITY_CHOICES = {
     SerialParityTypes.PARITY_MARK: "mark",
     SerialParityTypes.PARITY_SPACE: "space"
 }
+
+PARITY_CHOICES_R = {value: key for (key, value) in
+                    PARITY_CHOICES.items()}

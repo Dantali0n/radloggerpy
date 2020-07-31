@@ -15,9 +15,7 @@
 
 """Starter script for RadLoggerPy."""
 
-import errno
 import os
-import serial
 import sys
 import time
 
@@ -29,8 +27,8 @@ from radloggerpy.common import ascii_logo
 from radloggerpy.common.first_time_run import FirstTimeRun
 from radloggerpy.config import config as configurator
 from radloggerpy.database import database_manager
-from radloggerpy.database.objects.device import DeviceObject
-from radloggerpy.database.objects.measurement import MeasurementObject
+from radloggerpy.database.objects.serial_device import SerialDeviceObject
+from radloggerpy.device.device_manager import DeviceManager
 
 LOG = log.getLogger(__name__)
 CONF = config.CONF
@@ -51,40 +49,53 @@ def main():
     # Perform first time initialization if required
     FirstTimeRun()
 
-    try:
-        ser = serial.Serial(port='/dev/ttyUSB0', baudrate=9600,
-                            parity=serial.PARITY_NONE,
-                            stopbits=serial.STOPBITS_ONE,
-                            bytesize=serial.EIGHTBITS)
-    except serial.serialutil.SerialException as e:
-        if e.errno == errno.EACCES:
-            LOG.critical(_("Insufficient permissions "
-                           "to open device."))
-        elif e.errno == errno.ENOENT:
-            LOG.critical(_("Device does not exist"))
-        else:
-            LOG.critical(_("Device error %d") % e.errno)
-        # close all database sessions that are still left open
-        database_manager.close_lingering_sessions()
-        return
-
+    # Create database session for main thread
     sess = database_manager.create_session()
-    string = ""
+
+    # launch device manager
+    manager = DeviceManager()
+
+    device = SerialDeviceObject.find(
+        sess, SerialDeviceObject(**{'id': 1}), False)
+    manager.launch_device(device)
+
     while True:
-        while ser.inWaiting() > 0:
-            char = ser.read(1).decode("utf-8")
-            if char == '\n':
-                print(string)
-                measure = MeasurementObject()
-                measure.device = DeviceObject(**{'id': 1})
-                measure.cpm = int(string)
-                MeasurementObject.add(sess, measure)
-                string = ""
-            elif char == '\r':
-                pass
-            else:
-                string += char
-        time.sleep(60)
+        time.sleep(1)
+
+    # try:
+    #     ser = serial.Serial(port='/dev/ttyUSB0', baudrate=9600,
+    #                         parity=serial.PARITY_NONE,
+    #                         stopbits=serial.STOPBITS_ONE,
+    #                         bytesize=serial.EIGHTBITS)
+    # except serial.serialutil.SerialException as e:
+    #     if e.errno == errno.EACCES:
+    #         LOG.critical(_("Insufficient permissions "
+    #                        "to open device."))
+    #     elif e.errno == errno.ENOENT:
+    #         LOG.critical(_("Device does not exist"))
+    #     else:
+    #         LOG.critical(_("Device error %d") % e.errno)
+    #     # close all database sessions that are still left open
+    #     database_manager.close_lingering_sessions()
+    #     return
+    #
+    # sess = database_manager.create_session()
+    # string = ""
+    # while True:
+    #     while ser.inWaiting() > 0:
+    #         char = ser.read(1).decode("utf-8")
+    #         if char == '\n':
+    #             print(string)
+    #             measure = MeasurementObject()
+    #             measure.device = DeviceObject(**{'id': 1})
+    #             measure.cpm = int(string)
+    #             MeasurementObject.add(sess, measure)
+    #             string = ""
+    #         elif char == '\r':
+    #             pass
+    #         else:
+    #             string += char
+    #     time.sleep(60)
 
     # close all database sessions that are still left open
     database_manager.close_lingering_sessions()

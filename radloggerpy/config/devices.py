@@ -27,7 +27,7 @@ DEVICES_OPTS = [
                     'based on nproc which returns the number of available'
                     'concurrent threads (not cores).'),
     cfg.IntOpt('minimal_polling_delay',
-               default=20,
+               default=1000,
                min=0,
                help='Minimum time in between a device pulling for data, going '
                     'to sleep and pulling for data again. Value is expressed '

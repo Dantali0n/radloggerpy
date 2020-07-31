@@ -13,13 +13,19 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+import errno
+import serial
+from threading import Condition
 import time
 
 from oslo_log import log
 from radloggerpy import config
-from radloggerpy.database.objects.serial_device import SerialDeviceObject
 
+from radloggerpy._i18n import _
+from radloggerpy.database.objects.serial_device import SerialDeviceObject
 from radloggerpy.device.device_interfaces.serial_device import SerialDevice
+from radloggerpy.models.radiationreading import RadiationReading
+from radloggerpy.types.serial_parity import PARITY_CHOICES_R
 
 LOG = log.getLogger(__name__)
 CONF = config.CONF
@@ -30,17 +36,52 @@ class ArduinoGeigerPcb(SerialDevice):
 
     NAME = "ArduinoGeigerPCB"
 
-    _halt = False
-
-    def __init__(self, info: SerialDeviceObject):
-        super(ArduinoGeigerPcb, self).__init__(info)
+    def __init__(self, info: SerialDeviceObject, condition: Condition):
+        super(ArduinoGeigerPcb, self).__init__(info, condition)
+        self.stop = False
+        self.serial = None
 
     def _init(self):
-        pass
+        self.stop = False
+        parity = PARITY_CHOICES_R[self.info.parity].value
+        try:
+            self.serial = serial.Serial(
+                port=self.info.port, baudrate=self.info.baudrate,
+                parity=parity, stopbits=self.info.stopbits,
+                bytesize=self.info.bytesize)
+        except serial.serialutil.SerialException as e:
+            if e.errno == errno.EACCES:
+                LOG.critical(_("Insufficient permissions "
+                               "to open device."))
+                raise
+            elif e.errno == errno.ENOENT:
+                LOG.critical(_("Device does not exist"))
+                raise
+            else:
+                LOG.critical(_("Device error %d") % e.errno)
+                raise
 
     def _run(self):
-        while not self._halt:
-            time.sleep(0.1)
+        string = ""
+        while not self.stop:
+            while self.serial.inWaiting() > 0:
+                char = self.serial.read(1).decode("utf-8")
+                if char == '\n':
+                    measure = RadiationReading()
+                    measure.set_cpm(int(string))
+                    self.data.append(measure)
+                    string = ""
+                elif char == '\r':
+                    pass
+                else:
+                    string += char
+            time.sleep(CONF.devices.minimal_polling_delay / 1000)
+
+        # clear serial object when returning from _run
+        self.serial = None
 
     def stop(self):
-        self._halt = True
+        self.stop = True
+
+    def is_stopping(self):
+        return self.stop

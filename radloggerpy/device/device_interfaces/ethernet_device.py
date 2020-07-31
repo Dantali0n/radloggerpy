@@ -14,6 +14,8 @@
 # under the License.
 
 import abc
+from threading import Condition
+
 import six
 
 from radloggerpy.database.objects.device import DeviceObject
@@ -28,5 +30,5 @@ class EthernetDevice(device.Device):
     NAME = "EthernetDevice"
     INTERFACE = DeviceInterfaces.ETHERNET
 
-    def __init__(self, info: DeviceObject):
-        super(EthernetDevice, self).__init__(info)
+    def __init__(self, info: DeviceObject, condition: Condition):
+        super(EthernetDevice, self).__init__(info, condition)

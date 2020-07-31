@@ -12,7 +12,7 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-
+from threading import Condition
 from unittest import mock
 
 from concurrent.futures import ThreadPoolExecutor
@@ -40,7 +40,8 @@ class TestDevice(base.TestCase):
 
         def __init__(self):
             m_dev = DeviceObject()
-            super(TestDevice.FakeDevice, self).__init__(m_dev)
+            m_condition = Condition()
+            super(TestDevice.FakeDevice, self).__init__(m_dev, m_condition)
 
         def _init(self):
             self.runner = True
@@ -57,6 +58,9 @@ class TestDevice(base.TestCase):
 
         def stop(self):
             self.runner = False
+
+        def is_stopping(self):
+            return self.runner
 
     def setUp(self):
         super(TestDevice, self).setUp()

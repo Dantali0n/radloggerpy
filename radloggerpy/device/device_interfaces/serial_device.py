@@ -14,6 +14,8 @@
 # under the License.
 
 import abc
+from threading import Condition
+
 import six
 
 from radloggerpy.database.objects.serial_device import SerialDeviceObject
@@ -42,5 +44,5 @@ class SerialDevice(device.Device):
     NAME = "SerialDevice"
     INTERFACE = DeviceInterfaces.SERIAL
 
-    def __init__(self, info: SerialDeviceObject):
-        super(SerialDevice, self).__init__(info)
+    def __init__(self, info: SerialDeviceObject, condition: Condition):
+        super(SerialDevice, self).__init__(info, condition)
