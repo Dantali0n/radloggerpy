@@ -23,6 +23,7 @@ class DeviceObject(DatabaseObject):
 
     id = None
     name = None
+    enabled = None
     interface = None
     implementation = None
 
@@ -35,6 +36,9 @@ class DeviceObject(DatabaseObject):
             self.m_device.id = self.id
         if self.name:
             self.m_device.name = self.name
+
+        if self.enabled:
+            self.m_device.enabled = self.enabled
 
         if self.interface in INTERFACE_CHOICES.keys():
             self.m_device.interface = self.interface
@@ -50,6 +54,9 @@ class DeviceObject(DatabaseObject):
             self.id = self.m_device.id
         if self.m_device.name:
             self.name = self.m_device.name
+
+        if self.m_device.enabled:
+            self.enabled = self.m_device.enabled
 
         if self.m_device.interface:
             self.interface = INTERFACE_CHOICES[self.m_device.interface]
@@ -141,6 +148,11 @@ class DeviceObject(DatabaseObject):
             dev.m_device = result
             dev._build_attributes()
             return dev
+
+    @staticmethod
+    def find_enabled(session):
+        return DeviceObject.find(
+            session, DeviceObject(**{'enabled': True}), True)
 
     @staticmethod
     def find_all(session, references):

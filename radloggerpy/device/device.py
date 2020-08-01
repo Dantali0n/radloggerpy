@@ -62,7 +62,7 @@ class Device(StateMachine):
 
         self.condition = condition
         self.info = info
-        self.data = DeviceDataBuffer()
+        self.data = DeviceDataBuffer(self.condition)
 
     @abc.abstractmethod
     def _init(self):

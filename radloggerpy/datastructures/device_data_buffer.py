@@ -14,6 +14,7 @@
 # under the License.
 
 import copy
+from threading import Condition
 
 from oslo_log import log
 from radloggerpy import config
@@ -37,10 +38,14 @@ class DeviceDataBuffer(object):
 
     All readings in the data buffer must be of type RadiationReading as
     enforced while calling add_elements.
+
+    Adding readings will acquire and notify on the condition as this will wake
+    up the DeviceManager.
     """
 
-    def __init__(self):
+    def __init__(self, condition: Condition):
         self.has_reading = False
+        self.condition = condition
         self.data = list()
         self.rwlock = rwlock.RWLockRead()
 
@@ -66,6 +71,8 @@ class DeviceDataBuffer(object):
             if lock.acquire():
                 self.data.extend(readings)
                 self.has_reading = True
+                with self.condition:
+                    self.condition.notify()
                 return True
         finally:
             lock.release()

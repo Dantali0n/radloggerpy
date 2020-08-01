@@ -32,7 +32,10 @@ class TestDeviceDataBuffer(base.TestCase):
 
     def setUp(self):
         super(TestDeviceDataBuffer, self).setUp()
-        self.m_buffer = device_data_buffer.DeviceDataBuffer()
+        self.m_condition = mock.Mock()
+        self.m_condition.__enter__ = mock.Mock()
+        self.m_condition.__exit__ = mock.Mock()
+        self.m_buffer = device_data_buffer.DeviceDataBuffer(self.m_condition)
 
     def test_add_readings_empty(self):
         """Test that buffer remains empty when adding empty collection"""
@@ -59,6 +62,17 @@ class TestDeviceDataBuffer(base.TestCase):
 
         m_log.error.assert_called_once()
         self.assertEqual(m_add_readings, readings)
+
+    def test_add_reading_condition(self):
+        m_condition = mock.Mock()
+        m_condition.__enter__ = mock.Mock()
+        m_condition.__exit__ = mock.Mock()
+        buffer = device_data_buffer.DeviceDataBuffer(m_condition)
+
+        m_reading = RadiationReading()
+        buffer.add_readings([m_reading])
+
+        m_condition.notify.assert_called_once()
 
     def test_clearing_buffer(self):
         """Test that fetch_clear will remove previous readings"""

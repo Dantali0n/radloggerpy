@@ -13,8 +13,12 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from sqlalchemy import Column, Integer, String, Enum
+from sqlalchemy import Boolean
+from sqlalchemy import Column
+from sqlalchemy import Enum
+from sqlalchemy import Integer
 from sqlalchemy.orm import relationship
+from sqlalchemy import String
 from sqlalchemy_utils import ChoiceType
 
 from radloggerpy.database.declarative_base import base
@@ -26,6 +30,8 @@ class Device(base):
     id = Column(Integer, primary_key=True)
 
     name = Column(String, unique=True)
+
+    enabled = Column(Boolean, default=True, nullable=False)
 
     interface = Column(Enum(DeviceInterfaces))
 
