@@ -64,6 +64,14 @@ jobs:
         - pip install tox
       script:
         - tox -e py38
+    - stage: test
+      name: "Unit test py39"
+      python:
+        - "3.9"
+      install:
+        - pip install tox
+      script:
+        - tox -e py39
     - stage: cover
       name: "Coverage report"
       python:
