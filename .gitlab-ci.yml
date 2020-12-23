@@ -3,7 +3,9 @@ variables:
   PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
 cache:
   paths:
+    - .cache/pip
     - .tox
+    - radloggerpy/locale
 before_script:
   - pip install tox
 linting:
