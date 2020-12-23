@@ -33,9 +33,25 @@ jobs:
       script:
         - tox -e tenv python setup.py compile_catalog
     - stage: locale
+      name: "Locale py37"
+      python:
+        - "3.7"
+      install:
+        - pip install tox
+      script:
+        - tox -e tenv python setup.py compile_catalog
+    - stage: locale
       name: "Locale py38"
       python:
         - "3.8"
+      install:
+        - pip install tox
+      script:
+        - tox -e tenv python setup.py compile_catalog
+    - stage: locale
+      name: "Locale py39"
+      python:
+        - "3.9"
       install:
         - pip install tox
       script:
