@@ -1,0 +1,32 @@
+image: python:latest
+variables:
+  PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
+cache:
+  paths:
+    - .tox
+before_script:
+  - pip install tox
+linting:
+  script:
+    - tox -e pep8
+locale:
+  script:
+    - tox -e tenv python setup.py compile_catalog
+unit_test_py36:
+  script:
+    - tox -e py36
+unit_test_py37:
+  script:
+    - tox -e py37
+unit_test_py38:
+  script:
+    - tox -e py38
+unit_test_py39:
+  script:
+    - tox -e py39
+docs:
+  script:
+    - tox -e docs
+config:
+  script:
+    - tox -e genconfig
