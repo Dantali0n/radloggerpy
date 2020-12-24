@@ -17,15 +17,9 @@ locale:
 unit_test_py36:
   script:
     - tox -e py36
-unit_test_py37:
-  script:
-    - tox -e py37
 unit_test_py38:
   script:
     - tox -e py38
-unit_test_py39:
-  script:
-    - tox -e py39
 docs:
   script:
     - tox -e docs
