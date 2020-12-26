@@ -1,4 +1,3 @@
-# -*- encoding: utf-8 -*-
 # Copyright (c) 2019 Dantali0n
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
@@ -16,7 +15,6 @@
 import abc
 from threading import Condition
 
-import six
 from typing import Type
 from typing import TypeVar
 
@@ -33,8 +31,7 @@ LOG = log.getLogger(__name__)
 CONF = config.CONF
 
 
-@six.add_metaclass(abc.ABCMeta)
-class Device(StateMachine):
+class Device(StateMachine, metaclass=abc.ABCMeta):
     """Abstract class all radiation monitoring devices should implement"""
 
     NAME = "Device"
@@ -58,7 +55,7 @@ class Device(StateMachine):
     """This is what makes type hinting ugly and clunky in Python"""
 
     def __init__(self, info: Type[_U], condition: Condition):
-        super(Device, self).__init__(self._transitions)
+        super().__init__(self._transitions)
 
         self.condition = condition
         self.info = info

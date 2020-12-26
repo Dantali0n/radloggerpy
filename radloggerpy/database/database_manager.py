@@ -1,4 +1,3 @@
-# -*- encoding: utf-8 -*-
 # Copyright (c) 2019 Dantali0n
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
@@ -70,7 +69,7 @@ def create_engine(database_name):
     :rtype: Instance of :py:class: 'sqlalchemy.engine.Engine`
     """
 
-    return sqlalchemy.create_engine("sqlite:///{0}".format(database_name))
+    return sqlalchemy.create_engine(f"sqlite:///{database_name}")
 
 
 def check_database_missing():

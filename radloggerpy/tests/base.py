@@ -1,4 +1,3 @@
-# -*- encoding: utf-8 -*-
 # Copyright 2010-2011 OpenStack Foundation
 # Copyright (c) 2013 Hewlett-Packard Development Company, L.P.
 #
@@ -34,7 +33,7 @@ class BaseTestCase(testscenarios.WithScenarios, base.BaseTestCase):
     """Test base class."""
 
     def setUp(self):
-        super(BaseTestCase, self).setUp()
+        super().setUp()
 
         # Use this fixture if class variables are changed so they get patched
         # back to the default value afterwards. This fixture also works for
@@ -59,6 +58,6 @@ class TestCase(BaseTestCase):
     """Test case base class for all unit tests."""
 
     def setUp(self):
-        super(TestCase, self).setUp()
+        super().setUp()
         self.useFixture(conf_fixture.ConfReloadFixture())
         # self.useFixture(conf_fixture.ConfFixture(cfg.CONF))

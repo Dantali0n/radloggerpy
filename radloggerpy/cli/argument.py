@@ -1,4 +1,3 @@
-# -*- encoding: utf-8 -*-
 # Copyright (c) 2019 Dantali0n
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
@@ -14,7 +13,7 @@
 # under the License.
 
 
-class Argument(object):
+class Argument:
     """Small object to contain parameters for adding arguments to argparse"""
 
     def __init__(self, *args, **kwargs):

@@ -1,4 +1,3 @@
-# -*- encoding: utf-8 -*-
 # Copyright (c) 2020 Dantali0n
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
@@ -15,7 +14,6 @@
 
 import abc
 import enum
-import six
 
 from radloggerpy._i18n import _
 
@@ -26,8 +24,7 @@ LOG = log.getLogger(__name__)
 CONF = config.CONF
 
 
-@six.add_metaclass(abc.ABCMeta)
-class StateMachine(object):
+class StateMachine(metaclass=abc.ABCMeta):
     """Abstract class to provide a state machine to any object"""
 
     _state = None

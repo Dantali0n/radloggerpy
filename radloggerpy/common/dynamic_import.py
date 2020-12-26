@@ -1,4 +1,3 @@
-# -*- encoding: utf-8 -*-
 # Copyright (c) 2019 Dantali0n
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
@@ -35,7 +34,7 @@ def list_module_names(package_path, excludes=[]):
     module_names = []
     for __, modname, ispkg in pkgutil.iter_modules(path=[package_path]):
         if modname in excludes or ispkg:
-            LOG.debug("Exclude {0} in list_module_names from {1}"
+            LOG.debug("Exclude {} in list_module_names from {}"
                       .format(modname, package_path))
         else:
             module_names.append(modname)

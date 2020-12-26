@@ -1,4 +1,3 @@
-# -*- encoding: utf-8 -*-
 # Copyright 2010 United States Government as represented by the
 # Administrator of the National Aeronautics and Space Administration.
 # All Rights Reserved.
@@ -25,7 +24,7 @@ class ConfFixture(conf_fixture.Config):
     """Fixture to manage conf settings."""
 
     def setUp(self):
-        super(ConfFixture, self).setUp()
+        super().setUp()
         config.parse_args([], default_config_files=[])
 
 
@@ -43,6 +42,6 @@ class ConfReloadFixture(ConfFixture):
         self.conf._parse_cli_opts = self._original_parse_cli_opts
 
     def setUp(self):
-        super(ConfReloadFixture, self).setUp()
+        super().setUp()
         self.conf._parse_cli_opts = self._fake_parser
         self.addCleanup(self._restore_parser)

@@ -1,4 +1,3 @@
-# -*- encoding: utf-8 -*-
 # Copyright (c) 2019 Dantali0n
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
@@ -28,7 +27,7 @@ class RadiationReading(timestamp.TimeStamp):
     _cpm = 0
 
     def __init__(self):
-        super(RadiationReading, self).__init__()
+        super().__init__()
 
     def set_cpm(self, cpm):
         """Set the counts per minute to the new value

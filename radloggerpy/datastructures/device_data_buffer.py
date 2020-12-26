@@ -1,4 +1,3 @@
-# -*- encoding: utf-8 -*-
 # Copyright (c) 2019 Dantali0n
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
@@ -28,7 +27,7 @@ LOG = log.getLogger(__name__)
 CONF = config.CONF
 
 
-class DeviceDataBuffer(object):
+class DeviceDataBuffer:
     """Native list protected by locks for devices as data buffer
 
     Read and Write lock are used in reverse because CPython GIL allows multiple

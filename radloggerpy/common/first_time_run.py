@@ -1,4 +1,3 @@
-# -*- encoding: utf-8 -*-
 # Copyright (c) 2019 Dantali0n
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
@@ -24,7 +23,7 @@ LOG = log.getLogger(__name__)
 CONF = config.CONF
 
 
-class FirstTimeRun(object):
+class FirstTimeRun:
     """Handles service wide first time initialization
 
     FirstTimeRun should not be instantiated until all checks and tasks have
@@ -59,7 +58,7 @@ class FirstTimeRun(object):
     performed in the main file.
     """
 
-    class CheckTask(object):
+    class CheckTask:
         """Wrapper for associative check and task pair"""
 
         def __init__(self, check, task):

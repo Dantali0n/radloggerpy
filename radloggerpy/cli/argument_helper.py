@@ -1,4 +1,3 @@
-# -*- encoding: utf-8 -*-
 # Copyright (c) 2019 Dantali0n
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
@@ -14,11 +13,9 @@
 # under the License.
 
 import abc
-import six
 
 
-@six.add_metaclass(abc.ABCMeta)
-class ArgumentHelper(object):
+class ArgumentHelper(metaclass=abc.ABCMeta):
     """Simplifies the adding of arguments when using argparse
 
     Implement this abstract class to simplify adding of argparse arguments.

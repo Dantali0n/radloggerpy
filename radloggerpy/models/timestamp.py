@@ -1,4 +1,3 @@
-# -*- encoding: utf-8 -*-
 # Copyright (c) 2019 Dantali0n
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
@@ -25,7 +24,7 @@ class TimeStamp(base.BaseModel):
     def __init__(self):
         """Performs essential initialization for TimeStamp model"""
 
-        super(TimeStamp, self).__init__()
+        super().__init__()
         # auto generate timestamp upon instantiation.
         self._timestamp = time.time()
 

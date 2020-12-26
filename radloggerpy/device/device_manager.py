@@ -1,4 +1,3 @@
-# -*- encoding: utf-8 -*-
 # Copyright (c) 2019 Dantali0n
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
@@ -37,7 +36,7 @@ LOG = log.getLogger(__name__)
 CONF = config.CONF
 
 
-class DeviceManager(object):
+class DeviceManager:
     """Factory for device creation and management
 
     The following theory of operation is not finalized and alternative

@@ -1,4 +1,3 @@
-# -*- encoding: utf-8 -*-
 # Copyright (c) 2019 Dantali0n
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
@@ -23,7 +22,7 @@ from radloggerpy.tests import base
 class TestRadloggerpy(base.TestCase):
 
     def setUp(self):
-        super(TestRadloggerpy, self).setUp()
+        super().setUp()
 
         self.p_configurator = mock.patch.object(
             radloggerpy, 'configurator')

@@ -1,4 +1,3 @@
-# -*- encoding: utf-8 -*-
 # Copyright (c) 2019 Dantali0n
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
@@ -36,7 +35,7 @@ class RadLoggerShell(app.App):
     """RadLoggerPy interactive command line interface"""
 
     def __init__(self, **kwargs):
-        super(RadLoggerShell, self).__init__(
+        super().__init__(
             description=self.__doc__.strip(),
             version=version.version_string,
             command_manager=commandmanager.CommandManager(
@@ -70,6 +69,6 @@ class RadLoggerShell(app.App):
 
     def run(self, argv):
         try:
-            super(RadLoggerShell, self).run(argv)
+            super().run(argv)
         except Exception as e:
             self.LOG.error(_('Exception raised: %s'), str(e))

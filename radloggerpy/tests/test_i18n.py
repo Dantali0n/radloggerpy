@@ -1,4 +1,3 @@
-# -*- encoding: utf-8 -*-
 # Copyright (c) 2019 Dantali0n
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
@@ -32,7 +31,7 @@ from radloggerpy.tests import base
 class Testi18n(base.TestCase):
 
     def setUp(self):
-        super(Testi18n, self).setUp()
+        super().setUp()
 
     def test_domain(self):
         self.assertEqual(_i18n.DOMAIN, _i18n._translators.domain)
