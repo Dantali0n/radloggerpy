@@ -2,6 +2,13 @@
 RoadMap
 =======
 
+- Implement publish - subscribe pattern for device -> endpoint communication
+- Design endpoints as complement for devices
+
+  - Database endpoint
+  - radmon.org endpoint
+  - uradmonitor.com endpoint
+  - gmcmap.com endpoint
 - Backup facilities for measurement database
 - Communication mechanism between cli and service (API)(pipes, dbus)
 - Importing and exporting configuration
