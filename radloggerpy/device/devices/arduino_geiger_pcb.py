@@ -25,6 +25,7 @@ from radloggerpy._i18n import _
 from radloggerpy.database.objects.serial_device import SerialDeviceObject
 from radloggerpy.device.device_interfaces.serial_device import SerialDevice
 from radloggerpy.models.radiationreading import RadiationReading
+from radloggerpy.types.device_types import DeviceTypes
 from radloggerpy.types.serial_parity import PARITY_CHOICES_R
 
 LOG = log.getLogger(__name__)
@@ -35,6 +36,8 @@ class ArduinoGeigerPcb(SerialDevice):
     """"""
 
     NAME = "ArduinoGeigerPCB"
+
+    TYPE = DeviceTypes.AVERAGE
 
     def __init__(self, info: SerialDeviceObject, condition: Condition):
         super(ArduinoGeigerPcb, self).__init__(info, condition)

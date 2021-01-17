@@ -23,6 +23,7 @@ from radloggerpy.device import device_interfaces as di
 from radloggerpy.device import device_manager as dm
 from radloggerpy.device import devices as dev
 from radloggerpy.tests import base
+from radloggerpy.types.device_types import DeviceTypes
 
 LOG = log.getLogger(__name__)
 CONF = config.CONF
@@ -74,8 +75,8 @@ class TestDeviceManager(base.TestCase):
         self.assertEqual([True], result)
 
     @mock.patch.object(dm.DeviceManager, '_get_device_module')
-    def test_get_device_types(self, m_get_device_module):
-        """Assert get_device_types called with correct module"""
+    def test_get_device_interfaces(self, m_get_device_module):
+        """Assert get_device_interfaces called with correct module"""
         dm.DeviceManager.get_device_interfaces()
 
         m_get_device_module.assert_called_once_with(di)
@@ -91,3 +92,17 @@ class TestDeviceManager(base.TestCase):
         m_map = dm.DeviceManager.get_device_map()
 
         self.assertEqual(m_map, dm.DeviceManager.get_device_map())
+
+    def test_device_implementations_name(self):
+        """Assert each concrete device implementation has a name"""
+        implementations = dm.DeviceManager.get_device_implementations()
+
+        for imp in implementations:
+            self.assertNotEquals(imp.NAME, None)
+
+    def test_device_implementations_type(self):
+        """Assert each concrete device implementation has a type"""
+        implementations = dm.DeviceManager.get_device_implementations()
+
+        for imp in implementations:
+            self.assertNotEquals(imp.TYPE, DeviceTypes.UNDEFINED)

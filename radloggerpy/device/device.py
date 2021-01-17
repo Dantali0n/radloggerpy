@@ -26,6 +26,7 @@ from radloggerpy.common.state_machine import StateMachine
 from radloggerpy.database.objects.device import DeviceObject
 from radloggerpy.datastructures.device_data_buffer import DeviceDataBuffer
 from radloggerpy.types.device_states import DeviceStates
+from radloggerpy.types.device_types import DeviceTypes
 
 LOG = log.getLogger(__name__)
 CONF = config.CONF
@@ -39,6 +40,9 @@ class Device(StateMachine, metaclass=abc.ABCMeta):
 
     INTERFACE = None
     """Each radiation monitoring device should use a specific interface"""
+
+    TYPE = DeviceTypes.UNDEFINED
+    """Each radiation monitoring device should define its type"""
 
     POSSIBLE_STATES = DeviceStates.STOPPED
     """Initial state and possible state types"""
