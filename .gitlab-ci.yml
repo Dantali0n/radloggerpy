@@ -31,7 +31,7 @@ unit_test_py39:
     - tox -e py39
 unit_test_docker:
   stage: unit-tests
-  image: quay.io/python-devs/ci-image:master
+  image: python:3.9-buster
   tags:
     - docker
   script:
