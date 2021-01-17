@@ -98,11 +98,11 @@ class TestDeviceManager(base.TestCase):
         implementations = dm.DeviceManager.get_device_implementations()
 
         for imp in implementations:
-            self.assertNotEquals(imp.NAME, None)
+            self.assertIsNotNone(imp.NAME)
 
     def test_device_implementations_type(self):
         """Assert each concrete device implementation has a type"""
         implementations = dm.DeviceManager.get_device_implementations()
 
         for imp in implementations:
-            self.assertNotEquals(imp.TYPE, DeviceTypes.UNDEFINED)
+            self.assertNotEqual(imp.TYPE, DeviceTypes.UNDEFINED)
