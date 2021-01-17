@@ -25,8 +25,15 @@ unit_test_py36:
   stage: unit-tests
   script:
     - tox -e py36
-unit_test_py38:
+unit_test_py39:
   stage: unit-tests
+  script:
+    - tox -e py39
+unit_test_docker:
+  stage: unit-tests
+  image: quay.io/python-devs/ci-image:master
+  tags:
+    - docker
   script:
     - tox -e py39
 docs:
