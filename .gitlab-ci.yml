@@ -8,21 +8,32 @@ cache:
     - radloggerpy/locale
 before_script:
   - pip install tox
+stages:
+  - linting
+  - locale
+  - unit-tests
+  - documents
 linting:
+  stage: linting
   script:
     - tox -e pep8
 locale:
+  stage: locale
   script:
     - tox -e tenv python setup.py compile_catalog
 unit_test_py36:
+  stage: unit-tests
   script:
     - tox -e py36
 unit_test_py38:
+  stage: unit-tests
   script:
-    - tox -e py38
+    - tox -e py39
 docs:
+  stage: documents
   script:
     - tox -e docs
 config:
+  stage: documents
   script:
     - tox -e genconfig
