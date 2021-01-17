@@ -5,6 +5,12 @@ Developers guide
 .. role:: boldorange
   :class: orange bolditalic
 
+.. role:: boldgreen
+  :class: green bolditalic
+
+.. role:: boldyellow
+  :class: yellow bolditalic
+
 This section covers several topics about RadLoggerPy that are likely to
 eventually make it into the general documentation but in a more refined
 condensed form. This documentation serves as indication for other developers
@@ -49,7 +55,10 @@ users. These can be enabled in the configuration along with any configuration
 parameters required.
 
 The state transition diagram below shows the different states devices can be in
-and how they can transition between states.
+and how they can transition between states. Implementations of devices do not
+have to manage these transitions themselves, instead the abstract device run
+method will handle these transitions. Devices only need to ensure they raise
+the appropriate errors upon encountering them.
 
 ..
     st-device-states.xml
@@ -58,3 +67,21 @@ and how they can transition between states.
     :align: center
     :width: 100%
     :alt: Device state transition diagram
+
+When :boldgreen:`devices` are running they generate messages, to store or
+transmit these each message must be passed to a so called
+:boldyellow:`endpoint`. :boldgreen:`Devices` communicate with
+:boldyellow:`endpoints` to through the publish subscribe pattern. There are two
+fundamental types of messages. Those from continuous readings and those from
+average readings. Notably, a :boldgreen:`device` measuring continuously can
+also generate average readings but does not have to support this. If a single
+:boldyellow:`endpoint` supports both continuous and average readings it must be
+developed as two separate :boldyellow:`endpoint` classes.
+
+..
+    comm-device-endpoint.xml
+
+.. image:: /images/comm-device-endpoint.svg
+    :align: center
+    :width: 100%
+    :alt: Device to endpoint communication
