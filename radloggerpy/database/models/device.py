@@ -24,6 +24,7 @@ from sqlalchemy_utils import ChoiceType
 from radloggerpy.database.declarative_base import base
 from radloggerpy.types.device_implementations import IMPLEMENTATION_CHOICES
 from radloggerpy.types.device_interfaces import DeviceInterfaces
+from radloggerpy.types.device_types import DeviceTypes
 
 
 class Device(base):
@@ -33,7 +34,15 @@ class Device(base):
 
     enabled = Column(Boolean, default=True, nullable=False)
 
+    type = Column(Enum(DeviceTypes))
+    """Type stores redundant information that could be extrapolated from
+        implementation, however, storing type allows for more efficient
+        queries."""
+
     interface = Column(Enum(DeviceInterfaces))
+    """Interface stores redundant information that could be extrapolated
+        implementation, however, storing interface allows for more efficient
+        queries."""
 
     implementation = Column(ChoiceType(IMPLEMENTATION_CHOICES))
 

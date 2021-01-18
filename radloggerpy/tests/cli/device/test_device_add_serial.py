@@ -23,6 +23,7 @@ from radloggerpy.device.device_manager import DeviceManager as dm
 
 from radloggerpy.tests import base
 from radloggerpy.types.device_interfaces import DeviceInterfaces
+from radloggerpy.types.device_types import DeviceTypes
 from radloggerpy.types.serial_bytesize import SerialBytesizeTypes
 from radloggerpy.types.serial_parity import SerialParityTypes
 from radloggerpy.types.serial_stopbit import SerialStopbitTypes
@@ -97,8 +98,11 @@ class TestDeviceAddSerial(base.TestCase):
         # ensure that is_local on the patch does not modify the actual bases
         self.assertEqual(bases, device_add_serial.DeviceAddSerial.__bases__)
 
+    @mock.patch.object(device_add_serial, 'Dm')
     @mock.patch.object(device_add_serial, 'SerialDeviceObject')
-    def test_take_action(self, m_dev_obj):
+    def test_take_action(self, m_dev_obj, m_dm):
+
+        m_dm.get_device_class.return_type = mock.Mock(TYPE=DeviceTypes.AVERAGE)
 
         bases = copy(device_add_serial.DeviceAddSerial.__bases__)
         f_bases = tuple(base for base in bases if base != Command)
@@ -109,6 +113,7 @@ class TestDeviceAddSerial(base.TestCase):
         m_mod_dev = mock.Mock()
         m_mod_dev.id = 1
         m_mod_dev.name = 'test'
+        m_mod_dev.type = DeviceTypes.AVERAGE
         m_mod_dev.interface = DeviceInterfaces.SERIAL
         m_mod_dev.implementation = dm.get_device_implementations()[0].NAME
         m_mod_dev.port = '/dev/ttyUSB0'
@@ -130,6 +135,7 @@ class TestDeviceAddSerial(base.TestCase):
             t_result = t_device.take_action(m_args)
             self.assertEqual(t_result.id, m_mod_dev.id)
             self.assertEqual(t_result.name, m_mod_dev.name)
+            self.assertEqual(t_result.type, m_mod_dev.type)
             self.assertEqual(t_result.interface, m_mod_dev.interface)
             self.assertEqual(t_result.implementation, m_mod_dev.implementation)
             self.assertEqual(t_result.port, m_mod_dev.port)
@@ -142,8 +148,11 @@ class TestDeviceAddSerial(base.TestCase):
         # ensure that is_local on the patch does not modify the actual bases
         self.assertEqual(bases, device_add_serial.DeviceAddSerial.__bases__)
 
+    @mock.patch.object(device_add_serial, 'Dm')
     @mock.patch.object(device_add_serial, 'SerialDeviceObject')
-    def test_take_action_error(self, m_dev_obj):
+    def test_take_action_error(self, m_dev_obj, m_dm):
+
+        m_dm.get_device_class.return_type = mock.Mock(TYPE=DeviceTypes.AVERAGE)
 
         bases = copy(device_add_serial.DeviceAddSerial.__bases__)
         f_bases = tuple(base for base in bases if base != Command)

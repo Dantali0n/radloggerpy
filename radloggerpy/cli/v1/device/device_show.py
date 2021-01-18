@@ -63,8 +63,10 @@ class DeviceShow(ShowOne, DeviceCommand):
         if data is None:
             raise RuntimeWarning(_("Device could not be found"))
 
-        fields = ('id', 'name', 'interface', 'implementation')
-        values = (data.id, data.name, data.interface, data.implementation)
+        fields = (
+            'id', 'name', 'measurement type', 'interface', 'implementation')
+        values = (
+            data.id, data.name, data.type, data.interface, data.implementation)
 
         if details and data.interface == \
                 INTERFACE_CHOICES[DeviceInterfaces.SERIAL]:

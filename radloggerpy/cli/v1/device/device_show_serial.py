@@ -81,10 +81,11 @@ class DeviceShowSerial(DeviceShow):
         if data is None:
             raise RuntimeWarning(_("Device could not be found"))
 
-        fields = ('id', 'name', 'interface', 'implementation', 'port',
-                  'baudrate', 'bytesize', 'parity', 'stopbits', 'timeout')
-        values = (data.id, data.name, data.interface, data.implementation,
-                  data.port, data.baudrate, data.bytesize, data.parity,
-                  data.stopbits, data.timeout)
+        fields = (
+            'id', 'name', 'measurement type', 'interface', 'implementation',
+            'port', 'baudrate', 'bytesize', 'parity', 'stopbits', 'timeout')
+        values = (data.id, data.name, data.type, data.interface,
+                  data.implementation, data.port, data.baudrate, data.bytesize,
+                  data.parity, data.stopbits, data.timeout)
 
         return (fields, values)

@@ -16,6 +16,7 @@
 from radloggerpy.database.models.device import Device
 from radloggerpy.database.objects.base import DatabaseObject
 from radloggerpy.types.device_interfaces import INTERFACE_CHOICES
+from radloggerpy.types.device_types import DEVICE_TYPE_CHOICES
 
 
 class DeviceObject(DatabaseObject):
@@ -24,6 +25,7 @@ class DeviceObject(DatabaseObject):
     id = None
     name = None
     enabled = None
+    type = None
     interface = None
     implementation = None
 
@@ -39,6 +41,12 @@ class DeviceObject(DatabaseObject):
 
         if self.enabled:
             self.m_device.enabled = self.enabled
+
+        if self.type in DEVICE_TYPE_CHOICES.keys():
+            self.m_device.type = self.type
+        elif self.type in DEVICE_TYPE_CHOICES.values():
+            index = list(DEVICE_TYPE_CHOICES.values()).index(self.type)
+            self.m_device.type = list(DEVICE_TYPE_CHOICES.keys())[index]
 
         if self.interface in INTERFACE_CHOICES.keys():
             self.m_device.interface = self.interface
@@ -57,6 +65,9 @@ class DeviceObject(DatabaseObject):
 
         if self.m_device.enabled:
             self.enabled = self.m_device.enabled
+
+        if self.m_device.type:
+            self.type = DEVICE_TYPE_CHOICES[self.m_device.type]
 
         if self.m_device.interface:
             self.interface = INTERFACE_CHOICES[self.m_device.interface]
