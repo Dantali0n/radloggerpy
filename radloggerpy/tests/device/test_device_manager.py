@@ -18,11 +18,15 @@ from unittest import mock
 
 from oslo_log import log
 from radloggerpy import config
+from radloggerpy.database.objects.device import DeviceObject
 
 from radloggerpy.device import device_interfaces as di
 from radloggerpy.device import device_manager as dm
 from radloggerpy.device import devices as dev
 from radloggerpy.tests import base
+from radloggerpy.types.device_implementations import IMPLEMENTATION_CHOICES
+from radloggerpy.types.device_interfaces import DeviceInterfaces
+from radloggerpy.types.device_interfaces import INTERFACE_CHOICES
 from radloggerpy.types.device_types import DeviceTypes
 
 LOG = log.getLogger(__name__)
@@ -92,6 +96,51 @@ class TestDeviceManager(base.TestCase):
         m_map = dm.DeviceManager.get_device_map()
 
         self.assertEqual(m_map, dm.DeviceManager.get_device_map())
+
+    def test_get_device_map_implementations(self):
+        m_map = dm.DeviceManager.get_device_map()
+
+        choices = {x: False for (x, y) in IMPLEMENTATION_CHOICES}
+        num_choices = 0
+
+        for key, value in m_map.items():
+            num_choices += len(value)
+            for imp in value:
+                if imp.NAME in choices:
+                    choices[imp.NAME] = True
+
+        for x in choices:
+            self.assertTrue(x)
+
+        # This will break once an implementation supports multiple interfaces!
+        self.assertEqual(num_choices, len(IMPLEMENTATION_CHOICES))
+
+    @mock.patch.object(dm.DeviceManager, 'get_device_map')
+    def test_get_device_class(self, m_get_device_map):
+        """Ensure class can be found for instances of DeviceObject
+
+        This checks that instances of:
+        :py:class:`radloggerpy.database.objects.device.DeviceObject` can have
+        their corresponding class found by get_device_class.
+        """
+
+        m_class = mock.Mock(NAME="test")
+        m_get_device_map.return_value = {
+            DeviceInterfaces.SERIAL: [
+                m_class,
+                mock.Mock(NAME="different")
+            ]
+        }
+
+        # Create actual DeviceObject instead of mock as to not upset type
+        # hinting.
+        args = {
+            "implementation": 'test',
+            "interface": INTERFACE_CHOICES[DeviceInterfaces.SERIAL]
+        }
+        m_obj = DeviceObject(**args)
+
+        self.assertEqual(m_class, dm.DeviceManager.get_device_class(m_obj))
 
     def test_device_implementations_name(self):
         """Assert each concrete device implementation has a name"""
