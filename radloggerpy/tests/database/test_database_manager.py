@@ -49,8 +49,7 @@ class TestDatabaseManager(base.TestCase):
 
     def test_create_engine(self):
         engine = dbm.create_engine("test.sqlite")
-
-        self.assertEqual("sqlite:///test.sqlite", '%s' % engine.url)
+        self.assertEqual("sqlite:///test.sqlite", str(engine.url))
 
     @mock.patch.object(dbm, 'create_engine')
     def test_create_session(self, m_engine):
