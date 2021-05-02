@@ -147,6 +147,35 @@ class TestDevice(base.TestCase):
         self.assertTrue(future.done())
         self.assertEqual(DeviceStates.STOPPED, m_device.get_state())
 
+    def test_transition_double(self):
+        """Tests against statemachine being a static variable"""
+
+        m_device1 = self.FakeDevice()
+        self.assertEqual(DeviceStates.STOPPED, m_device1.get_state())
+
+        m_error = RuntimeError()
+        m_init = mock.Mock()
+        m_init.side_effect = m_error
+        m_device1._init = m_init
+
+        m_device2 = self.FakeDevice()
+        self.assertEqual(DeviceStates.STOPPED, m_device2.get_state())
+
+        executor = ThreadPoolExecutor(max_workers=2)
+        executor.submit(m_device1.run)
+        executor.submit(m_device2.run)
+
+        time.sleep(0.5)
+
+        self.assertEqual(DeviceStates.ERROR, m_device1.get_state())
+        self.assertEqual(DeviceStates.RUNNING, m_device2.get_state())
+
+        m_device1.stop()
+        m_device2.stop()
+
+        time.sleep(0.5)
+        self.assertEqual(DeviceStates.STOPPED, m_device2.get_state())
+
     def test_run_stop_run(self):
         m_device = self.FakeDevice()
         executor = ThreadPoolExecutor(max_workers=1)
