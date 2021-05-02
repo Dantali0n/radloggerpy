@@ -3,7 +3,7 @@ RadLoggerPy
 ===============================
 
 .. image:: https://gitlab.dantalion.nl/root/radloggerpy/badges/master/pipeline.svg
-    :target: https://gitlab.dantalion.nl:4443/root/radloggerpy/-/pipelines
+    :target: https://gitlab.dantalion.nl/root/radloggerpy/-/pipelines
     :alt: Latest build status logo for branch master.
 .. image:: https://codecov.io/gh/Dantali0n/radloggerpy/branch/master/graph/badge.svg
     :target: https://codecov.io/gh/Dantali0n/radloggerpy/tree/master/radloggerpy
@@ -22,4 +22,5 @@ designed to be used with background radiation measuring devices.
 * Source: https://github.com/Dantali0n/RadLoggerPy
 * Bugs: https://github.com/Dantali0n/RadLoggerPy/issues
 * CI pipeline: https://gitlab.dantalion.nl/root/radloggerpy/-/pipelines
+* Code coverage: https://codecov.io/gh/Dantali0n/radloggerpy/tree/master/radloggerpy
 

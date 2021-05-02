@@ -1,6 +1,7 @@
 image: python:latest
 variables:
   PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
+  CODECOV_TOKEN: "ad646b4d-8d41-4b6c-912e-09a09ac2d097"
 cache:
   paths:
     - .cache/pip
@@ -12,6 +13,7 @@ stages:
   - linting
   - locale
   - unit-tests
+  - coverage
   - documents
 linting:
   stage: linting
@@ -45,6 +47,12 @@ unit_test_py39:
 #    - docker
 #  script:
 #    - tox -e py39
+coverage:
+  stage: coverage
+  script:
+    - pip install codecov
+    - tox -e cover
+    - codecov
 docs:
   stage: documents
   script:
