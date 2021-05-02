@@ -22,9 +22,9 @@ from oslo_log import log
 from radloggerpy import config
 
 from radloggerpy._i18n import _
-from radloggerpy.common.state_machine import StateMachine
 from radloggerpy.database.objects.device import DeviceObject
 from radloggerpy.datastructures.device_data_buffer import DeviceDataBuffer
+from radloggerpy.device.device_state_machine import DeviceStateMachine
 from radloggerpy.types.device_states import DeviceStates
 from radloggerpy.types.device_types import DeviceTypes
 
@@ -32,7 +32,7 @@ LOG = log.getLogger(__name__)
 CONF = config.CONF
 
 
-class Device(StateMachine, metaclass=abc.ABCMeta):
+class Device(metaclass=abc.ABCMeta):
     """Abstract class all radiation monitoring devices should implement"""
 
     NAME = "Device"
@@ -44,22 +44,13 @@ class Device(StateMachine, metaclass=abc.ABCMeta):
     TYPE = DeviceTypes.UNDEFINED
     """Each radiation monitoring device should define its type"""
 
-    POSSIBLE_STATES = DeviceStates.STOPPED
-    """Initial state and possible state types"""
-
-    _transitions = {
-        DeviceStates.STOPPED: {DeviceStates.INITIALIZING},
-        DeviceStates.INITIALIZING: {DeviceStates.RUNNING, DeviceStates.ERROR},
-        DeviceStates.RUNNING: {DeviceStates.STOPPED, DeviceStates.ERROR},
-        DeviceStates.ERROR: {DeviceStates.STOPPED}
-    }
-    """Possible states and subsequent transitions"""
+    _statemachine = DeviceStateMachine()
+    """Instance of state machine specific to devices"""
 
     _U = TypeVar('_U', bound=DeviceObject)
     """This is what makes type hinting ugly and clunky in Python"""
 
     def __init__(self, info: Type[_U], condition: Condition):
-        super().__init__(self._transitions)
 
         self.condition = condition
         self.info = info
@@ -94,30 +85,30 @@ class Device(StateMachine, metaclass=abc.ABCMeta):
         appropriately.
         """
 
-        if self.get_state() is DeviceStates.ERROR:
+        if self._statemachine.get_state() is DeviceStates.ERROR:
             "Recover device from error state"
             LOG.info(_("Restarting device from previous error state"))
-            self.reset_state()
-        elif self.get_state() is not DeviceStates.STOPPED:
+            self._statemachine.reset_state()
+        elif self._statemachine.get_state() is not DeviceStates.STOPPED:
             "Not logging a message here, DeviceManager can easily do that"
             raise RuntimeError(_("Can not start same device multiple times"))
 
         try:
-            self.transition(DeviceStates.INITIALIZING)
+            self._statemachine.transition(DeviceStates.INITIALIZING)
             self._init()
         except RuntimeError:
-            self.transition(DeviceStates.ERROR)
+            self._statemachine.transition(DeviceStates.ERROR)
             raise
 
         try:
-            self.transition(DeviceStates.RUNNING)
+            self._statemachine.transition(DeviceStates.RUNNING)
             self._run()
         except RuntimeError:
-            self.transition(DeviceStates.ERROR)
+            self._statemachine.transition(DeviceStates.ERROR)
             raise
 
-        if self.get_state() is DeviceStates.RUNNING:
-            self.transition(DeviceStates.STOPPED)
+        if self._statemachine.get_state() is DeviceStates.RUNNING:
+            self._statemachine.transition(DeviceStates.STOPPED)
 
     @abc.abstractmethod
     def stop(self):
@@ -134,6 +125,11 @@ class Device(StateMachine, metaclass=abc.ABCMeta):
 
         :return: True if stopping, false otherwise
         """
+
+    def get_state(self):
+        """Return the current statemachine state"""
+
+        return self._statemachine.get_state()
 
     def has_data(self):
         """Wrapper around internal buffer"""
