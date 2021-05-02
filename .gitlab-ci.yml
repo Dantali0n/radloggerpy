@@ -30,10 +30,12 @@ locale_docker:
     - tox -e tenv python setup.py compile_catalog
 unit_test_py36:
   stage: unit-tests
+  image: python:3.6-buster
   script:
     - tox -e py36
 unit_test_py39:
   stage: unit-tests
+  image: python:3.9-buster
   script:
     - tox -e py39
 unit_test_docker:
