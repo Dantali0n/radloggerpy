@@ -21,13 +21,13 @@ locale:
   stage: locale
   script:
     - tox -e tenv python setup.py compile_catalog
-locale_docker:
-  stage: locale
-  image: python:3.9-buster
-  tags:
-    - docker
-  script:
-    - tox -e tenv python setup.py compile_catalog
+#locale_docker:
+#  stage: locale
+#  image: python:3.9-buster
+#  tags:
+#    - docker
+#  script:
+#    - tox -e tenv python setup.py compile_catalog
 unit_test_py36:
   stage: unit-tests
   image: python:3.6-buster
@@ -38,13 +38,13 @@ unit_test_py39:
   image: python:3.9-buster
   script:
     - tox -e py39
-unit_test_docker:
-  stage: unit-tests
-  image: python:3.9-buster
-  tags:
-    - docker
-  script:
-    - tox -e py39
+#unit_test_docker:
+#  stage: unit-tests
+#  image: python:3.9-buster
+#  tags:
+#    - docker
+#  script:
+#    - tox -e py39
 docs:
   stage: documents
   script:

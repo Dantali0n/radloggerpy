@@ -2,8 +2,8 @@
 RadLoggerPy
 ===============================
 
-.. image:: https://api.travis-ci.com/Dantali0n/radloggerpy.svg?branch=master
-    :target: https://travis-ci.com/Dantali0n/radloggerpy
+.. image:: https://gitlab.dantalion.nl:4443/root/radloggerpy/badges/master/pipeline.svg
+    :target: https://gitlab.dantalion.nl:4443/root/radloggerpy/-/pipelines
     :alt: Latest build status logo for branch master.
 .. image:: https://codecov.io/gh/Dantali0n/radloggerpy/branch/master/graph/badge.svg
     :target: https://codecov.io/gh/Dantali0n/radloggerpy/tree/master/radloggerpy
@@ -21,4 +21,5 @@ designed to be used with background radiation measuring devices.
 * Free software: Apache license
 * Source: https://github.com/Dantali0n/RadLoggerPy
 * Bugs: https://github.com/Dantali0n/RadLoggerPy/issues
+* CI pipeline: https://gitlab.dantalion.nl:4443/root/radloggerpy/-/pipelines
 
