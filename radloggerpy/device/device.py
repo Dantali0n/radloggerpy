@@ -44,9 +44,6 @@ class Device(metaclass=abc.ABCMeta):
     TYPE = DeviceTypes.UNDEFINED
     """Each radiation monitoring device should define its type"""
 
-    _statemachine = DeviceStateMachine()
-    """Instance of state machine specific to devices"""
-
     _U = TypeVar('_U', bound=DeviceObject)
     """This is what makes type hinting ugly and clunky in Python"""
 
@@ -55,6 +52,8 @@ class Device(metaclass=abc.ABCMeta):
         self.condition = condition
         self.info = info
         self.data = DeviceDataBuffer(self.condition)
+
+        self._statemachine = DeviceStateMachine()
 
     @abc.abstractmethod
     def _init(self):
