@@ -44,6 +44,9 @@ class TestStateMachine(base.TestCase):
 
         POSSIBLE_STATES = DummyEnum.EXP
 
+    class FalseStateMachine(StateMachine):
+        """FalseStateMachine does not define POSSIBLE_STATES"""
+
     def setUp(self):
         super(TestStateMachine, self).setUp()
 
@@ -51,6 +54,16 @@ class TestStateMachine(base.TestCase):
         m_machine = self.DummyStateMachine(self.dummy_transitions)
 
         self.assertEqual(DummyEnum.EXP, m_machine.get_state())
+
+    def test_init_error(self):
+        """FalseStateMachine raise error on construction without states param
+
+        Test that constructing a StateMachine object raises an error if both
+        the POSSIBLE_STATES attribute and states parameter are None.
+        """
+
+        self.assertRaises(RuntimeError, self.FalseStateMachine,
+                          self.dummy_transitions)
 
     def test_verify_error(self):
 
