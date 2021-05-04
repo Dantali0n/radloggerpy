@@ -18,22 +18,42 @@ from threading import Condition
 from typing import Type
 from typing import TypeVar
 
+
 from oslo_log import log
 from radloggerpy import config
 
 import futurist
+from futurist import Future
 
 from radloggerpy._i18n import _
 from radloggerpy.common.dynamic_import import import_modules
 from radloggerpy.common.dynamic_import import list_module_names
 from radloggerpy.database.objects.device import DeviceObject
 from radloggerpy.device.device import Device
+from radloggerpy.device.device_exception import DeviceException
 from radloggerpy.device import device_interfaces as di
 from radloggerpy.device import devices as dev
 from radloggerpy.types.device_interfaces import INTERFACE_CHOICES_R
 
 LOG = log.getLogger(__name__)
 CONF = config.CONF
+
+
+class ManagedDevice:
+    """Small data structure to keep track of running devices"""
+
+    future = None
+    device = None
+
+    _I = TypeVar('_I', bound=Device)
+    """Bound to :py:class:`radloggerpy.device.device.Device`"""
+
+    _U = TypeVar('_U', bound=Future)
+    """Bound to :py:class:`concurrent.futures._base.Future`"""
+
+    def __init__(self, future: Type[_U], device: Type[_I]):
+        self.future = future
+        self.device = device
 
 
 class DeviceManager:
@@ -76,7 +96,8 @@ class DeviceManager:
 
         self._condition = Condition()
 
-        self._futures = []
+        self._mng_devices = []
+        "List of ManagedDevice devices see :py:class:`ManagedDevice`"
         self._threadpool = futurist.ThreadPoolExecutor(
             max_workers=num_workers)
         # self._threadpool = futurist.GreenThreadPoolExecutor(
@@ -85,14 +106,47 @@ class DeviceManager:
         self.get_device_map()
 
     _I = TypeVar('_I', bound=Device)
+    """Bound to :py:class:`radloggerpy.device.device.Device`"""
 
     _U = TypeVar('_U', bound=DeviceObject)
-    """This is what makes type hinting ugly and clunky in Python"""
+    """Bound to :py:class:`radloggerpy.database.objects.device.DeviceObject`"""
 
     def launch_device(self, device_obj: Type[_U]):
+        """Submit the device and its parameter to the threadpool
+
+        Submitted devices are maintained as ManagedDevice instances, this
+        enables to correlate a future to its corresponding device.
+        """
+
         dev_class = self.get_device_class(device_obj)
         dev_inst = dev_class(device_obj, self._condition)
-        self._futures.append(self._threadpool.submit(dev_inst.run))
+        self._mng_devices.append(
+            ManagedDevice(self._threadpool.submit(dev_inst.run), dev_inst)
+        )
+
+    def check_devices(self):
+        """Check the status of the devices and handle failures
+
+        TODO(Dantali0n): This method should use the get_state method of devices
+                         instead of relying on the futures to much.
+        """
+
+        removals = []
+        for mng_device in self._mng_devices:
+            future_exception = mng_device.future.exception()
+
+            if type(future_exception) is not DeviceException:
+                LOG.error(_("Unhandled Exception"))
+
+            if mng_device.future.done() and CONF.devices.restart_on_error:
+                mng_device.future =\
+                    self._threadpool.submit(mng_device.device.run)
+            elif mng_device.future.done():
+                removals.append(mng_device)
+
+        "Clean up the managed devices that have run to completion"
+        for device in removals:
+            self._mng_devices.remove(device)
 
     @staticmethod
     def _get_device_module(module):

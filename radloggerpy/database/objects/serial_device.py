@@ -177,6 +177,11 @@ class SerialDeviceObject(DeviceObject):
             return dev
 
     @staticmethod
+    def find_enabled(session):
+        return SerialDeviceObject.find(
+            session, SerialDeviceObject(**{'enabled': True}), True)
+
+    @staticmethod
     def find_all(session, references):
         NotImplementedError()
 

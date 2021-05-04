@@ -30,7 +30,11 @@ DEVICES_OPTS = [
                min=0,
                help='Minimum time in between a device pulling for data, going '
                     'to sleep and pulling for data again. Value is expressed '
-                    'in milliseconds (1/1000 second).')
+                    'in milliseconds (1/1000 second).'),
+    cfg.BoolOpt('restart_on_error',
+                default=True,
+                help='Should the device manager restart devices upon '
+                     'encountering an error.')
 ]
 
 

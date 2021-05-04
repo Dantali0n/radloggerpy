@@ -54,13 +54,14 @@ def main():
     # launch device manager
     manager = DeviceManager()
 
-    # import pdb; pdb.set_trace()
     devices = SerialDeviceObject.find_enabled(sess)
     for device in devices:
         manager.launch_device(device)
 
+    # TODO(Dantali0n): Improve state checking and error handling
     while True:
-        time.sleep(1)
+        manager.check_devices()
+        time.sleep(30)
 
     # close all database sessions that are still left open
     database_manager.close_lingering_sessions()

@@ -23,6 +23,7 @@ from radloggerpy import config
 
 from radloggerpy._i18n import _
 from radloggerpy.database.objects.serial_device import SerialDeviceObject
+from radloggerpy.device.device_exception import DeviceException
 from radloggerpy.device.device_interfaces.serial_device import SerialDevice
 from radloggerpy.models.radiationreading import RadiationReading
 from radloggerpy.types.device_types import DeviceTypes
@@ -56,13 +57,13 @@ class ArduinoGeigerPcb(SerialDevice):
             if e.errno == errno.EACCES:
                 LOG.critical(_("Insufficient permissions "
                                "to open device."))
-                raise
+                raise DeviceException
             elif e.errno == errno.ENOENT:
                 LOG.critical(_("Device does not exist"))
-                raise
+                raise DeviceException
             else:
                 LOG.critical(_("Device error %d") % e.errno)
-                raise
+                raise DeviceException
 
     def _run(self):
         string = ""
