@@ -19,6 +19,11 @@ linting:
   stage: linting
   script:
     - tox -e pep8
+type_checking:
+  stage: linting
+  allow_failure: true
+  script:
+    - tox -e typecheck
 locale:
   stage: locale
   script:
