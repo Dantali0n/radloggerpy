@@ -14,14 +14,12 @@
 # under the License.
 
 import abc
-import six
 
 from radloggerpy.cli.argument import Argument
 from radloggerpy.cli.v1.device.device_helper import DeviceHelper
 
 
-@six.add_metaclass(abc.ABCMeta)
-class DeviceAddCommand(DeviceHelper):
+class DeviceAddCommand(DeviceHelper, metaclass=abc.ABCMeta):
     """Abstract command to add devices"""
 
     _arguments = None

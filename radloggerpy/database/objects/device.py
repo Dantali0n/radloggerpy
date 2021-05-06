@@ -15,6 +15,7 @@
 
 from radloggerpy.database.models.device import Device
 from radloggerpy.database.objects.base import DatabaseObject
+# from radloggerpy.database.objects.serial_device import SerialDeviceObject
 from radloggerpy.types.device_interfaces import INTERFACE_CHOICES
 from radloggerpy.types.device_types import DEVICE_TYPE_CHOICES
 
@@ -164,6 +165,16 @@ class DeviceObject(DatabaseObject):
     def find_enabled(session):
         return DeviceObject.find(
             session, DeviceObject(**{'enabled': True}), True)
+
+    # @staticmethod
+    # def upgrade(session, reference):
+    #     """Upgrade the basic DeviceObject to its specific interface object"""
+    #
+    #     if reference.interface is DeviceInterfaces.SERIAL:
+    #         return SerialDeviceObject.find(session, reference)
+    #     elif reference.interface is DeviceInterfaces.ETHERNET:
+    #         raise NotImplementedError(_("Class EthernetDeviceObject not"
+    #                                     "implemented yet."))
 
     @staticmethod
     def find_all(session, references):

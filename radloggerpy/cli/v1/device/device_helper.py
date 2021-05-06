@@ -14,14 +14,12 @@
 # under the License.
 
 import abc
-import six
 
 from radloggerpy.cli.argument_helper import ArgumentHelper
 from radloggerpy.device.device_manager import DeviceManager
 
 
-@six.add_metaclass(abc.ABCMeta)
-class DeviceHelper(ArgumentHelper):
+class DeviceHelper(ArgumentHelper, metaclass=abc.ABCMeta):
     """Abstract helper for shared device interface"""
 
     # Should be overridden by child classes

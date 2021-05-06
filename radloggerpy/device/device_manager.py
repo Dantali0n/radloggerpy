@@ -42,8 +42,10 @@ CONF = config.CONF
 class ManagedDevice:
     """Small data structure to keep track of running devices"""
 
-    future = None
-    device = None
+    future: Future
+    device: Device
+
+    consecutive_errors: int = 0
 
     _I = TypeVar('_I', bound=Device)
     """Bound to :py:class:`radloggerpy.device.device.Device`"""

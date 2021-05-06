@@ -16,15 +16,12 @@
 import abc
 from threading import Condition
 
-import six
-
 from radloggerpy.database.objects.device import DeviceObject
 from radloggerpy.device import device
 from radloggerpy.types.device_interfaces import DeviceInterfaces
 
 
-@six.add_metaclass(abc.ABCMeta)
-class EthernetDevice(device.Device):
+class EthernetDevice(device.Device, metaclass=abc.ABCMeta):
     """EthernetDevice base class"""
 
     NAME = "EthernetDevice"

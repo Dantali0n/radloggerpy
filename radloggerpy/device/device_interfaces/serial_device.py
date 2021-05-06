@@ -16,15 +16,12 @@
 import abc
 from threading import Condition
 
-import six
-
 from radloggerpy.database.objects.serial_device import SerialDeviceObject
 from radloggerpy.device import device
 from radloggerpy.types.device_interfaces import DeviceInterfaces
 
 
-@six.add_metaclass(abc.ABCMeta)
-class SerialDevice(device.Device):
+class SerialDevice(device.Device, metaclass=abc.ABCMeta):
     """SerialDevice class for serial communication interface devices
 
     A SerialDevice is used for communication interfaces typically available

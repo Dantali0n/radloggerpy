@@ -28,16 +28,9 @@ LOG = log.getLogger(__name__)
 
 
 class SerialDeviceObject(DeviceObject):
-    """Abstract database object providing abstract CRUD interfaces
+    """SerialDeviceObject
 
-    When using SQLAlchemy database sessions all interactions with these
-    sessions should be achieved using object which implement
-    :py:class:`~.DatabaseObject`. These objects provide CRUD methods to handle
-    interactions allowing to obfuscate that many of the objects in the database
-    consist of multiple models.
-
-    to commit an object to the database one would call:
-    `object.add(session)`
+    TODO(Dantali0n): Write something nice about SerialDeviceObject
     """
 
     "Device serial model attributes"

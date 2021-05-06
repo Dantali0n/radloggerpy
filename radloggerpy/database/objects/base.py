@@ -14,7 +14,6 @@
 # under the License.
 
 import abc
-import six
 
 from oslo_log import log
 
@@ -24,8 +23,7 @@ from radloggerpy.common.common import seq_but_not_str
 LOG = log.getLogger(__name__)
 
 
-@six.add_metaclass(abc.ABCMeta)
-class DatabaseObject(object):
+class DatabaseObject(metaclass=abc.ABCMeta):
     """Abstract database object providing abstract CRUD interfaces
 
     When using SQLAlchemy database sessions all interactions with these

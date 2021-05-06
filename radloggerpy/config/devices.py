@@ -34,7 +34,13 @@ DEVICES_OPTS = [
     cfg.BoolOpt('restart_on_error',
                 default=True,
                 help='Should the device manager restart devices upon '
-                     'encountering an error.')
+                     'encountering an error.'),
+    cfg.IntOpt('max_consecutive_error',
+               default=3,
+               min=-1,
+               help='Maximum amount of consecutive device restarts without '
+                    'the device returning any measurements. -1 for unlimited.'
+                    'This option is ignored when restart_on_error is false.')
 ]
 
 
