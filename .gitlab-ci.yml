@@ -19,11 +19,11 @@ linting:
   stage: linting
   script:
     - tox -e pep8
-type_checking:
-  stage: linting
-  allow_failure: true
-  script:
-    - tox -e typecheck
+#type_checking:
+#  stage: linting
+#  allow_failure: true
+#  script:
+#    - tox -e typecheck
 locale:
   stage: locale
   script:
@@ -40,6 +40,16 @@ unit_test_py36:
   image: python:3.6-buster
   script:
     - tox -e py36
+unit_test_py37:
+  stage: unit-tests
+  image: python:3.7-buster
+  script:
+    - tox -e py37
+unit_test_py38:
+  stage: unit-tests
+  image: python:3.8-buster
+  script:
+    - tox -e py37
 unit_test_py39:
   stage: unit-tests
   image: python:3.9-buster
