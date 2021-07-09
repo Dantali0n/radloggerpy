@@ -27,9 +27,16 @@ extensions = [
     'sphinx.ext.viewcode',
     'sphinxcontrib.apidoc',
     "sphinx_rtd_theme",
+    'oslo_config.sphinxext',
+    'oslo_config.sphinxconfiggen',
     'cliff.sphinxext'
     #'sphinx.ext.intersphinx'
 ]
+
+config_generator_config_file = [(
+    '../../etc/radloggerpy/radloggerpy.conf',
+    '_static/radloggerpy')]
+sample_config_basename = 'radloggerpy'
 
 # Do not ignore cliff autoprogram commands
 autoprogram_cliff_ignored = []

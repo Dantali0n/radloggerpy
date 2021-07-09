@@ -7,8 +7,8 @@
 Install and configure
 *********************
 
-This section describes how to install and configure the RadLogger service,
-code-named RadLoggerPy. However, this installation and configuration procedure
+This section describes how to install and configure the RadLoggerPy service.
+However, this installation and configuration procedure
 varies per Linux distribution. The recommended method of installation is
 through *virtualenv* which will resolve most distribution specific procedures.
 However, the installation method for Python, Pip and virtualenv are still
@@ -40,8 +40,8 @@ Install dependencies:
         sudo yum install python36u-pip
         sudo yum install python36u-devel
 
-Installing RadLogger with virtualenv
-####################################
+Installing RadLoggerPy with virtualenv
+######################################
 
 Start by downloading the `latest release`_ from Github and unpacking it into a
 desired directory. Alternatively the release can also be downloaded using git

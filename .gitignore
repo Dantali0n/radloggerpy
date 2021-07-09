@@ -58,6 +58,7 @@ output/*/index.html
 
 # Sphinx
 doc/build
+doc/source/_static/*
 doc/source/source_documentation/*
 !doc/source/source_documentation/index.rst
 
