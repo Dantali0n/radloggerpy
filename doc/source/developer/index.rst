@@ -33,8 +33,8 @@ identical names is preferred.
 Theory of operation:
 ####################
 
-This theory of operation concerns the ``radloggerpy`` service beginning when the
-service is launched.
+This theory of operation concerns the ``radloggerpy`` service beginning when
+the service is launched.
 
 Early initialization:
 *********************
@@ -44,9 +44,9 @@ the logo is displayed depending on the settings. When this basic initialization
 is finalized all devices are initialized as shown in the flow-chart below. Here
 the :boldorange:`orange` line indicates the launch of a new thread, however,
 the number of threads spawned is user configurable. The underlying threadpool
-will decide when devices are scheduled to run. After the basic initialization of
-a device it enters an active loop from which it still can enter an error state
-if problems are encountered. The active loop itself is not shown here.
+will decide when devices are scheduled to run. After the basic initialization
+of a device it enters an active loop from which it still can enter an error
+state if problems are encountered. The active loop itself is not shown here.
 
 Upon encountering a device error several methods will be available to notify
 users. These can be enabled in the configuration along with any configuration
