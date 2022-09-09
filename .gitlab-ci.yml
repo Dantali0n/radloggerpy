@@ -27,6 +27,7 @@ linting:
 locale:
   stage: locale
   script:
+    # Enforce that pot file is up to date
     - tox -e tenv python setup.py compile_catalog
 #locale_docker:
 #  stage: locale
@@ -55,6 +56,16 @@ unit_test_py39:
   image: python:3.9-buster
   script:
     - tox -e py39
+unit_test_py310:
+  stage: unit-tests
+  image: python:3.10-buster
+  script:
+    - tox -e py310
+lower_constraints:
+  stage: unit-tests
+  image: python:3.6-buster
+  script:
+    - tox -e lower-constraints
 #unit_test_docker:
 #  stage: unit-tests
 #  image: python:3.9-buster
