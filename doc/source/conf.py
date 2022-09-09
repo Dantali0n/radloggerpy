@@ -25,11 +25,11 @@ sys.path.insert(0, os.path.abspath('../..'))
 extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.viewcode',
-    'sphinxcontrib.apidoc',
+    'sphinxcontrib.apidoc',  # Source code documentation from sphinx docstrings
     "sphinx_rtd_theme",
-    'oslo_config.sphinxext',
-    'oslo_config.sphinxconfiggen',
-    'cliff.sphinxext'
+    'oslo_config.sphinxext',  # Generate config documentation using sample
+    'oslo_config.sphinxconfiggen',  # Generate sample config upon docs build
+    'cliff.sphinxext'  # Cliff automatic cli documentation
     #'sphinx.ext.intersphinx'
 ]
 
