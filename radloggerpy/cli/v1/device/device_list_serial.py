@@ -77,14 +77,15 @@ class DeviceListSerial(Lister, DeviceCommand):
             raise RuntimeWarning(_("No devices found"))
 
         fields = (
-            'id', 'name', 'measurement type', 'interface', 'implementation',
-            'port', 'baudrate', 'bytesize', 'parity', 'stopbits', 'timeout')
+            'id', 'enabled', 'name', 'measurement type', 'interface',
+            'implementation', 'port', 'baudrate', 'bytesize', 'parity',
+            'stopbits', 'timeout')
         values = []
         for result in data:
-            value = (result.id, result.name, result.type, result.interface,
-                     result.implementation, result.port, result.baudrate,
-                     result.bytesize, result.parity, result.stopbits,
-                     result.timeout)
+            value = (result.id, result.enabled, result.name, result.type,
+                     result.interface, result.implementation, result.port,
+                     result.baudrate, result.bytesize, result.parity,
+                     result.stopbits, result.timeout)
             values.append(value)
 
         return [fields, values]

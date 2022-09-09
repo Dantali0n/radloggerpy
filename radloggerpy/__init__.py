@@ -13,5 +13,4 @@
 import pbr.version
 
 
-__version__ = pbr.version.VersionInfo(
-    'RadLoggerPy').version_string()
+__version__ = pbr.version.VersionInfo('RadLoggerPy').version_string()

@@ -17,7 +17,7 @@ from copy import copy
 from unittest import mock
 
 from cliff.show import ShowOne
-from sqlalchemy.orm.exc import MultipleResultsFound
+from sqlalchemy.exc import MultipleResultsFound
 
 from radloggerpy.cli.argument import Argument
 from radloggerpy.cli.v1.device import device_remove as dr

@@ -35,7 +35,13 @@ DEVICES_OPTS = [
                 default=True,
                 help='Should the device manager restart devices upon '
                      'encountering an error.'),
-    cfg.IntOpt('max_consecutive_error',
+    cfg.IntOpt('min_restart_delay',
+               default=30,
+               min=-1,
+               help="Minimal amount of time in seconds before a device should"
+                    "be restarted after it has entered error state. -1 for no"
+                    "minimal delay."),
+    cfg.IntOpt('max_consecutive_restart',
                default=3,
                min=-1,
                help='Maximum amount of consecutive device restarts without '

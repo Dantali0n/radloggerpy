@@ -116,7 +116,7 @@ class DatabaseObject(metaclass=abc.ABCMeta):
         :param allow_multiple: if updating multiple database items is allowed
         :raises MultipleResultsFound: if multiple results were found with
             allow_multiple as False of type
-            :py:class:`sqlalchemy.orm.exc.MultipleResultsFound`
+            :py:class:`sqlalchemy.exc.MultipleResultsFound`
         """
         pass
 
@@ -130,7 +130,7 @@ class DatabaseObject(metaclass=abc.ABCMeta):
         :param allow_multiple: if updating multiple database items is allowed
         :raises MultipleResultsFound: if multiple results were found with
             allow_multiple as False of type
-            :py:class:`sqlalchemy.orm.exc.MultipleResultsFound`
+            :py:class:`sqlalchemy.exc.MultipleResultsFound`
         """
         pass
 
@@ -144,7 +144,7 @@ class DatabaseObject(metaclass=abc.ABCMeta):
         :param allow_multiple: if updating multiple database items is allowed
         :raises MultipleResultsFound: if multiple results were found with
             allow_multiple as False of type
-            :py:class:`sqlalchemy.orm.exc.MultipleResultsFound`
+            :py:class:`sqlalchemy.exc.MultipleResultsFound`
         :return: A single object, list of objects or none, all objects will be
             instances of the class.
         """

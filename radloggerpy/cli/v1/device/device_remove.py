@@ -14,7 +14,7 @@
 # under the License.
 
 from cliff.show import ShowOne
-from sqlalchemy.orm.exc import MultipleResultsFound
+from sqlalchemy.exc import MultipleResultsFound
 
 from radloggerpy._i18n import _
 from radloggerpy.cli.v1.device.device import DeviceCommand

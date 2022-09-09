@@ -39,6 +39,16 @@ class TestDeviceHelper(base.TestCase):
                 })
             return self._arguments
 
+    class TestDevHelperInvalid(device_helper.DeviceHelper):
+
+        _arguments = None
+
+        @property
+        def arguments(self):
+            if self._arguments is None:
+                self._arguments = dict()
+            return self._arguments
+
     def setUp(self):
         super(TestDeviceHelper, self).setUp()
 
@@ -91,3 +101,16 @@ class TestDeviceHelper(base.TestCase):
             'example2' in helper.arguments[
                 helper._implementation_key].kwargs()['choices']
         )
+
+    @mock.patch.object(device_helper, 'DeviceManager')
+    def test_add_implementation_error(self, m_dev_manager):
+        """Error if not overriding _implementation_key in child classes"""
+        helper = TestDeviceHelper.TestDevHelperInvalid()
+
+        m_dev_manager.get_device_implementations.return_value = [
+            mock.Mock(NAME='example1', INTERFACE='have'),
+            mock.Mock(NAME='example2', INTERFACE='filter'),
+        ]
+
+        self.assertRaises(
+            NotImplementedError, helper._add_implementations, 'have')

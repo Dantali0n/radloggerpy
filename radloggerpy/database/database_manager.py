@@ -107,4 +107,4 @@ def create_database():
         cd.create_database_tables(engine)
     except Exception as e:
         LOG.error(_("Failed to create database due to error: %s") % e)
-        raise e
+        raise

@@ -17,7 +17,7 @@ from copy import copy
 from unittest import mock
 
 from cliff.show import ShowOne
-from sqlalchemy.orm.exc import MultipleResultsFound
+from sqlalchemy.exc import MultipleResultsFound
 
 from radloggerpy.cli.v1.device import device_show
 from radloggerpy.device.device_manager import DeviceManager as dm
@@ -91,10 +91,11 @@ class TestDeviceShow(base.TestCase):
 
             t_result = t_device.take_action(m_args)
             self.assertEqual(t_result[1][0], m_mod_dev.id)
-            self.assertEqual(t_result[1][1], m_mod_dev.name)
-            self.assertEqual(t_result[1][2], m_mod_dev.type)
-            self.assertEqual(t_result[1][3], m_mod_dev.interface)
-            self.assertEqual(t_result[1][4], m_mod_dev.implementation)
+            self.assertEqual(t_result[1][1], m_mod_dev.enabled)
+            self.assertEqual(t_result[1][2], m_mod_dev.name)
+            self.assertEqual(t_result[1][3], m_mod_dev.type)
+            self.assertEqual(t_result[1][4], m_mod_dev.interface)
+            self.assertEqual(t_result[1][5], m_mod_dev.implementation)
 
         # ensure that is_local on the patch does not modify the actual bases
         self.assertEqual(bases, device_show.DeviceShow.__bases__)
@@ -138,16 +139,17 @@ class TestDeviceShow(base.TestCase):
 
             t_result = t_device.take_action(m_args)
             self.assertEqual(t_result[1][0], m_mod_dev.id)
-            self.assertEqual(t_result[1][1], m_mod_dev.name)
-            self.assertEqual(t_result[1][2], m_mod_dev.type)
-            self.assertEqual(t_result[1][3], m_mod_dev.interface)
-            self.assertEqual(t_result[1][4], m_mod_dev.implementation)
-            self.assertEqual(t_result[1][5], m_mod_ser_dev.port)
-            self.assertEqual(t_result[1][6], m_mod_ser_dev.baudrate)
-            self.assertEqual(t_result[1][7], m_mod_ser_dev.bytesize)
-            self.assertEqual(t_result[1][8], m_mod_ser_dev.parity)
-            self.assertEqual(t_result[1][9], m_mod_ser_dev.stopbits)
-            self.assertEqual(t_result[1][10], m_mod_ser_dev.timeout)
+            self.assertEqual(t_result[1][1], m_mod_dev.enabled)
+            self.assertEqual(t_result[1][2], m_mod_dev.name)
+            self.assertEqual(t_result[1][3], m_mod_dev.type)
+            self.assertEqual(t_result[1][4], m_mod_dev.interface)
+            self.assertEqual(t_result[1][5], m_mod_dev.implementation)
+            self.assertEqual(t_result[1][6], m_mod_ser_dev.port)
+            self.assertEqual(t_result[1][7], m_mod_ser_dev.baudrate)
+            self.assertEqual(t_result[1][8], m_mod_ser_dev.bytesize)
+            self.assertEqual(t_result[1][9], m_mod_ser_dev.parity)
+            self.assertEqual(t_result[1][10], m_mod_ser_dev.stopbits)
+            self.assertEqual(t_result[1][11], m_mod_ser_dev.timeout)
 
         # ensure that is_local on the patch does not modify the actual bases
         self.assertEqual(bases, device_show.DeviceShow.__bases__)

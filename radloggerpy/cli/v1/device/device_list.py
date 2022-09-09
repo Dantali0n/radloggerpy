@@ -48,12 +48,12 @@ class DeviceList(Lister, DeviceCommand):
         if len(data) == 0:
             raise RuntimeWarning(_("No devices found"))
 
-        fields = ('id', 'name', 'measurement type', 'interface',
+        fields = ('id', 'enabled', 'name', 'measurement type', 'interface',
                   'implementation')
         values = []
         for result in data:
-            value = (result.id, result.name, result.type, result.interface,
-                     result.implementation)
+            value = (result.id, result.enabled, result.name, result.type,
+                     result.interface, result.implementation)
             values.append(value)
 
         return [fields, values]

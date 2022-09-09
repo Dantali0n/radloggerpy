@@ -109,10 +109,11 @@ class TestDeviceList(base.TestCase):
 
             t_result = t_device.take_action(m_args)
             self.assertEqual(t_result[1][0][0], m_mod_dev.id)
-            self.assertEqual(t_result[1][0][1], m_mod_dev.name)
-            self.assertEqual(t_result[1][0][2], m_mod_dev.type)
-            self.assertEqual(t_result[1][0][3], m_mod_dev.interface)
-            self.assertEqual(t_result[1][0][4], m_mod_dev.implementation)
+            self.assertEqual(t_result[1][0][1], m_mod_dev.enabled)
+            self.assertEqual(t_result[1][0][2], m_mod_dev.name)
+            self.assertEqual(t_result[1][0][3], m_mod_dev.type)
+            self.assertEqual(t_result[1][0][4], m_mod_dev.interface)
+            self.assertEqual(t_result[1][0][5], m_mod_dev.implementation)
 
         # ensure that is_local on the patch does not modify the actual bases
         self.assertEqual(bases, dl.DeviceList.__bases__)

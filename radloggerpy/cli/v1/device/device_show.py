@@ -14,7 +14,7 @@
 # under the License.
 
 from cliff.show import ShowOne
-from sqlalchemy.orm.exc import MultipleResultsFound
+from sqlalchemy.exc import MultipleResultsFound
 
 from radloggerpy._i18n import _
 from radloggerpy.cli.argument import Argument
@@ -64,9 +64,11 @@ class DeviceShow(ShowOne, DeviceCommand):
             raise RuntimeWarning(_("Device could not be found"))
 
         fields = (
-            'id', 'name', 'measurement type', 'interface', 'implementation')
+            'id', 'enabled', 'name', 'measurement type', 'interface',
+            'implementation')
         values = (
-            data.id, data.name, data.type, data.interface, data.implementation)
+            data.id, data.enabled, data.name, data.type, data.interface,
+            data.implementation)
 
         if details and data.interface == \
                 INTERFACE_CHOICES[DeviceInterfaces.SERIAL]:

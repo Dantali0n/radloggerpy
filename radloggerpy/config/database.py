@@ -20,7 +20,7 @@ database = cfg.OptGroup(name='database',
 DATABASE_OPTS = [
     cfg.StrOpt('filename',
                default='radlogger.sqlite',
-               help='Name for database file')
+               help='Name of database file')
 ]
 
 
