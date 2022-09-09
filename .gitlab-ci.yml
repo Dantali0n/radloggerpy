@@ -5,7 +5,6 @@ variables:
 cache:
   paths:
     - .cache/pip
-    - .tox
     - radloggerpy/locale
 before_script:
   - pip install tox
