@@ -18,33 +18,11 @@ linting:
   stage: linting
   script:
     - tox -e pep8
-#type_checking:
-#  stage: linting
-#  allow_failure: true
-#  script:
-#    - tox -e typecheck
 locale:
   stage: locale
   script:
     # Enforce that pot file is up to date
     - tox -e tenv python setup.py compile_catalog
-#locale_docker:
-#  stage: locale
-#  image: python:3.9-buster
-#  tags:
-#    - docker
-#  script:
-#    - tox -e tenv python setup.py compile_catalog
-unit_test_py36:
-  stage: unit-tests
-  image: python:3.6-buster
-  script:
-    - tox -e py36
-unit_test_py37:
-  stage: unit-tests
-  image: python:3.7-buster
-  script:
-    - tox -e py37
 unit_test_py38:
   stage: unit-tests
   image: python:3.8-buster
@@ -60,18 +38,16 @@ unit_test_py310:
   image: python:3.10-buster
   script:
     - tox -e py310
+unit_test_py311:
+  stage: unit-tests
+  image: python:3.11-buster
+  script:
+    - tox -e py311
 lower_constraints:
   stage: unit-tests
-  image: python:3.6-buster
+  image: python:3.8-buster
   script:
     - tox -e lower-constraints
-#unit_test_docker:
-#  stage: unit-tests
-#  image: python:3.9-buster
-#  tags:
-#    - docker
-#  script:
-#    - tox -e py39
 coverage:
   stage: coverage
   script:

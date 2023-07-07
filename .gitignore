@@ -35,6 +35,7 @@ develop-eggs
 .installed.cfg
 lib
 lib64
+radloggerpy/_version.py
 
 # Installer logs
 pip-log.txt
