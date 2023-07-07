@@ -45,10 +45,9 @@ cover/
 .coverage*
 !.coveragerc
 .tox
-nosetests.xml
 .testrepository
-.stestr
 .venv
+coverage.xml
 
 # Translations
 *.mo

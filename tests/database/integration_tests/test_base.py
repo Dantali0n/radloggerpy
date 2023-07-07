@@ -1,3 +1,6 @@
+# -*- encoding: utf-8 -*-
+# Copyright (c) 2019 Dantali0n
+#
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
 # not use this file except in compliance with the License. You may obtain
 # a copy of the License at
@@ -10,7 +13,17 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-import radloggerpy._version
+from oslo_log import log
+
+from radloggerpy import config
+
+from tests import base
+
+LOG = log.getLogger(__name__)
+CONF = config.CONF
 
 
-__version__ = _version.version
+class DatabaseIntegrationBase(base.TestCase):
+
+    def setUp(self):
+        super(DatabaseIntegrationBase, self).setUp()

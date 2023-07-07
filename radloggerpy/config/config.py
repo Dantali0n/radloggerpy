@@ -20,7 +20,7 @@ from oslo_log import _options
 from oslo_log import log
 
 from radloggerpy import config
-from radloggerpy import version
+from radloggerpy import __version__
 
 LOG = log.getLogger(__name__)
 CONF = config.CONF
@@ -53,7 +53,7 @@ def parse_args(argv, default_config_files=None, default_config_dirs=None):
                            cfg.find_config_dirs(project='RadLoggerPy'))
     cfg.CONF(argv[1:],
              project='RadLoggerPy',
-             version=version.version_info.release_string(),
+             version=__version__,
              default_config_dirs=default_config_dirs,
              default_config_files=default_config_files)
 
