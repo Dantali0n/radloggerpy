@@ -15,8 +15,8 @@
 
 from oslo_log import log
 
-from radloggerpy import config
 from radloggerpy import __version__
+from radloggerpy import config
 
 from tests import base
 

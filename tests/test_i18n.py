@@ -21,7 +21,6 @@ import oslo_i18n
 from oslo_i18n._gettextutils import _BABEL_ALIASES
 from oslo_i18n import _locale
 
-import radloggerpy
 from radloggerpy import _i18n
 from radloggerpy._i18n import DOMAIN
 
@@ -44,11 +43,12 @@ class Testi18n(base.TestCase):
             'nl', 'nl', 'nl', 'nl', 'locale'
         ]
 
-        m_translated_nl = _i18n._("RadLoggerPy opstarten met PID %s")
-        m_untranslated = _i18n._("Starting RadLoggerPy service on PID %s")
+        m_translated_nl = _i18n._("RadLoggerPy opstarten met PID %s")  # noqa: N341
+        m_untranslated = _i18n._("Starting RadLoggerPy service on PID %s")  # noqa: N341
 
-        self.assertEqual(m_translated_nl,
-                         _i18n.translate(m_untranslated, 'nl_NL'))
+        self.assertEqual(
+            m_translated_nl, _i18n.translate(m_untranslated, 'nl_NL')
+        )
 
     def test_get_available_languages(self):
         m_languages = ['en_US']
@@ -80,9 +80,10 @@ class Testi18n(base.TestCase):
             m_languages.extend(language for language in locale_identifiers
                                if m_locale_dir in language)
 
-        m_languages.extend(
+        m_languages.extend(  # noqa: N341
             alias for alias, _ in _BABEL_ALIASES.items() if gettext.find(
-                DOMAIN, localedir=localedir, languages=[alias])
+                DOMAIN, localedir=localedir, languages=[alias]
+            )
         )
 
         self.assertItemsEqual(m_languages, _i18n.get_available_languages())

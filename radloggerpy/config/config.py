@@ -19,8 +19,8 @@ from oslo_config import cfg
 from oslo_log import _options
 from oslo_log import log
 
-from radloggerpy import config
 from radloggerpy import __version__
+from radloggerpy import config
 
 LOG = log.getLogger(__name__)
 CONF = config.CONF

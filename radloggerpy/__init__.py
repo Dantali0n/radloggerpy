@@ -10,7 +10,8 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-import radloggerpy._version
+from importlib import metadata
 
-
-__version__ = _version.version
+__package_name__ = 'RadLoggerPy'
+__package_folder__ = __package_name__.lower()
+__version__ = metadata.version(__package_name__)

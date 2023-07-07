@@ -154,32 +154,6 @@ def check_log_warn_deprecated(logical_line, filename):
 
 
 @core.flake8ext
-def check_oslo_i18n_wrapper(logical_line, filename, noqa):
-    """Check for radloggerpy.i18n usage.
-
-    N340(radloggerpy/foo/bar.py): from radloggerpy.i18n import _
-    Okay(radloggerpy/foo/bar.py): from radloggerpy._i18n import _
-    Okay(radloggerpy/foo/bar.py): from radloggerpy.i18n import _  # noqa
-    """
-
-    if noqa:
-        return
-
-    split_line = logical_line.split()
-    modulename = os.path.normpath(filename).split('/')[0]
-    bad_i18n_module = '%s.i18n' % modulename
-
-    if len(split_line) > 1 and split_line[0] in ('import', 'from'):
-        if (split_line[1] == bad_i18n_module or
-            modulename !=
-                'radloggerpy' and split_line[1]
-                in ('radloggerpy.i18n', 'radloggerpy._i18n')):
-            msg = ("N340: %(found)s is found. Use %(module)s._i18n instead."
-                   % {'found': split_line[1], 'module': modulename})
-            yield (0, msg)
-
-
-@core.flake8ext
 def check_builtins_gettext(logical_line, tokens, filename, lines, noqa):
     """Check usage of builtins gettext _().
 
