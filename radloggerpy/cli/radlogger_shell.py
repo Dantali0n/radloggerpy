@@ -18,12 +18,12 @@ from cliff import app
 from cliff import commandmanager
 from cliff.complete import CompleteCommand
 
-from radloggerpy._i18n import _ as _
+from radloggerpy import __version__
+from radloggerpy._i18n import _
 from radloggerpy.common import ascii_logo
 from radloggerpy.common.first_time_run import FirstTimeRun
 from radloggerpy.config.config import parse_args
 from radloggerpy.database import database_manager as dm
-from radloggerpy import __version__
 
 CONF = config.CONF
 
