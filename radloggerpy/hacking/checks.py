@@ -76,8 +76,7 @@ def check_assert_called_once_with(logical_line, filename):
 def check_python3_xrange(logical_line):
     if re.search(r"\bxrange\s*\(", logical_line):
         yield (
-            0,
-            "N325: Do not use xrange. Use range, or six.moves.range for "
+            0, "N325: Do not use xrange. Use range, or six.moves.range for "
             "large loops.",
         )
 
@@ -188,10 +187,8 @@ def check_builtins_gettext(logical_line, tokens, filename, lines, noqa):
         for line in lines:
             split_line = [elm.rstrip(",") for elm in line.split()]
             if (
-                len(split_line) > 1
-                and split_line[0] == "from"
-                and split_line[1] == i18n_wrapper
-                and "_" in split_line
+                len(split_line) > 1 and split_line[0] == "from" and
+                split_line[1] == i18n_wrapper and "_" in split_line
             ):
                 i18n_import_line_found = True
                 break

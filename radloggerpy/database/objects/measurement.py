@@ -78,9 +78,9 @@ class MeasurementObject(DatabaseObject):
 
         """Measurement.device_id must be set to populate the field"""
         if (
-            reference.m_measurement.device_id is None
-            and hasattr(reference.device, "id")
-            and reference.device.id
+            reference.m_measurement.device_id is None and
+            hasattr(reference.device, "id") and
+            reference.device.id
         ):
             """If no device_id is set find it through device id"""
             reference.m_measurement.device_id = reference.device.id

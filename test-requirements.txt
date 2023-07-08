@@ -4,10 +4,10 @@
 
 coverage>=5.5.0 # Apache-2.0
 build>=0.8.0 # MIT
-hacking>=6.0.0 # Apache-2.0
+hacking>=4.0.0; python_version <= '3.8' # Apache-2.0
+hacking>=6.0.0; # Apache-2.0
 mypy>=0.812 # MIT
 autopep8 >= 1.7.0 # MIT
-black >= 22.0.0 # MIT
 flake8 >= 5.0.0 # MIT
 flake8-mock>=0.3 # GPL2
 flake8-debugger>=4.0.0 # MIT

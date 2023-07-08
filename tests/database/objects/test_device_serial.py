@@ -90,7 +90,9 @@ class TestSerialDeviceObject(base.TestCase):
         self.assertEqual(
             SerialBytesizeTypes.EIGHTBITS, test_obj.m_serial_device.bytesize
         )
-        self.assertEqual(SerialParityTypes.PARITY_ODD, test_obj.m_serial_device.parity)
+        self.assertEqual(
+            SerialParityTypes.PARITY_ODD, test_obj.m_serial_device.parity
+        )
         self.assertEqual(
             SerialStopbitTypes.STOPBITS_ONE, test_obj.m_serial_device.stopbits
         )
@@ -113,7 +115,9 @@ class TestSerialDeviceObject(base.TestCase):
         self.assertEqual(
             SerialBytesizeTypes.EIGHTBITS, test_obj.m_serial_device.bytesize
         )
-        self.assertEqual(SerialParityTypes.PARITY_ODD, test_obj.m_serial_device.parity)
+        self.assertEqual(
+            SerialParityTypes.PARITY_ODD, test_obj.m_serial_device.parity
+        )
         self.assertEqual(
             SerialStopbitTypes.STOPBITS_ONE, test_obj.m_serial_device.stopbits
         )
@@ -171,7 +175,9 @@ class TestSerialDeviceObject(base.TestCase):
         }
 
         test_obj = sd.SerialDeviceObject(**m_atribs)
-        self.assertRaises(RuntimeError, sd.SerialDeviceObject.add, m_session, test_obj)
+        self.assertRaises(
+            RuntimeError, sd.SerialDeviceObject.add, m_session, test_obj
+        )
 
         m_session.add.assert_has_calls(
             [
@@ -205,9 +211,10 @@ class TestSerialDeviceObject(base.TestCase):
         """Setup query and session to return mocked device"""
         m_query = mock.Mock()
         m_session = mock.Mock()
-        m_session.query.return_value.filter_by.return_value.join.return_value.filter_by.return_value = (
-            m_query
-        )
+        m_session.query.return_value.filter_by.return_value.join.return_value.\
+            filter_by.return_value = (
+                m_query
+            )
         m_query.one_or_none.return_value = m_device
 
         test_obj = sd.SerialDeviceObject(**{"baudrate": 115200})
@@ -242,9 +249,10 @@ class TestSerialDeviceObject(base.TestCase):
         """Setup query and session to return mocked device"""
         m_query = mock.Mock()
         m_session = mock.Mock()
-        m_session.query.return_value.filter_by.return_value.join.return_value.filter_by.return_value = (
-            m_query
-        )
+        m_session.query.return_value.filter_by.return_value.join.return_value.\
+            filter_by.return_value = (
+                m_query
+            )
         m_query.one_or_none.return_value = m_device
 
         test_obj = DeviceObject(**{"id": 1})
@@ -262,9 +270,10 @@ class TestSerialDeviceObject(base.TestCase):
         """Setup query and session to return mocked device"""
         m_query = mock.Mock()
         m_session = mock.Mock()
-        m_session.query.return_value.filter_by.return_value.join.return_value.filter_by.return_value = (
-            m_query
-        )
+        m_session.query.return_value.filter_by.return_value.join.return_value.\
+            filter_by.return_value = (
+                m_query
+            )
         m_query.one_or_none.return_value = None
 
         test_obj = sd.SerialDeviceObject(**{"port": "/dev/ttyUSB0"})
@@ -277,9 +286,10 @@ class TestSerialDeviceObject(base.TestCase):
         m_device2 = Device()
         m_query = mock.Mock()
         m_session = mock.Mock()
-        m_session.query.return_value.filter_by.return_value.join.return_value.filter_by.return_value = (
-            m_query
-        )
+        m_session.query.return_value.filter_by.return_value.join.return_value.\
+            filter_by.return_value = (
+                m_query
+            )
 
         m_query.all.return_value = [m_device1, m_device2]
 
@@ -337,9 +347,10 @@ class TestSerialDeviceObject(base.TestCase):
     def test_find_obj_multiple_none(self):
         m_query = mock.Mock()
         m_session = mock.Mock()
-        m_session.query.return_value.filter_by.return_value.join.return_value.filter_by.return_value = (
-            m_query
-        )
+        m_session.query.return_value.filter_by.return_value.join.return_value.\
+            filter_by.return_value = (
+                m_query
+            )
 
         m_query.all.return_value = None
 

@@ -95,8 +95,8 @@ class DatabaseObject(metaclass=abc.ABCMeta):
         return {
             key: name
             for (key, name) in vars(filter_object).items()
-            if hasattr(filter_object.__class__, key)
-            and (key not in ignore or (seq_but_not_str(key and key)))
+            if hasattr(filter_object.__class__, key) and
+            (key not in ignore or (seq_but_not_str(key and key)))
         }
 
     @staticmethod
