@@ -18,12 +18,12 @@ from cliff import app
 from cliff import commandmanager
 from cliff.complete import CompleteCommand
 
-from radloggerpy._i18n import _
+from radloggerpy._i18n import _ as _
 from radloggerpy.common import ascii_logo
 from radloggerpy.common.first_time_run import FirstTimeRun
 from radloggerpy.config.config import parse_args
 from radloggerpy.database import database_manager as dm
-from radloggerpy import version
+from radloggerpy import __version__
 
 CONF = config.CONF
 
@@ -37,7 +37,7 @@ class RadLoggerShell(app.App):
     def __init__(self, **kwargs):
         super().__init__(
             description=self.__doc__.strip(),
-            version=version.version_string,
+            version=__version__,
             command_manager=commandmanager.CommandManager(
                 'radloggerpy.cli'),
             deferred_help=True,

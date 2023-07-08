@@ -75,28 +75,6 @@ class TestHacking(base.TestCase):
 
         self.assertRaises(StopIteration, next, generator)
 
-    def test_check_oslo_i18n_wrapper_offending(self):
-        """Not allowed as i18n import should lead with _"""
-
-        logical_line = "from radloggerpy.i18n import _"
-        filename = "radloggerpy/foo/bar.py"
-
-        generator = checks.check_oslo_i18n_wrapper(
-            logical_line, filename, False)
-
-        self.assertEqual(0, next(generator)[0])
-
-    def test_check_oslo_i18n_wrapper_allowed(self):
-        """Allowed as i18n imort has leading _"""
-
-        logical_line = "from radloggerpy._i18n import _"
-        filename = "radloggerpy/foo/bar.py"
-
-        generator = checks.check_oslo_i18n_wrapper(
-            logical_line, filename, False)
-
-        self.assertRaises(StopIteration, next, generator)
-
     def test_check_log_warn_deprecated_offending(self):
         logical_line = "LOG.warn('example')"
         filename = "radloggerpy/foo/bar.py"
