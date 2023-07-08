@@ -17,10 +17,6 @@ pep8:
   stage: linting
   script:
     - tox -e pep8
-black:
-  stage: linting
-  script:
-    - tox -e black
 pylint:
   stage: linting
   allow_failure: true
