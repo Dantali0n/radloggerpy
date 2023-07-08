@@ -27,8 +27,7 @@ from radloggerpy.database import database_manager as dm
 
 CONF = config.CONF
 
-FirstTimeRun.add_check_task(
-    dm.check_database_missing, dm.create_database)
+FirstTimeRun.add_check_task(dm.check_database_missing, dm.create_database)
 
 
 class RadLoggerShell(app.App):
@@ -38,12 +37,11 @@ class RadLoggerShell(app.App):
         super().__init__(
             description=self.__doc__.strip(),
             version=__version__,
-            command_manager=commandmanager.CommandManager(
-                'radloggerpy.cli'),
+            command_manager=commandmanager.CommandManager("radloggerpy.cli"),
             deferred_help=True,
             **kwargs
         )
-        self.command_manager.add_command('complete', CompleteCommand)
+        self.command_manager.add_command("complete", CompleteCommand)
         self.database_session = dm.create_session()
 
     def initialize_app(self, argv):
@@ -57,18 +55,18 @@ class RadLoggerShell(app.App):
         FirstTimeRun()
 
         # Display version
-        self.LOG.info(_('Initializing radloggercli %s') % CONF.version)
+        self.LOG.info(_("Initializing radloggercli %s") % CONF.version)
 
     def prepare_to_run_command(self, cmd):
-        self.LOG.debug('prepare_to_run_command %s', cmd.__class__.__name__)
+        self.LOG.debug("prepare_to_run_command %s", cmd.__class__.__name__)
 
     def clean_up(self, cmd, result, err):
-        self.LOG.debug('clean_up %s', cmd.__class__.__name__)
+        self.LOG.debug("clean_up %s", cmd.__class__.__name__)
         if err:
-            self.LOG.debug('got an error: %s', err)
+            self.LOG.debug("got an error: %s", err)
 
     def run(self, argv):
         try:
             super().run(argv)
         except Exception as e:
-            self.LOG.error(_('Exception raised: %s'), str(e))
+            self.LOG.error(_("Exception raised: %s"), str(e))

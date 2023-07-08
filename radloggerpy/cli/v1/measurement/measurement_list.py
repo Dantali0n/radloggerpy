@@ -40,30 +40,28 @@ class MeasurementList(Lister, MeasurementCommand):
     def take_action(self, parsed_args):
         args = dict(parsed_args._get_kwargs())
 
-        if 'device' in args or 'name' in args:
+        if "device" in args or "name" in args:
             """Set device for MeasurementObject if any device params are set"""
             dev_obj = DeviceObject()
-            if args['device']:
-                dev_obj.id = args['device']
-                del args['device']
-            if args['name']:
-                dev_obj.name = args['name']
-                del args['name']
-            args['device'] = dev_obj
+            if args["device"]:
+                dev_obj.id = args["device"]
+                del args["device"]
+            if args["name"]:
+                dev_obj.name = args["name"]
+                del args["name"]
+            args["device"] = dev_obj
 
         measure_obj = MeasurementObject(**args)
 
-        data = MeasurementObject.find(
-            self.app.database_session, measure_obj, True)
+        data = MeasurementObject.find(self.app.database_session, measure_obj, True)
 
         if len(data) == 0:
             raise RuntimeWarning(_("No measurements found"))
 
-        fields = ('timestamp', 'device', 'cpm', 'μSv/h')
+        fields = ("timestamp", "device", "cpm", "μSv/h")
         values = []
         for result in data:
-            value = (result.timestamp, result.device.id, result.cpm,
-                     result.svh)
+            value = (result.timestamp, result.device.id, result.cpm, result.svh)
             values.append(value)
 
         return [fields, values]

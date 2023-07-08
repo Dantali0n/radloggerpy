@@ -20,22 +20,18 @@ from tests import base
 
 
 class TestRadloggerpy(base.TestCase):
-
     def setUp(self):
         super().setUp()
 
-        self.p_configurator = mock.patch.object(
-            radloggerpy, 'configurator')
+        self.p_configurator = mock.patch.object(radloggerpy, "configurator")
         self.m_configurator = self.p_configurator.start()
         self.addCleanup(self.p_configurator.stop)
 
-        self.p_database = mock.patch.object(
-            radloggerpy, 'database_manager')
+        self.p_database = mock.patch.object(radloggerpy, "database_manager")
         self.m_database = self.p_database.start()
         self.addCleanup(self.p_database.stop)
 
-        self.p_first_run = mock.patch.object(
-            radloggerpy, 'FirstTimeRun')
+        self.p_first_run = mock.patch.object(radloggerpy, "FirstTimeRun")
         self.m_first_run = self.p_first_run.start()
         self.addCleanup(self.p_first_run.stop)
 

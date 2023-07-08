@@ -28,12 +28,14 @@ class MeasurementCommand(ArgumentHelper, metaclass=abc.ABCMeta):
     def arguments(self):
         if self._arguments is None:
             self._arguments = dict()
-            self._arguments.update({
-                '--device': Argument(
-                    '-d', type=int, help="Device id for associated "
-                                         "measurements"),
-                '--name': Argument(
-                    '-n', help="Device name for associated "
-                               "measurements")
-            })
+            self._arguments.update(
+                {
+                    "--device": Argument(
+                        "-d", type=int, help="Device id for associated " "measurements"
+                    ),
+                    "--name": Argument(
+                        "-n", help="Device name for associated " "measurements"
+                    ),
+                }
+            )
         return self._arguments

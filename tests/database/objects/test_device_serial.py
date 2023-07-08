@@ -35,12 +35,10 @@ CONF = config.CONF
 
 
 class TestSerialDeviceObject(base.TestCase):
-
     def setUp(self):
         super(TestSerialDeviceObject, self).setUp()
 
     def test_init(self):
-
         m_atribs = {
             "port": "value1",
             "attributeskip": "none",
@@ -52,7 +50,6 @@ class TestSerialDeviceObject(base.TestCase):
         self.assertIsNone(None, getattr(test_obj, "attributeskip", None))
 
     def test_filter(self):
-
         m_atribs = {
             "port": "value1",
             "attributeskip": "none",
@@ -62,11 +59,9 @@ class TestSerialDeviceObject(base.TestCase):
 
         m_result = test_obj._filter(test_obj)
 
-        self.assertEqual(
-            {"port": "value1"}, m_result)
+        self.assertEqual({"port": "value1"}, m_result)
 
     def test_build_object_unset(self):
-
         test_obj = sd.SerialDeviceObject()
         test_obj._build_object()
 
@@ -78,14 +73,13 @@ class TestSerialDeviceObject(base.TestCase):
         self.assertIsNone(None, test_obj.m_serial_device.timeout)
 
     def test_build_object_values(self):
-
         m_atribs = {
             "port": "/dev/ttyUSB0",
             "baudrate": 115200,
             "bytesize": 8,
             "parity": "odd",
             "stopbits": 1,
-            "timeout": 2
+            "timeout": 2,
         }
 
         test_obj = sd.SerialDeviceObject(**m_atribs)
@@ -94,16 +88,15 @@ class TestSerialDeviceObject(base.TestCase):
         self.assertEqual("/dev/ttyUSB0", test_obj.m_serial_device.port)
         self.assertEqual(115200, test_obj.m_serial_device.baudrate)
         self.assertEqual(
-            SerialBytesizeTypes.EIGHTBITS, test_obj.m_serial_device.bytesize)
+            SerialBytesizeTypes.EIGHTBITS, test_obj.m_serial_device.bytesize
+        )
+        self.assertEqual(SerialParityTypes.PARITY_ODD, test_obj.m_serial_device.parity)
         self.assertEqual(
-            SerialParityTypes.PARITY_ODD, test_obj.m_serial_device.parity)
-        self.assertEqual(
-            SerialStopbitTypes.STOPBITS_ONE, test_obj.m_serial_device.stopbits)
-        self.assertEqual(
-            2, test_obj.m_serial_device.timeout)
+            SerialStopbitTypes.STOPBITS_ONE, test_obj.m_serial_device.stopbits
+        )
+        self.assertEqual(2, test_obj.m_serial_device.timeout)
 
     def test_build_object_keys(self):
-
         m_atribs = {
             "port": "/dev/ttyUSB0",
             "baudrate": 115200,
@@ -118,14 +111,14 @@ class TestSerialDeviceObject(base.TestCase):
         self.assertEqual("/dev/ttyUSB0", test_obj.m_serial_device.port)
         self.assertEqual(115200, test_obj.m_serial_device.baudrate)
         self.assertEqual(
-            SerialBytesizeTypes.EIGHTBITS, test_obj.m_serial_device.bytesize)
+            SerialBytesizeTypes.EIGHTBITS, test_obj.m_serial_device.bytesize
+        )
+        self.assertEqual(SerialParityTypes.PARITY_ODD, test_obj.m_serial_device.parity)
         self.assertEqual(
-            SerialParityTypes.PARITY_ODD, test_obj.m_serial_device.parity)
-        self.assertEqual(
-            SerialStopbitTypes.STOPBITS_ONE, test_obj.m_serial_device.stopbits)
+            SerialStopbitTypes.STOPBITS_ONE, test_obj.m_serial_device.stopbits
+        )
 
     def test_build_attributes_none(self):
-
         test_obj = sd.SerialDeviceObject()
         test_obj.m_device = Device()
         test_obj.m_serial_device = SerialDevice()
@@ -159,7 +152,7 @@ class TestSerialDeviceObject(base.TestCase):
                 mock.call(test_obj.m_device),
                 mock.call(test_obj.m_serial_device),
             ],
-            any_order=True
+            any_order=True,
         )
         m_session.commit.assert_called_once()
 
@@ -178,28 +171,27 @@ class TestSerialDeviceObject(base.TestCase):
         }
 
         test_obj = sd.SerialDeviceObject(**m_atribs)
-        self.assertRaises(
-            RuntimeError, sd.SerialDeviceObject.add, m_session, test_obj)
+        self.assertRaises(RuntimeError, sd.SerialDeviceObject.add, m_session, test_obj)
 
         m_session.add.assert_has_calls(
             [
                 mock.call(test_obj.m_device),
                 mock.call(test_obj.m_serial_device),
             ],
-            any_order=True
+            any_order=True,
         )
         m_session.commit.assert_called_once()
         m_session.rollback.assert_called_once()
 
     def test_find_obj(self):
-
-        """Represents mocked device as it will be retrieved from db """
+        """Represents mocked device as it will be retrieved from db"""
         m_device = Device()
         m_device.id = 1
         m_device.name = "value2"
         m_device.interface = DeviceInterfaces.SERIAL
         m_device.implementation = mock.Mock(
-            code="ArduinoGeigerPCB", value="arduinogeigerpcb")
+            code="ArduinoGeigerPCB", value="arduinogeigerpcb"
+        )
 
         m_device_serial = SerialDevice()
         m_device_serial.port = "/dev/ttyUSB0"
@@ -213,8 +205,9 @@ class TestSerialDeviceObject(base.TestCase):
         """Setup query and session to return mocked device"""
         m_query = mock.Mock()
         m_session = mock.Mock()
-        m_session.query.return_value.filter_by.return_value.\
-            join.return_value.filter_by.return_value = m_query
+        m_session.query.return_value.filter_by.return_value.join.return_value.filter_by.return_value = (
+            m_query
+        )
         m_query.one_or_none.return_value = m_device
 
         test_obj = sd.SerialDeviceObject(**{"baudrate": 115200})
@@ -226,16 +219,16 @@ class TestSerialDeviceObject(base.TestCase):
         self.assertEqual("odd", result_obj.parity)
         self.assertEqual(1, result_obj.stopbits)
 
-    @mock.patch.object(sd, 'LOG')
+    @mock.patch.object(sd, "LOG")
     def test_find_obj_deprecated(self, m_log):
-
-        """Represents mocked device as it will be retrieved from db """
+        """Represents mocked device as it will be retrieved from db"""
         m_device = Device()
         m_device.id = 1
         m_device.name = "value2"
         m_device.interface = DeviceInterfaces.SERIAL
         m_device.implementation = mock.Mock(
-            code="ArduinoGeigerPCB", value="arduinogeigerpcb")
+            code="ArduinoGeigerPCB", value="arduinogeigerpcb"
+        )
 
         m_device_serial = SerialDevice()
         m_device_serial.port = "/dev/ttyUSB0"
@@ -249,8 +242,9 @@ class TestSerialDeviceObject(base.TestCase):
         """Setup query and session to return mocked device"""
         m_query = mock.Mock()
         m_session = mock.Mock()
-        m_session.query.return_value.filter_by.return_value.\
-            join.return_value.filter_by.return_value = m_query
+        m_session.query.return_value.filter_by.return_value.join.return_value.filter_by.return_value = (
+            m_query
+        )
         m_query.one_or_none.return_value = m_device
 
         test_obj = DeviceObject(**{"id": 1})
@@ -265,12 +259,12 @@ class TestSerialDeviceObject(base.TestCase):
         m_log.warning.assert_called_once()
 
     def test_find_obj_none(self):
-
         """Setup query and session to return mocked device"""
         m_query = mock.Mock()
         m_session = mock.Mock()
-        m_session.query.return_value.filter_by.return_value. \
-            join.return_value.filter_by.return_value = m_query
+        m_session.query.return_value.filter_by.return_value.join.return_value.filter_by.return_value = (
+            m_query
+        )
         m_query.one_or_none.return_value = None
 
         test_obj = sd.SerialDeviceObject(**{"port": "/dev/ttyUSB0"})
@@ -283,8 +277,9 @@ class TestSerialDeviceObject(base.TestCase):
         m_device2 = Device()
         m_query = mock.Mock()
         m_session = mock.Mock()
-        m_session.query.return_value.filter_by.return_value. \
-            join.return_value.filter_by.return_value = m_query
+        m_session.query.return_value.filter_by.return_value.join.return_value.filter_by.return_value = (
+            m_query
+        )
 
         m_query.all.return_value = [m_device1, m_device2]
 
@@ -292,7 +287,8 @@ class TestSerialDeviceObject(base.TestCase):
         m_device1.name = "test1"
         m_device1.interface = DeviceInterfaces.SERIAL
         m_device1.implementation = mock.Mock(
-            code="ArduinoGeigerPCB", value="arduinogeigerpcb")
+            code="ArduinoGeigerPCB", value="arduinogeigerpcb"
+        )
 
         m_device_serial1 = SerialDevice()
         m_device_serial1.port = "/dev/ttyUSB0"
@@ -307,7 +303,8 @@ class TestSerialDeviceObject(base.TestCase):
         m_device2.name = "test2"
         m_device2.interface = DeviceInterfaces.SERIAL
         m_device2.implementation = mock.Mock(
-            code="ArduinoGeigerPCB", value="arduinogeigerpcb")
+            code="ArduinoGeigerPCB", value="arduinogeigerpcb"
+        )
 
         m_device_serial2 = SerialDevice()
         m_device_serial2.port = "/dev/ttyUSB2"
@@ -340,8 +337,9 @@ class TestSerialDeviceObject(base.TestCase):
     def test_find_obj_multiple_none(self):
         m_query = mock.Mock()
         m_session = mock.Mock()
-        m_session.query.return_value.filter_by.return_value. \
-            join.return_value.filter_by.return_value = m_query
+        m_session.query.return_value.filter_by.return_value.join.return_value.filter_by.return_value = (
+            m_query
+        )
 
         m_query.all.return_value = None
 

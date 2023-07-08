@@ -28,19 +28,17 @@ from tests import base
 
 
 class TestDeviceList(base.TestCase):
-
     def setUp(self):
         super(TestDeviceList, self).setUp()
 
-    @mock.patch.object(dl, 'super')
+    @mock.patch.object(dl, "super")
     def test_arguments(self, m_super):
         m_super.return_value = mock.Mock(arguments={})
 
         bases = copy(dl.DeviceList.__bases__)
         f_bases = tuple(base for base in bases if base != Lister)
 
-        m_base = mock.patch.object(
-            dl.DeviceList, '__bases__', f_bases)
+        m_base = mock.patch.object(dl.DeviceList, "__bases__", f_bases)
         with m_base:
             m_base.is_local = True
             t_device = dl.DeviceList()
@@ -53,9 +51,8 @@ class TestDeviceList(base.TestCase):
         # ensure that is_local on the patch does not modify the actual bases
         self.assertEqual(bases, dl.DeviceList.__bases__)
 
-    @mock.patch.object(dl, 'super')
+    @mock.patch.object(dl, "super")
     def test_parser(self, m_super):
-
         m_parser = mock.Mock()
         m_super.return_value.get_parser.return_value = m_parser
 
@@ -63,8 +60,7 @@ class TestDeviceList(base.TestCase):
         bases = copy(dl.DeviceList.__bases__)
         f_bases = tuple(base for base in bases if base != Lister)
 
-        m_base = mock.patch.object(
-            dl.DeviceList, '__bases__', f_bases)
+        m_base = mock.patch.object(dl.DeviceList, "__bases__", f_bases)
         with m_base:
             m_base.is_local = True
             t_device = dl.DeviceList()
@@ -82,9 +78,8 @@ class TestDeviceList(base.TestCase):
         # ensure that is_local on the patch does not modify the actual bases
         self.assertEqual(bases, dl.DeviceList.__bases__)
 
-    @mock.patch.object(dl, 'DeviceObject')
+    @mock.patch.object(dl, "DeviceObject")
     def test_take_action(self, m_dev_obj):
-
         # remove ShowOne from the DeviceShow inheritance
         bases = copy(dl.DeviceList.__bases__)
         f_bases = tuple(base for base in bases if base != Lister)
@@ -94,14 +89,13 @@ class TestDeviceList(base.TestCase):
 
         m_mod_dev = mock.Mock()
         m_mod_dev.id = 1
-        m_mod_dev.name = 'test'
+        m_mod_dev.name = "test"
         m_mod_dev.type = DeviceTypes.AVERAGE
         m_mod_dev.interface = DeviceInterfaces.SERIAL
         m_mod_dev.implementation = dm.get_device_implementations()[0].NAME
         m_dev_obj.find.return_value = [m_mod_dev]
 
-        m_base = mock.patch.object(
-            dl.DeviceList, '__bases__', f_bases)
+        m_base = mock.patch.object(dl.DeviceList, "__bases__", f_bases)
         with m_base:
             m_base.is_local = True
             t_device = dl.DeviceList()
@@ -119,9 +113,8 @@ class TestDeviceList(base.TestCase):
         # ensure that is_local on the patch does not modify the actual bases
         self.assertEqual(bases, dl.DeviceList.__bases__)
 
-    @mock.patch.object(dl, 'DeviceObject')
+    @mock.patch.object(dl, "DeviceObject")
     def test_take_action_none(self, m_dev_obj):
-
         # remove ShowOne from the DeviceShow inheritance
         bases = copy(dl.DeviceList.__bases__)
         f_bases = tuple(base for base in bases if base != Lister)
@@ -131,8 +124,7 @@ class TestDeviceList(base.TestCase):
 
         m_dev_obj.find.return_value = []
 
-        m_base = mock.patch.object(
-            dl.DeviceList, '__bases__', f_bases)
+        m_base = mock.patch.object(dl.DeviceList, "__bases__", f_bases)
         with m_base:
             m_base.is_local = True
             t_device = dl.DeviceList()

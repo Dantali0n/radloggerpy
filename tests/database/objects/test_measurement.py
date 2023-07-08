@@ -30,17 +30,11 @@ CONF = config.CONF
 
 
 class TestMeasurementObject(base.TestCase):
-
     def setUp(self):
         super(TestMeasurementObject, self).setUp()
 
     def test_init(self):
-
-        m_atribs = {
-            "cpm": 12,
-            "svh": 0.045,
-            "skipme": "shouldnotexist"
-        }
+        m_atribs = {"cpm": 12, "svh": 0.045, "skipme": "shouldnotexist"}
 
         test_obj = ms.MeasurementObject(**m_atribs)
 
@@ -48,7 +42,6 @@ class TestMeasurementObject(base.TestCase):
         self.assertIsNone(None, getattr(test_obj, "skipme", None))
 
     def test_filter(self):
-
         m_atribs = {
             "cpm": 12,
             "attributeskip": "none",
@@ -58,11 +51,9 @@ class TestMeasurementObject(base.TestCase):
 
         m_result = test_obj._filter(test_obj)
 
-        self.assertEqual(
-            {"cpm": 12}, m_result)
+        self.assertEqual({"cpm": 12}, m_result)
 
     def test_build_object_unset(self):
-
         test_obj = ms.MeasurementObject()
         test_obj._build_object()
 
@@ -74,17 +65,11 @@ class TestMeasurementObject(base.TestCase):
         self.assertIsNone(None, test_obj.m_measurement.svh)
 
     def test_build_object_values(self):
-
         m_device = mock.Mock()
 
         m_date = datetime.utcnow()
 
-        m_atribs = {
-            "cpm": 12,
-            "svh": 0.0045,
-            "timestamp": m_date,
-            "device": m_device
-        }
+        m_atribs = {"cpm": 12, "svh": 0.0045, "timestamp": m_date, "device": m_device}
 
         test_obj = ms.MeasurementObject(**m_atribs)
         test_obj._build_object()
@@ -95,7 +80,6 @@ class TestMeasurementObject(base.TestCase):
         m_device._build_object.assert_called_once()
 
     def test_build_attributes_none(self):
-
         test_obj = ms.MeasurementObject()
         test_obj.m_measurement = Measurement()
         test_obj._build_attributes()
@@ -116,7 +100,7 @@ class TestMeasurementObject(base.TestCase):
             "cpm": 12,
             "svh": 0.0045,
             "timestamp": m_date,
-            "device": device.DeviceObject(**{'id': 1})
+            "device": device.DeviceObject(**{"id": 1}),
         }
 
         test_obj = ms.MeasurementObject(**m_atribs)
@@ -126,7 +110,7 @@ class TestMeasurementObject(base.TestCase):
             [
                 mock.call(test_obj.m_measurement),
             ],
-            any_order=True
+            any_order=True,
         )
         m_session.commit.assert_called_once()
 
@@ -139,10 +123,10 @@ class TestMeasurementObject(base.TestCase):
             "cpm": 12,
             "svh": 0.0045,
             "timestamp": m_date,
-            "device": device.DeviceObject(**{'name': 'test'})
+            "device": device.DeviceObject(**{"name": "test"}),
         }
 
-        with mock.patch.object(ms, 'DeviceObject') as m_find:
+        with mock.patch.object(ms, "DeviceObject") as m_find:
             test_obj = ms.MeasurementObject(**m_atribs)
 
             m_dev = Device()
@@ -155,7 +139,7 @@ class TestMeasurementObject(base.TestCase):
                 [
                     mock.call(test_obj.m_measurement),
                 ],
-                any_order=True
+                any_order=True,
             )
             m_session.commit.assert_called_once()
 
@@ -170,14 +154,15 @@ class TestMeasurementObject(base.TestCase):
             "cpm": 12,
             "svh": 0.0045,
             "timestamp": m_date,
-            "device": device.DeviceObject(**{'name': 'test'})
+            "device": device.DeviceObject(**{"name": "test"}),
         }
 
-        with mock.patch.object(ms, 'DeviceObject') as m_find:
+        with mock.patch.object(ms, "DeviceObject") as m_find:
             test_obj = ms.MeasurementObject(**m_atribs)
             m_find.find.return_value = None
             self.assertRaises(
-                RuntimeError, ms.MeasurementObject.add, m_session, test_obj)
+                RuntimeError, ms.MeasurementObject.add, m_session, test_obj
+            )
 
         m_find.find.assert_called_once()
 
@@ -186,20 +171,16 @@ class TestMeasurementObject(base.TestCase):
         m_session.commit.side_effect = RuntimeError
 
         # TODO(Dantali0n): change into setting attributes directly
-        m_atribs = {
-            "cpm": 12,
-            "device": device.DeviceObject(**{'id': 1})
-        }
+        m_atribs = {"cpm": 12, "device": device.DeviceObject(**{"id": 1})}
 
         test_obj = ms.MeasurementObject(**m_atribs)
-        self.assertRaises(
-            RuntimeError, ms.MeasurementObject.add, m_session, test_obj)
+        self.assertRaises(RuntimeError, ms.MeasurementObject.add, m_session, test_obj)
 
         m_session.add.assert_has_calls(
             [
                 mock.call(test_obj.m_measurement),
             ],
-            any_order=True
+            any_order=True,
         )
         m_session.commit.assert_called_once()
         m_session.rollback.assert_called_once()
@@ -222,15 +203,14 @@ class TestMeasurementObject(base.TestCase):
         m_session.query.return_value.filter_by.return_value = m_query
         m_query.one_or_none.return_value = m_measurement
 
-        test_obj = ms.MeasurementObject(
-            **{"device": device.DeviceObject(**{'id': 1})})
+        test_obj = ms.MeasurementObject(**{"device": device.DeviceObject(**{"id": 1})})
         result_obj = ms.MeasurementObject.delete(m_session, test_obj, False)
 
         m_session.delete.assert_has_calls(
             [
                 mock.call(m_measurement),
             ],
-            any_order=True
+            any_order=True,
         )
         m_session.commit.assert_called_once()
 
@@ -259,8 +239,7 @@ class TestMeasurementObject(base.TestCase):
 
         m_query.all.return_value = [m_measurement_1, m_measurement_2]
 
-        test_obj = ms.MeasurementObject(
-            **{"device": device.DeviceObject(**{'id': 1})})
+        test_obj = ms.MeasurementObject(**{"device": device.DeviceObject(**{"id": 1})})
         result_obj = ms.MeasurementObject.delete(m_session, test_obj, True)
 
         m_session.delete.assert_has_calls(
@@ -268,7 +247,7 @@ class TestMeasurementObject(base.TestCase):
                 mock.call(m_measurement_1),
                 mock.call(m_measurement_2),
             ],
-            any_order=True
+            any_order=True,
         )
         m_session.commit.assert_called_once()
 
@@ -295,12 +274,12 @@ class TestMeasurementObject(base.TestCase):
         """Setup query and session to return mocked device"""
         m_query = mock.Mock()
         m_session = mock.Mock()
-        m_session.query.return_value.filter_by.return_value.\
-            join.return_value.filter_by.return_value = m_query
+        m_session.query.return_value.filter_by.return_value.join.return_value.filter_by.return_value = (
+            m_query
+        )
         m_query.one_or_none.return_value = m_measurement
 
-        test_obj = ms.MeasurementObject(
-            **{"device": device.DeviceObject(**{'id': 1})})
+        test_obj = ms.MeasurementObject(**{"device": device.DeviceObject(**{"id": 1})})
         result_obj = ms.MeasurementObject.find(m_session, test_obj, False)
 
         self.assertEqual(1, result_obj.id)
@@ -310,7 +289,6 @@ class TestMeasurementObject(base.TestCase):
         self.assertEqual(1, result_obj.device.id)
 
     def test_find_obj_none(self):
-
         """Setup query and session to return mocked device"""
         m_query = mock.Mock()
         m_session = mock.Mock()
@@ -337,13 +315,13 @@ class TestMeasurementObject(base.TestCase):
 
         m_query = mock.Mock()
         m_session = mock.Mock()
-        m_session.query.return_value.filter_by.return_value. \
-            join.return_value.filter_by.return_value = m_query
+        m_session.query.return_value.filter_by.return_value.join.return_value.filter_by.return_value = (
+            m_query
+        )
 
         m_query.all.return_value = [m_measurement_1, m_measurement_2]
 
-        test_obj = ms.MeasurementObject(
-            **{"device": device.DeviceObject(**{'id': 1})})
+        test_obj = ms.MeasurementObject(**{"device": device.DeviceObject(**{"id": 1})})
         result_obj = ms.MeasurementObject.find(m_session, test_obj, True)
 
         self.assertEqual(1, result_obj[0].id)
@@ -357,13 +335,13 @@ class TestMeasurementObject(base.TestCase):
     def test_find_obj_multiple_none(self):
         m_query = mock.Mock()
         m_session = mock.Mock()
-        m_session.query.return_value.filter_by.return_value. \
-            join.return_value.filter_by.return_value = m_query
+        m_session.query.return_value.filter_by.return_value.join.return_value.filter_by.return_value = (
+            m_query
+        )
 
         m_query.all.return_value = None
 
-        test_obj = ms.MeasurementObject(
-            **{"device": device.DeviceObject(**{'id': 1})})
+        test_obj = ms.MeasurementObject(**{"device": device.DeviceObject(**{"id": 1})})
         result_obj = ms.MeasurementObject.find(m_session, test_obj, True)
 
         self.assertIsNone(result_obj)

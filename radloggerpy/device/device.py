@@ -44,11 +44,10 @@ class Device(metaclass=abc.ABCMeta):
     TYPE = DeviceTypes.UNDEFINED
     """Each radiation monitoring device should define its type"""
 
-    _U = TypeVar('_U', bound=DeviceObject)
+    _U = TypeVar("_U", bound=DeviceObject)
     """Bound to :py:class:`radloggerpy.database.objects.device.DeviceObject`"""
 
     def __init__(self, info: Type[_U], condition: Condition):
-
         self.condition = condition
         self.info = info
         self.data = DeviceDataBuffer(self.condition)
@@ -86,14 +85,18 @@ class Device(metaclass=abc.ABCMeta):
 
         if self._statemachine.get_state() is DeviceStates.ERROR:
             "Recover device from error state"
-            LOG.info(_("Restarting {} device of implementation {} from "
-                       "previous error state.")
-                     .format(self.info.name, self.info.implementation))
+            LOG.info(
+                _(
+                    "Restarting {} device of implementation {} from "
+                    "previous error state."
+                ).format(self.info.name, self.info.implementation)
+            )
             self._statemachine.reset_state()
         elif self._statemachine.get_state() is not DeviceStates.STOPPED:
             "Not logging a message here, DeviceManager can easily do that"
-            raise RuntimeError(_("Can not start same device {} multiple times")
-                               .format(self.info.name))
+            raise RuntimeError(
+                _("Can not start same device {} multiple times").format(self.info.name)
+            )
 
         try:
             self._statemachine.transition(DeviceStates.INITIALIZING)

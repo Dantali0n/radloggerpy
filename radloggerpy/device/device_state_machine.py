@@ -35,7 +35,7 @@ class DeviceStateMachine(StateMachine):
         DeviceStates.STOPPED: {DeviceStates.INITIALIZING},
         DeviceStates.INITIALIZING: {DeviceStates.RUNNING, DeviceStates.ERROR},
         DeviceStates.RUNNING: {DeviceStates.STOPPED, DeviceStates.ERROR},
-        DeviceStates.ERROR: {DeviceStates.STOPPED}
+        DeviceStates.ERROR: {DeviceStates.STOPPED},
     }
     """Possible states and subsequent transitions"""
 

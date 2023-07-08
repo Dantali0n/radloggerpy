@@ -19,11 +19,12 @@ from enum import unique
 @unique
 class SerialParityTypes(Enum):
     """Enum listing all possible supported types of serial parity"""
-    PARITY_NONE = 'N'
-    PARITY_EVEN = 'E'
-    PARITY_ODD = 'O'
-    PARITY_MARK = 'M'
-    PARITY_SPACE = 'S'
+
+    PARITY_NONE = "N"
+    PARITY_EVEN = "E"
+    PARITY_ODD = "O"
+    PARITY_MARK = "M"
+    PARITY_SPACE = "S"
 
 
 PARITY_CHOICES = {
@@ -31,8 +32,7 @@ PARITY_CHOICES = {
     SerialParityTypes.PARITY_ODD: "odd",
     SerialParityTypes.PARITY_EVEN: "even",
     SerialParityTypes.PARITY_MARK: "mark",
-    SerialParityTypes.PARITY_SPACE: "space"
+    SerialParityTypes.PARITY_SPACE: "space",
 }
 
-PARITY_CHOICES_R = {value: key for (key, value) in
-                    PARITY_CHOICES.items()}
+PARITY_CHOICES_R = {value: key for (key, value) in PARITY_CHOICES.items()}

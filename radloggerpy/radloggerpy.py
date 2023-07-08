@@ -33,7 +33,8 @@ LOG = log.getLogger(__name__)
 CONF = config.CONF
 
 FirstTimeRun.add_check_task(
-    database_manager.check_database_missing, database_manager.create_database)
+    database_manager.check_database_missing, database_manager.create_database
+)
 
 
 def main():
@@ -43,7 +44,7 @@ def main():
     LOG.info(ascii_logo.TEXT + ascii_logo.LOGO)
 
     # Display pid
-    LOG.info(_('Starting RadLoggerPy service on PID %s') % os.getpid())
+    LOG.info(_("Starting RadLoggerPy service on PID %s") % os.getpid())
 
     # Perform first time initialization if required
     FirstTimeRun()

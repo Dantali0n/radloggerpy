@@ -14,7 +14,6 @@
 
 
 class BaseModel:
-
     def __init__(self):
         """Do not declare any attributes in models their constructor
 

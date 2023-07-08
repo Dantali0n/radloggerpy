@@ -34,30 +34,34 @@ class DeviceListSerial(Lister, DeviceCommand):
     def arguments(self):
         if self._arguments is None:
             self._arguments = super().arguments
-            self._arguments.update({
-                '--port': Argument(
-                    help="Symbolic name of the serial port to be translated "
-                         "to the physical device, such as /dev/ttyUSB0 or "
-                         "COM1.",
-                    default=None),
-                '--baudrate': Argument(
-                    '-r', default=None,
-                    help="The speed at which the device sends data expressed "
-                         "in symbols per second (baud), typically 9600 Bd/s."
+            self._arguments.update(
+                {
+                    "--port": Argument(
+                        help="Symbolic name of the serial port to be translated "
+                        "to the physical device, such as /dev/ttyUSB0 or "
+                        "COM1.",
+                        default=None,
                     ),
-                '--bytesize': Argument(
-                    '-b', default=None, type=int,
-                    choices=BYTESIZE_CHOICES.values()),
-                '--parity': Argument(
-                    '-p', default=None,
-                    choices=PARITY_CHOICES.values()),
-                '---stopbits': Argument(
-                    '-s', default=None, type=float,
-                    choices=STOPBIT_CHOICES.values()),
-                '--timeout': Argument('-t', default=None),
-            })
-            if '--interface' in self._arguments:
-                del self._arguments['--interface']
+                    "--baudrate": Argument(
+                        "-r",
+                        default=None,
+                        help="The speed at which the device sends data expressed "
+                        "in symbols per second (baud), typically 9600 Bd/s.",
+                    ),
+                    "--bytesize": Argument(
+                        "-b", default=None, type=int, choices=BYTESIZE_CHOICES.values()
+                    ),
+                    "--parity": Argument(
+                        "-p", default=None, choices=PARITY_CHOICES.values()
+                    ),
+                    "---stopbits": Argument(
+                        "-s", default=None, type=float, choices=STOPBIT_CHOICES.values()
+                    ),
+                    "--timeout": Argument("-t", default=None),
+                }
+            )
+            if "--interface" in self._arguments:
+                del self._arguments["--interface"]
         return self._arguments
 
     def get_parser(self, program_name):
@@ -70,22 +74,41 @@ class DeviceListSerial(Lister, DeviceCommand):
         args = dict(parsed_args._get_kwargs())
         device_obj = SerialDeviceObject(**args)
 
-        data = SerialDeviceObject.find(
-            self.app.database_session, device_obj, True)
+        data = SerialDeviceObject.find(self.app.database_session, device_obj, True)
 
         if len(data) == 0:
             raise RuntimeWarning(_("No devices found"))
 
         fields = (
-            'id', 'enabled', 'name', 'measurement type', 'interface',
-            'implementation', 'port', 'baudrate', 'bytesize', 'parity',
-            'stopbits', 'timeout')
+            "id",
+            "enabled",
+            "name",
+            "measurement type",
+            "interface",
+            "implementation",
+            "port",
+            "baudrate",
+            "bytesize",
+            "parity",
+            "stopbits",
+            "timeout",
+        )
         values = []
         for result in data:
-            value = (result.id, result.enabled, result.name, result.type,
-                     result.interface, result.implementation, result.port,
-                     result.baudrate, result.bytesize, result.parity,
-                     result.stopbits, result.timeout)
+            value = (
+                result.id,
+                result.enabled,
+                result.name,
+                result.type,
+                result.interface,
+                result.implementation,
+                result.port,
+                result.baudrate,
+                result.bytesize,
+                result.parity,
+                result.stopbits,
+                result.timeout,
+            )
             values.append(value)
 
         return [fields, values]

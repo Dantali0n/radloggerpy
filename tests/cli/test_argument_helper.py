@@ -22,12 +22,10 @@ from tests import base
 
 
 class TestArgumentHelper(base.TestCase):
-
     class TestHelper(ArgumentHelper):
-
         arguments = {
-            'test': Argument(default="example"),
-            '--test': Argument('-t', required=True),
+            "test": Argument(default="example"),
+            "--test": Argument("-t", required=True),
         }
 
     def setUp(self):
@@ -41,8 +39,8 @@ class TestArgumentHelper(base.TestCase):
 
         m_parser.add_argument.assert_has_calls(
             [
-                mock.call('test', default="example"),
-                mock.call('--test', '-t', required=True),
+                mock.call("test", default="example"),
+                mock.call("--test", "-t", required=True),
             ],
-            any_order=True
+            any_order=True,
         )

@@ -19,6 +19,7 @@ from enum import unique
 @unique
 class DeviceInterfaces(Enum):
     """Enum listing all possible supported interfaces for device"""
+
     ETHERNET = 1
     SERIAL = 2
     USB = 3
@@ -27,8 +28,7 @@ class DeviceInterfaces(Enum):
 INTERFACE_CHOICES = {
     DeviceInterfaces.ETHERNET: "ethernet",
     DeviceInterfaces.SERIAL: "serial",
-    DeviceInterfaces.USB: "usb"
+    DeviceInterfaces.USB: "usb",
 }
 
-INTERFACE_CHOICES_R = {value: key for (key, value) in
-                       INTERFACE_CHOICES.items()}
+INTERFACE_CHOICES_R = {value: key for (key, value) in INTERFACE_CHOICES.items()}

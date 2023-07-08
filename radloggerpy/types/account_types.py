@@ -19,5 +19,6 @@ from enum import unique
 @unique
 class AccountTypes(Enum):
     """Enum listing all possible supported types of accounts"""
+
     RADMON = 1
     GMCMAP = 2

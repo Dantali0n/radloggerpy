@@ -34,11 +34,16 @@ class DeviceShow(ShowOne, DeviceCommand):
     def arguments(self):
         if self._arguments is None:
             self._arguments = super().arguments
-            self._arguments.update({
-                '--detailed': Argument(
-                    '-d', help="Show details related to the specific device "
-                               "type if found.",
-                    action="store_true")})
+            self._arguments.update(
+                {
+                    "--detailed": Argument(
+                        "-d",
+                        help="Show details related to the specific device "
+                        "type if found.",
+                        action="store_true",
+                    )
+                }
+            )
         return self._arguments
 
     def get_parser(self, program_name):
@@ -52,11 +57,10 @@ class DeviceShow(ShowOne, DeviceCommand):
         args = dict(parsed_args._get_kwargs())
         device_obj = DeviceObject(**args)
 
-        details = args['detailed']
+        details = args["detailed"]
 
         try:
-            data = DeviceObject.find(
-                self.app.database_session, device_obj, False)
+            data = DeviceObject.find(self.app.database_session, device_obj, False)
         except MultipleResultsFound:
             raise RuntimeWarning(_("Multiple devices found"))
 
@@ -64,25 +68,36 @@ class DeviceShow(ShowOne, DeviceCommand):
             raise RuntimeWarning(_("Device could not be found"))
 
         fields = (
-            'id', 'enabled', 'name', 'measurement type', 'interface',
-            'implementation')
+            "id",
+            "enabled",
+            "name",
+            "measurement type",
+            "interface",
+            "implementation",
+        )
         values = (
-            data.id, data.enabled, data.name, data.type, data.interface,
-            data.implementation)
+            data.id,
+            data.enabled,
+            data.name,
+            data.type,
+            data.interface,
+            data.implementation,
+        )
 
-        if details and data.interface == \
-                INTERFACE_CHOICES[DeviceInterfaces.SERIAL]:
-            data = SerialDeviceObject.find(
-                self.app.database_session, device_obj, False)
-            fields += ('port', 'baudrate', 'bytesize', 'parity',
-                       'stopbits', 'timeout')
-            values += (data.port, data.baudrate, data.bytesize, data.parity,
-                       data.stopbits, data.timeout)
-        elif details and data.interface == \
-                INTERFACE_CHOICES[DeviceInterfaces.ETHERNET]:
+        if details and data.interface == INTERFACE_CHOICES[DeviceInterfaces.SERIAL]:
+            data = SerialDeviceObject.find(self.app.database_session, device_obj, False)
+            fields += ("port", "baudrate", "bytesize", "parity", "stopbits", "timeout")
+            values += (
+                data.port,
+                data.baudrate,
+                data.bytesize,
+                data.parity,
+                data.stopbits,
+                data.timeout,
+            )
+        elif details and data.interface == INTERFACE_CHOICES[DeviceInterfaces.ETHERNET]:
             pass
-        elif details and data.interface == \
-                INTERFACE_CHOICES[DeviceInterfaces.USB]:
+        elif details and data.interface == INTERFACE_CHOICES[DeviceInterfaces.USB]:
             pass
 
         return (fields, values)

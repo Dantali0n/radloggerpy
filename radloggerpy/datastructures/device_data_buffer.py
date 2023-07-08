@@ -61,8 +61,7 @@ class DeviceDataBuffer:
 
         for e in readings:
             if not isinstance(e, RadiationReading):
-                LOG.error(_("Element: %s, is not of type "
-                            "RadiationReading") % e)
+                LOG.error(_("Element: %s, is not of type " "RadiationReading") % e)
                 readings.remove(e)
 
         lock = self.rwlock.gen_rlock()

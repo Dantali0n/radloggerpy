@@ -34,8 +34,9 @@ def list_module_names(package_path, excludes=[]):
     module_names = []
     for __, modname, ispkg in pkgutil.iter_modules(path=[package_path]):
         if modname in excludes or ispkg:
-            LOG.debug("Exclude {} in list_module_names from {}"
-                      .format(modname, package_path))
+            LOG.debug(
+                "Exclude {} in list_module_names from {}".format(modname, package_path)
+            )
         else:
             module_names.append(modname)
     return module_names
@@ -68,10 +69,13 @@ def import_modules(modules, path, attribute=None, fetch_attribute=False):
             module_filters.append((module_name, attribute))
 
     for modname, attrib in module_filters:
-        mod = importlib.import_module(path + '.' + modname)
+        mod = importlib.import_module(path + "." + modname)
         if not hasattr(mod, attrib):
-            msg = "The module '%s.%s' should have a '%s' "\
-                  "attribute." % (path, modname, attrib)
+            msg = "The module '%s.%s' should have a '%s' " "attribute." % (
+                path,
+                modname,
+                attrib,
+            )
             raise AttributeError(msg)
         elif fetch_attribute:
             imported_modules.append((mod, attrib))

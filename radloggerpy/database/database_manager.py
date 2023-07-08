@@ -97,7 +97,7 @@ def check_database_missing():
 
 
 def create_database():
-    """Create the database using sqlalchemy, used for first time init """
+    """Create the database using sqlalchemy, used for first time init"""
     file = CONF.database.filename
 
     try:

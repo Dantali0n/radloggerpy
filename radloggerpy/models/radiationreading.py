@@ -23,7 +23,6 @@ CONF = config.CONF
 
 
 class RadiationReading(timestamp.TimeStamp):
-
     _cpm = 0
 
     def __init__(self):

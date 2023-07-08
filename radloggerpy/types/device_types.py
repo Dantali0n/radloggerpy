@@ -19,6 +19,7 @@ from enum import unique
 @unique
 class DeviceTypes(Enum):
     """Enum listing all possible device types"""
+
     UNDEFINED = 1
     CONTINUOUS = 2
     AVERAGE = 3

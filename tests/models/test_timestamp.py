@@ -22,7 +22,6 @@ from tests import base
 
 
 class TestTimeStampModel(base.TestCase):
-
     def setUp(self):
         super(TestTimeStampModel, self).setUp()
 
@@ -31,10 +30,9 @@ class TestTimeStampModel(base.TestCase):
     def test_no_instance_attributes(self):
         """Test that the class has no instance variables"""
 
-        self.assertEqual(
-            len(dir(timestamp.TimeStamp)), len(dir(self.m_timestamp)))
+        self.assertEqual(len(dir(timestamp.TimeStamp)), len(dir(self.m_timestamp)))
 
-    @mock.patch.object(time, 'time')
+    @mock.patch.object(time, "time")
     def test_update_get(self, m_time):
         m_time.return_value = 0
 

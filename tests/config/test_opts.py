@@ -40,7 +40,7 @@ class TestConfOpts(base.TestCase):
 
         # opts and cfg should not be included in init even though they are
         # modules
-        remove = ['opts', 'cfg']
+        remove = ["opts", "cfg"]
 
         # get all attributes of the config directory
         path = config.__path__[0]
@@ -62,29 +62,30 @@ class TestConfOpts(base.TestCase):
     def test_module_import(self):
         """Assert correct import of config modules based on string name"""
 
-        path = 'radloggerpy.config'
+        path = "radloggerpy.config"
 
         self.assertEqual(
             [config.devices],
-            di.import_modules(['devices'], path, opts.LIST_OPTS_FUNC_NAME))
+            di.import_modules(["devices"], path, opts.LIST_OPTS_FUNC_NAME),
+        )
 
     class FakeOpts(object):
         """Simulate options module since list_opts won't distinguish"""
-        fgroup = cfg.OptGroup(name='example_group',
-                              title='Example')
 
-        fopts = [cfg.IntOpt('example_opts')]
+        fgroup = cfg.OptGroup(name="example_group", title="Example")
+
+        fopts = [cfg.IntOpt("example_opts")]
 
         @staticmethod
         def list_opts():
-            return [(TestConfOpts.FakeOpts.fgroup,
-                     TestConfOpts.FakeOpts.fopts)]
+            return [(TestConfOpts.FakeOpts.fgroup, TestConfOpts.FakeOpts.fopts)]
 
-    @mock.patch.object(opts, 'import_modules')
+    @mock.patch.object(opts, "import_modules")
     def test_list_opts(self, m_modules):
         """Test that with the FakeOpts the expected available config options"""
 
         m_modules.return_value = [self.FakeOpts]
 
-        self.assertEqual([(self.FakeOpts.fgroup, self.FakeOpts.fopts)],
-                         opts.list_opts())
+        self.assertEqual(
+            [(self.FakeOpts.fgroup, self.FakeOpts.fopts)], opts.list_opts()
+        )

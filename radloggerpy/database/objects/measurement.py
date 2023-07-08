@@ -77,8 +77,11 @@ class MeasurementObject(DatabaseObject):
         reference._build_object()
 
         """Measurement.device_id must be set to populate the field"""
-        if reference.m_measurement.device_id is None \
-                and hasattr(reference.device, 'id') and reference.device.id:
+        if (
+            reference.m_measurement.device_id is None
+            and hasattr(reference.device, "id")
+            and reference.device.id
+        ):
             """If no device_id is set find it through device id"""
             reference.m_measurement.device_id = reference.device.id
         elif reference.m_measurement.device_id is None and reference.device:
@@ -155,10 +158,13 @@ class MeasurementObject(DatabaseObject):
         query = session.query(Measurement).filter_by(**filters)
 
         if reference.device:
-            dev_filter = reference.device._filter(
-                reference.device.m_device)
-            query = session.query(Measurement).filter_by(**filters)\
-                .join(Device).filter_by(**dev_filter)
+            dev_filter = reference.device._filter(reference.device.m_device)
+            query = (
+                session.query(Measurement)
+                .filter_by(**filters)
+                .join(Device)
+                .filter_by(**dev_filter)
+            )
 
         if allow_multiple:
             results = query.all()

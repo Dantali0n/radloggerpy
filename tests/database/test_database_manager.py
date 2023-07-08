@@ -32,19 +32,18 @@ CONF = config.CONF
 
 
 class TestDatabaseManager(base.TestCase):
-
     def setUp(self):
         super(TestDatabaseManager, self).setUp()
 
         self.p_file = mock.patch.object(
-            os.path, 'isfile',
-            new_callable=mock.PropertyMock)
+            os.path, "isfile", new_callable=mock.PropertyMock
+        )
         self.m_isfile = self.p_file.start()
         self.addCleanup(self.p_file.stop)
 
         self.p_database = mock.patch.object(
-            dbm, 'database_exists',
-            new_callable=mock.PropertyMock)
+            dbm, "database_exists", new_callable=mock.PropertyMock
+        )
         self.m_database = self.p_database.start()
         self.addCleanup(self.p_database.stop)
 
@@ -52,7 +51,7 @@ class TestDatabaseManager(base.TestCase):
         engine = dbm.create_engine("test.sqlite")
         self.assertEqual("sqlite:///test.sqlite", str(engine.url))
 
-    @mock.patch.object(dbm, 'create_engine')
+    @mock.patch.object(dbm, "create_engine")
     def test_create_session(self, m_engine):
         m_engine.return_value = "sqlite:///test.sqlite"
 
@@ -62,8 +61,8 @@ class TestDatabaseManager(base.TestCase):
         self.assertIsInstance(session, orm.Session)
         self.assertEqual("sqlite:///test.sqlite", session.bind)
 
-    @mock.patch.object(dbm, 'LOG')
-    @mock.patch.object(dbm, 'create_engine')
+    @mock.patch.object(dbm, "LOG")
+    @mock.patch.object(dbm, "create_engine")
     def test_create_session_error(self, m_engine, m_log):
         m_engine.side_effect = Exception()
 
@@ -90,7 +89,7 @@ class TestDatabaseManager(base.TestCase):
 
         self.assertTrue(dbm.check_database_missing())
 
-    @mock.patch.object(dbm, 'LOG')
+    @mock.patch.object(dbm, "LOG")
     def test_check_database_missing_error(self, m_log):
         self.m_isfile.return_value = True
         self.m_database.side_effect = Exception()
@@ -98,8 +97,8 @@ class TestDatabaseManager(base.TestCase):
         self.assertTrue(dbm.check_database_missing())
         m_log.warning.assert_called_once()
 
-    @mock.patch.object(dbm, 'create_engine')
-    @mock.patch.object(cd, 'create_database_tables')
+    @mock.patch.object(dbm, "create_engine")
+    @mock.patch.object(cd, "create_database_tables")
     def test_create_database(self, m_create, m_engine):
         m_engine.return_value = mock.Mock()
         m_create.return_value = True
@@ -108,9 +107,9 @@ class TestDatabaseManager(base.TestCase):
 
         m_create.assert_called_once_with(m_engine())
 
-    @mock.patch.object(dbm, 'create_engine')
-    @mock.patch.object(dbm, 'LOG')
-    @mock.patch.object(cd, 'create_database_tables')
+    @mock.patch.object(dbm, "create_engine")
+    @mock.patch.object(dbm, "LOG")
+    @mock.patch.object(cd, "create_database_tables")
     def test_create_database_error(self, m_create, m_log, m_engine):
         m_engine.return_value = mock.Mock()
         m_create.side_effect = AssertionError()

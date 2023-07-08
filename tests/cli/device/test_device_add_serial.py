@@ -31,7 +31,6 @@ from tests import base
 
 
 class TestDeviceAddSerial(base.TestCase):
-
     def setUp(self):
         super(TestDeviceAddSerial, self).setUp()
 
@@ -40,19 +39,20 @@ class TestDeviceAddSerial(base.TestCase):
         f_bases = tuple(base for base in bases if base != Command)
 
         m_base = mock.patch.object(
-            device_add_serial.DeviceAddSerial, '__bases__', f_bases)
+            device_add_serial.DeviceAddSerial, "__bases__", f_bases
+        )
         with m_base:
             m_base.is_local = True
             t_device = device_add_serial.DeviceAddSerial()
             t_device.register_arguments(mock.Mock())
 
-            self.assertTrue('name' in t_device._arguments.keys())
-            self.assertTrue('implementation' in t_device._arguments.keys())
+            self.assertTrue("name" in t_device._arguments.keys())
+            self.assertTrue("implementation" in t_device._arguments.keys())
 
         # ensure that is_local on the patch does not modify the actual bases
         self.assertEqual(bases, device_add_serial.DeviceAddSerial.__bases__)
 
-    @mock.patch.object(device_add_serial, 'super')
+    @mock.patch.object(device_add_serial, "super")
     def test_arguments(self, m_super):
         m_super.return_value = mock.Mock(arguments={})
 
@@ -60,22 +60,22 @@ class TestDeviceAddSerial(base.TestCase):
         f_bases = tuple(base for base in bases if base != Command)
 
         m_base = mock.patch.object(
-            device_add_serial.DeviceAddSerial, '__bases__', f_bases)
+            device_add_serial.DeviceAddSerial, "__bases__", f_bases
+        )
         with m_base:
             m_base.is_local = True
             t_device = device_add_serial.DeviceAddSerial()
             t_device.register_arguments(mock.Mock())
 
             m_super.assert_called_once()
-            self.assertTrue('port' in t_device._arguments.keys())
-            self.assertTrue('baudrate' in t_device._arguments.keys())
+            self.assertTrue("port" in t_device._arguments.keys())
+            self.assertTrue("baudrate" in t_device._arguments.keys())
 
         # ensure that is_local on the patch does not modify the actual bases
         self.assertEqual(bases, device_add_serial.DeviceAddSerial.__bases__)
 
-    @mock.patch.object(device_add_serial, 'super')
+    @mock.patch.object(device_add_serial, "super")
     def test_parser(self, m_super):
-
         m_parser = mock.Mock()
         m_super.return_value.get_parser.return_value = m_parser
 
@@ -83,7 +83,8 @@ class TestDeviceAddSerial(base.TestCase):
         f_bases = tuple(base for base in bases if base != Command)
 
         m_base = mock.patch.object(
-            device_add_serial.DeviceAddSerial, '__bases__', f_bases)
+            device_add_serial.DeviceAddSerial, "__bases__", f_bases
+        )
         with m_base:
             m_base.is_local = True
             t_device = device_add_serial.DeviceAddSerial()
@@ -99,25 +100,24 @@ class TestDeviceAddSerial(base.TestCase):
         # ensure that is_local on the patch does not modify the actual bases
         self.assertEqual(bases, device_add_serial.DeviceAddSerial.__bases__)
 
-    @mock.patch.object(device_add_serial, 'Dm')
-    @mock.patch.object(device_add_serial, 'SerialDeviceObject')
+    @mock.patch.object(device_add_serial, "Dm")
+    @mock.patch.object(device_add_serial, "SerialDeviceObject")
     def test_take_action(self, m_dev_obj, m_dm):
-
         m_dm.get_device_class.return_type = mock.Mock(TYPE=DeviceTypes.AVERAGE)
 
         bases = copy(device_add_serial.DeviceAddSerial.__bases__)
         f_bases = tuple(base for base in bases if base != Command)
 
         m_args = mock.Mock()
-        m_args._get_kwargs.return_value = {'detailed': None}
+        m_args._get_kwargs.return_value = {"detailed": None}
 
         m_mod_dev = mock.Mock()
         m_mod_dev.id = 1
-        m_mod_dev.name = 'test'
+        m_mod_dev.name = "test"
         m_mod_dev.type = DeviceTypes.AVERAGE
         m_mod_dev.interface = DeviceInterfaces.SERIAL
         m_mod_dev.implementation = dm.get_device_implementations()[0].NAME
-        m_mod_dev.port = '/dev/ttyUSB0'
+        m_mod_dev.port = "/dev/ttyUSB0"
         m_mod_dev.baudrate = 9600
         m_mod_dev.bytesize = SerialBytesizeTypes.FIVEBITS
         m_mod_dev.parity = SerialParityTypes.PARITY_NONE
@@ -126,7 +126,8 @@ class TestDeviceAddSerial(base.TestCase):
         m_dev_obj.add.return_value = m_mod_dev
 
         m_base = mock.patch.object(
-            device_add_serial.DeviceAddSerial, '__bases__', f_bases)
+            device_add_serial.DeviceAddSerial, "__bases__", f_bases
+        )
         with m_base:
             m_base.is_local = True
             t_device = device_add_serial.DeviceAddSerial()
@@ -149,22 +150,22 @@ class TestDeviceAddSerial(base.TestCase):
         # ensure that is_local on the patch does not modify the actual bases
         self.assertEqual(bases, device_add_serial.DeviceAddSerial.__bases__)
 
-    @mock.patch.object(device_add_serial, 'Dm')
-    @mock.patch.object(device_add_serial, 'SerialDeviceObject')
+    @mock.patch.object(device_add_serial, "Dm")
+    @mock.patch.object(device_add_serial, "SerialDeviceObject")
     def test_take_action_error(self, m_dev_obj, m_dm):
-
         m_dm.get_device_class.return_type = mock.Mock(TYPE=DeviceTypes.AVERAGE)
 
         bases = copy(device_add_serial.DeviceAddSerial.__bases__)
         f_bases = tuple(base for base in bases if base != Command)
 
         m_args = mock.Mock()
-        m_args._get_kwargs.return_value = {'detailed': None}
+        m_args._get_kwargs.return_value = {"detailed": None}
 
         m_dev_obj.add.side_effect = RuntimeError()
 
         m_base = mock.patch.object(
-            device_add_serial.DeviceAddSerial, '__bases__', f_bases)
+            device_add_serial.DeviceAddSerial, "__bases__", f_bases
+        )
         with m_base:
             m_base.is_local = True
             t_device = device_add_serial.DeviceAddSerial()

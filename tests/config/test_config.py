@@ -29,11 +29,10 @@ CONF = config.CONF
 
 
 class TestConfig(base.TestCase):
-
     def setUp(self):
         super(TestConfig, self).setUp()
 
-    @mock.patch.object(log, 'register_options')
+    @mock.patch.object(log, "register_options")
     def test_setup_config_and_logging(self, m_log):
         configurator.setup_config_and_logging(sys.argv, CONF)
 

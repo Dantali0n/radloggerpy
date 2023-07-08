@@ -61,12 +61,12 @@ class StateMachine(metaclass=abc.ABCMeta):
     """
 
     def __init__(self, transitions: _U, states: enum.Enum = None):
-
         if states and isinstance(states, enum.Enum):
             self.POSSIBLE_STATES = states
         elif not isinstance(self.POSSIBLE_STATES, enum.Enum):
-            raise RuntimeError(_("Neither POSSIBLE_STATES nor states are of"
-                                 "type Enum"))
+            raise RuntimeError(
+                _("Neither POSSIBLE_STATES nor states are of" "type Enum")
+            )
 
         self._sclass = self.POSSIBLE_STATES.__class__
 
@@ -81,11 +81,16 @@ class StateMachine(metaclass=abc.ABCMeta):
         for t in self._sclass:
             if t not in self.transitions:
                 raise RuntimeError(
-                    _("Not all states have required valid transition set"))
+                    _("Not all states have required valid transition set")
+                )
             for s in self.transitions[t]:
                 if not isinstance(s, self._sclass):
-                    raise RuntimeError(_("Not all members of transition set "
-                                         "are of same type as state"))
+                    raise RuntimeError(
+                        _(
+                            "Not all members of transition set "
+                            "are of same type as state"
+                        )
+                    )
 
     def reset_state(self):
         """Reset state to the initial state"""
@@ -103,12 +108,12 @@ class StateMachine(metaclass=abc.ABCMeta):
         """
 
         if not isinstance(state, self._sclass):
-            raise RuntimeWarning(
-                _("State is not of same type as POSSIBLE_STATES"))
+            raise RuntimeWarning(_("State is not of same type as POSSIBLE_STATES"))
 
         if state in self.transitions[self._state]:
             self._state = state
         else:
             raise RuntimeWarning(
-                _("Transition from %(initial)s to %(to)s state is not valid") %
-                {'initial': self._state, 'to': state})
+                _("Transition from %(initial)s to %(to)s state is not valid")
+                % {"initial": self._state, "to": state}
+            )

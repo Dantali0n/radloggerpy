@@ -27,7 +27,6 @@ CONF = config.CONF
 
 
 class TestDeclarativeBase(base.TestCase):
-
     # class FakeBase(object):
     #     @declared_attr
     #     def __tablename__(cls):

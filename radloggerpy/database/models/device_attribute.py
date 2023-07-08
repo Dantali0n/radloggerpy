@@ -21,7 +21,7 @@ from radloggerpy.database.declarative_base import base
 
 class DeviceAttribute(base):
     id = Column(Integer, primary_key=True)
-    base_id = Column(Integer, ForeignKey('device.id'))
+    base_id = Column(Integer, ForeignKey("device.id"))
 
     key = Column(String)
     value = Column(String)

@@ -50,13 +50,15 @@ class ArduinoGeigerPcb(SerialDevice):
         parity = PARITY_CHOICES_R[self.info.parity].value
         try:
             self.serial = serial.Serial(
-                port=self.info.port, baudrate=self.info.baudrate,
-                parity=parity, stopbits=self.info.stopbits,
-                bytesize=self.info.bytesize)
+                port=self.info.port,
+                baudrate=self.info.baudrate,
+                parity=parity,
+                stopbits=self.info.stopbits,
+                bytesize=self.info.bytesize,
+            )
         except serial.serialutil.SerialException as e:
             if e.errno == errno.EACCES:
-                LOG.critical(_("Insufficient permissions "
-                               "to open device."))
+                LOG.critical(_("Insufficient permissions " "to open device."))
                 raise DeviceException
             elif e.errno == errno.ENOENT:
                 LOG.critical(_("Device does not exist"))
@@ -70,12 +72,12 @@ class ArduinoGeigerPcb(SerialDevice):
         while not self.stop:
             while self.serial.inWaiting() > 0:
                 char = self.serial.read(1).decode("utf-8")
-                if char == '\n':
+                if char == "\n":
                     measure = RadiationReading()
                     measure.set_cpm(int(string))
                     self.data.append(measure)
                     string = ""
-                elif char == '\r':
+                elif char == "\r":
                     pass
                 else:
                     string += char

@@ -30,7 +30,6 @@ CONF = config.CONF
 
 
 class TestDeviceDataBuffer(base.TestCase):
-
     def setUp(self):
         super(TestDeviceDataBuffer, self).setUp()
         self.m_condition = mock.Mock()
@@ -53,7 +52,7 @@ class TestDeviceDataBuffer(base.TestCase):
         readings = self.m_buffer.fetch_clear_readings()
         self.assertEqual([m_reading], readings)
 
-    @mock.patch.object(device_data_buffer, 'LOG')
+    @mock.patch.object(device_data_buffer, "LOG")
     def test_add_reading_invalid(self, m_log):
         """Assert that invalid objects can not be added to the buffer"""
         m_add_readings = [RadiationReading(), object()]
@@ -84,8 +83,7 @@ class TestDeviceDataBuffer(base.TestCase):
         self.assertEqual([m_reading], self.m_buffer.fetch_clear_readings())
         self.assertEqual([], self.m_buffer.fetch_clear_readings())
 
-    @mock.patch.object(
-        rwlock.RWLockRead, 'gen_rlock')
+    @mock.patch.object(rwlock.RWLockRead, "gen_rlock")
     def test_add_reading_lock(self, m_read):
         """Simulate failed lock and correct add_readings return value"""
         m_read.return_value.acquire.return_value = False
@@ -93,8 +91,7 @@ class TestDeviceDataBuffer(base.TestCase):
 
         self.assertFalse(self.m_buffer.add_readings([m_reading]))
 
-    @mock.patch.object(
-        rwlock.RWLockRead, 'gen_wlock')
+    @mock.patch.object(rwlock.RWLockRead, "gen_wlock")
     def test_fetch_readings_lock(self, m_write):
         """Simulate failed lock and correct fetch_x_readings return value"""
         m_write.return_value.acquire.side_effect = [False]

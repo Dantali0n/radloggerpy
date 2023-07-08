@@ -29,20 +29,18 @@ CONF = config.CONF
 
 @unique
 class DummyEnum(Enum):
-    __order__ = 'EXP DUMMY'
+    __order__ = "EXP DUMMY"
     EXP = 1
     DUMMY = 2
 
 
 class TestStateMachine(base.TestCase):
-
     dummy_transitions = {
         DummyEnum.EXP: {DummyEnum.EXP},
-        DummyEnum.DUMMY: {DummyEnum.EXP, DummyEnum.DUMMY}
+        DummyEnum.DUMMY: {DummyEnum.EXP, DummyEnum.DUMMY},
     }
 
     class DummyStateMachine(StateMachine):
-
         POSSIBLE_STATES = DummyEnum.EXP
 
     class FalseStateMachine(StateMachine):
@@ -63,55 +61,41 @@ class TestStateMachine(base.TestCase):
         the POSSIBLE_STATES attribute and states parameter are None.
         """
 
-        self.assertRaises(RuntimeError, self.FalseStateMachine,
-                          self.dummy_transitions)
+        self.assertRaises(RuntimeError, self.FalseStateMachine, self.dummy_transitions)
 
     def test_verify_error(self):
-
-        transitions = {
-            DummyEnum.EXP: {DummyEnum.EXP}
-        }
+        transitions = {DummyEnum.EXP: {DummyEnum.EXP}}
 
         self.assertRaises(RuntimeError, self.DummyStateMachine, transitions)
 
     def test_verify_type_error(self):
-
-        transitions = {
-            DummyEnum.EXP: {None},
-            DummyEnum.DUMMY: {}
-        }
+        transitions = {DummyEnum.EXP: {None}, DummyEnum.DUMMY: {}}
 
         self.assertRaises(RuntimeError, self.DummyStateMachine, transitions)
 
     def test_init_argument(self):
-        m_machine = self.DummyStateMachine(
-            self.dummy_transitions, DummyEnum.DUMMY)
+        m_machine = self.DummyStateMachine(self.dummy_transitions, DummyEnum.DUMMY)
 
         self.assertEqual(DummyEnum.DUMMY, m_machine.get_state())
 
     def test_transition(self):
-        m_machine = self.DummyStateMachine(
-            self.dummy_transitions, DummyEnum.DUMMY)
+        m_machine = self.DummyStateMachine(self.dummy_transitions, DummyEnum.DUMMY)
 
         m_machine.transition(DummyEnum.EXP)
         self.assertEqual(DummyEnum.EXP, m_machine.get_state())
 
     def test_transition_error(self):
-        m_machine = self.DummyStateMachine(
-            self.dummy_transitions, DummyEnum.EXP)
+        m_machine = self.DummyStateMachine(self.dummy_transitions, DummyEnum.EXP)
 
-        self.assertRaises(
-            RuntimeWarning, m_machine.transition, DummyEnum.DUMMY)
+        self.assertRaises(RuntimeWarning, m_machine.transition, DummyEnum.DUMMY)
 
     def test_transition_type_error(self):
-        m_machine = self.DummyStateMachine(
-            self.dummy_transitions, DummyEnum.EXP)
+        m_machine = self.DummyStateMachine(self.dummy_transitions, DummyEnum.EXP)
 
         self.assertRaises(RuntimeWarning, m_machine.transition, None)
 
     def test_reset(self):
-        m_machine = self.DummyStateMachine(
-            self.dummy_transitions, DummyEnum.DUMMY)
+        m_machine = self.DummyStateMachine(self.dummy_transitions, DummyEnum.DUMMY)
 
         m_machine.transition(DummyEnum.EXP)
         m_machine.reset_state()

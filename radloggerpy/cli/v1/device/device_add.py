@@ -25,17 +25,19 @@ class DeviceAddCommand(DeviceHelper, metaclass=abc.ABCMeta):
     _arguments = None
 
     # override key as it has changed compared to baseclass
-    _implementation_key = 'implementation'
+    _implementation_key = "implementation"
 
     @property
     def arguments(self):
         if self._arguments is None:
             self._arguments = dict()
-            self._arguments.update({
-                'name': Argument(
-                    help="Unique name to help identify this device."),
-                'implementation': Argument(
-                    help="The specific implementation of radiation monitor "
-                         "device see documentation for supported models."),
-            })
+            self._arguments.update(
+                {
+                    "name": Argument(help="Unique name to help identify this device."),
+                    "implementation": Argument(
+                        help="The specific implementation of radiation monitor "
+                        "device see documentation for supported models."
+                    ),
+                }
+            )
         return self._arguments

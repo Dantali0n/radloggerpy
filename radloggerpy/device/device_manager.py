@@ -47,10 +47,10 @@ class ManagedDevice:
 
     consecutive_errors: int = 0
 
-    _I = TypeVar('_I', bound=Device)
+    _I = TypeVar("_I", bound=Device)
     """Bound to :py:class:`radloggerpy.device.device.Device`"""
 
-    _U = TypeVar('_U', bound=Future)
+    _U = TypeVar("_U", bound=Future)
     """Bound to :py:class:`concurrent.futures._base.Future`"""
 
     def __init__(self, future: Type[_U], device: Type[_I]):
@@ -93,24 +93,22 @@ class DeviceManager:
 
         if num_workers is -1:
             num_workers = multiprocessing.cpu_count()
-            LOG.info(_("Configured device manager for %d workers")
-                     % num_workers)
+            LOG.info(_("Configured device manager for %d workers") % num_workers)
 
         self._condition = Condition()
 
         self._mng_devices = []
         "List of ManagedDevice devices see :py:class:`ManagedDevice`"
-        self._threadpool = futurist.ThreadPoolExecutor(
-            max_workers=num_workers)
+        self._threadpool = futurist.ThreadPoolExecutor(max_workers=num_workers)
         # self._threadpool = futurist.GreenThreadPoolExecutor(
         #    max_workers=num_workers)
 
         self.get_device_map()
 
-    _I = TypeVar('_I', bound=Device)
+    _I = TypeVar("_I", bound=Device)
     """Bound to :py:class:`radloggerpy.device.device.Device`"""
 
-    _U = TypeVar('_U', bound=DeviceObject)
+    _U = TypeVar("_U", bound=DeviceObject)
     """Bound to :py:class:`radloggerpy.database.objects.device.DeviceObject`"""
 
     def launch_device(self, device_obj: Type[_U]):
@@ -137,12 +135,11 @@ class DeviceManager:
         for mng_device in self._mng_devices:
             future_exception = mng_device.future.exception()
 
-            if type(future_exception) is not DeviceException:
+            if not isinstance(future_exception, DeviceException):
                 LOG.error(_("Unhandled Exception"))
 
             if mng_device.future.done() and CONF.devices.restart_on_error:
-                mng_device.future =\
-                    self._threadpool.submit(mng_device.device.run)
+                mng_device.future = self._threadpool.submit(mng_device.device.run)
             elif mng_device.future.done():
                 removals.append(mng_device)
 
@@ -160,10 +157,9 @@ class DeviceManager:
 
         modules = list()
         for module_name in list_module_names(package_path):
-            modules.append((module_name, module_name.title().replace('_', '')))
+            modules.append((module_name, module_name.title().replace("_", "")))
 
-        imported_modules = import_modules(
-            modules, package, fetch_attribute=True)
+        imported_modules = import_modules(modules, package, fetch_attribute=True)
         for module, attribute in imported_modules:
             device_modules.append(getattr(module, attribute))
 

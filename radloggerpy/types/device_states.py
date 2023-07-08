@@ -19,6 +19,7 @@ from enum import unique
 @unique
 class DeviceStates(Enum):
     """Enum listing all possible device states"""
+
     STOPPED = 1
     INITIALIZING = 2
     RUNNING = 3

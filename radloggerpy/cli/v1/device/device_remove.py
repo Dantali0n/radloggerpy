@@ -30,10 +30,10 @@ class DeviceRemove(ShowOne, DeviceCommand):
     def arguments(self):
         if self._arguments is None:
             self._arguments = super().arguments
-            if '--interface' in self._arguments:
-                del self._arguments['--interface']
-            if '--implementation' in self._arguments:
-                del self._arguments['--implementation']
+            if "--interface" in self._arguments:
+                del self._arguments["--interface"]
+            if "--implementation" in self._arguments:
+                del self._arguments["--implementation"]
         return self._arguments
 
     def get_parser(self, program_name):
@@ -47,19 +47,18 @@ class DeviceRemove(ShowOne, DeviceCommand):
 
         if device_obj.id is None and device_obj.name is None:
             raise RuntimeWarning(
-                _("Either the id or name must be specified to "
-                  "remove a device"))
+                _("Either the id or name must be specified to " "remove a device")
+            )
 
         try:
-            data = DeviceObject.delete(
-                self.app.database_session, device_obj, False)
+            data = DeviceObject.delete(self.app.database_session, device_obj, False)
         except MultipleResultsFound:
             raise RuntimeWarning(_("Multiple devices found"))
 
         if data is None:
             raise RuntimeWarning(_("Device could not be found"))
 
-        fields = ('id', 'name', 'interface', 'implementation')
+        fields = ("id", "name", "interface", "implementation")
         values = (data.id, data.name, data.interface, data.implementation)
 
         self.app.LOG.info(_("Device removed successfully"))

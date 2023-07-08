@@ -14,13 +14,10 @@
 
 from oslo_config import cfg
 
-database = cfg.OptGroup(name='database',
-                        title='Configuration Options for database')
+database = cfg.OptGroup(name="database", title="Configuration Options for database")
 
 DATABASE_OPTS = [
-    cfg.StrOpt('filename',
-               default='radlogger.sqlite',
-               help='Name of database file')
+    cfg.StrOpt("filename", default="radlogger.sqlite", help="Name of database file")
 ]
 
 

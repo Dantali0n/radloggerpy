@@ -23,7 +23,7 @@ from radloggerpy.database.declarative_base import base
 
 class Measurement(base):
     id = Column(Integer, primary_key=True)
-    device_id = Column(Integer, ForeignKey('device.id'))
+    device_id = Column(Integer, ForeignKey("device.id"))
     timestamp = Column(DateTime, default=datetime.utcnow)
 
     cpm = Column(Integer, nullable=True)

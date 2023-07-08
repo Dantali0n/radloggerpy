@@ -28,8 +28,12 @@ CONF = config.CONF
 """Handles service like methods such as setting the correct log levels and
 parsing command line arguments."""
 
-_DEFAULT_LOG_LEVELS = ['sqlalchemy=WARN', 'stevedore=INFO', 'iso8601=WARN',
-                       'requests=WARN']
+_DEFAULT_LOG_LEVELS = [
+    "sqlalchemy=WARN",
+    "stevedore=INFO",
+    "iso8601=WARN",
+    "requests=WARN",
+]
 
 
 def setup_config_and_logging(argv=(), conf=cfg.CONF):
@@ -38,24 +42,27 @@ def setup_config_and_logging(argv=(), conf=cfg.CONF):
 
     parse_args(argv)
     # Set log levels for external libraries
-    cfg.set_defaults(_options.log_opts,
-                     default_log_levels=_DEFAULT_LOG_LEVELS)
-    log.setup(conf, 'radloggerpy')
+    cfg.set_defaults(_options.log_opts, default_log_levels=_DEFAULT_LOG_LEVELS)
+    log.setup(conf, "radloggerpy")
     # Write all configuration options and values to log
     conf.log_opt_values(LOG, log.DEBUG)
 
 
 def parse_args(argv, default_config_files=None, default_config_dirs=None):
     """Load information into config and allow program arguments to override"""
-    default_config_files = (default_config_files or
-                            cfg.find_config_files(project='RadLoggerPy'))
-    default_config_dirs = (default_config_dirs or
-                           cfg.find_config_dirs(project='RadLoggerPy'))
-    cfg.CONF(argv[1:],
-             project='RadLoggerPy',
-             version=__version__,
-             default_config_dirs=default_config_dirs,
-             default_config_files=default_config_files)
+    default_config_files = default_config_files or cfg.find_config_files(
+        project="RadLoggerPy"
+    )
+    default_config_dirs = default_config_dirs or cfg.find_config_dirs(
+        project="RadLoggerPy"
+    )
+    cfg.CONF(
+        argv[1:],
+        project="RadLoggerPy",
+        version=__version__,
+        default_config_dirs=default_config_dirs,
+        default_config_files=default_config_files,
+    )
 
 
 def list_opts():

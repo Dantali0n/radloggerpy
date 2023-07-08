@@ -52,11 +52,12 @@ class TestHacking(base.TestCase):
         lines = [
             "from X import Y as Y",
             "def function():",
-            "    print(_('builtin gettext'))"
+            "    print(_('builtin gettext'))",
         ]
 
         generator = checks.check_builtins_gettext(
-            "logical_line", [' _'], filename, lines, False)
+            "logical_line", [" _"], filename, lines, False
+        )
 
         self.assertEqual(0, next(generator)[0])
 
@@ -67,11 +68,12 @@ class TestHacking(base.TestCase):
         lines = [
             "from radloggerpy._i18n import _",
             "def function():",
-            "    print(_('builtin gettext'))"
+            "    print(_('builtin gettext'))",
         ]
 
         generator = checks.check_builtins_gettext(
-            "logical_line", [' _'], filename, lines, False)
+            "logical_line", [" _"], filename, lines, False
+        )
 
         self.assertRaises(StopIteration, next, generator)
 
@@ -79,8 +81,7 @@ class TestHacking(base.TestCase):
         logical_line = "LOG.warn('example')"
         filename = "radloggerpy/foo/bar.py"
 
-        generator = checks.check_log_warn_deprecated(
-            logical_line, filename)
+        generator = checks.check_log_warn_deprecated(logical_line, filename)
 
         self.assertEqual(0, next(generator)[0])
 
@@ -88,8 +89,7 @@ class TestHacking(base.TestCase):
         logical_line = "LOG.warning('example')"
         filename = "radloggerpy/foo/bar.py"
 
-        generator = checks.check_log_warn_deprecated(
-            logical_line, filename)
+        generator = checks.check_log_warn_deprecated(logical_line, filename)
 
         self.assertRaises(StopIteration, next, generator)
 
@@ -97,8 +97,7 @@ class TestHacking(base.TestCase):
         logical_line = "self.assertTrue(isinstance(observed, Type))"
         filename = "radloggerpy/tests/bar.py"
 
-        generator = checks.check_assert_is_instance(
-            logical_line, filename)
+        generator = checks.check_assert_is_instance(logical_line, filename)
 
         self.assertEqual(0, next(generator)[0])
 
@@ -106,8 +105,7 @@ class TestHacking(base.TestCase):
         logical_line = "assertIsInstance(observed, type)"
         filename = "radloggerpy/tests/bar.py"
 
-        generator = checks.check_assert_is_instance(
-            logical_line, filename)
+        generator = checks.check_assert_is_instance(logical_line, filename)
 
         self.assertRaises(StopIteration, next, generator)
 
@@ -115,8 +113,7 @@ class TestHacking(base.TestCase):
         logical_line = "self.assertEqual(measured, [])"
         filename = "radloggerpy/tests/bar.py"
 
-        generator = checks.check_assert_empty(
-            logical_line, filename)
+        generator = checks.check_assert_empty(logical_line, filename)
 
         self.assertEqual(0, next(generator)[0])
 
@@ -124,8 +121,7 @@ class TestHacking(base.TestCase):
         logical_line = "self.assertEqual([], measured)"
         filename = "radloggerpy/tests/bar.py"
 
-        generator = checks.check_assert_empty(
-            logical_line, filename)
+        generator = checks.check_assert_empty(logical_line, filename)
 
         self.assertRaises(StopIteration, next, generator)
 
@@ -133,8 +129,7 @@ class TestHacking(base.TestCase):
         logical_line = "assertEqual(False, observed)"
         filename = "radloggerpy/tests/bar.py"
 
-        generator = checks.check_assert_false(
-            logical_line, filename)
+        generator = checks.check_assert_false(logical_line, filename)
 
         self.assertEqual(0, next(generator)[0])
 
@@ -142,8 +137,7 @@ class TestHacking(base.TestCase):
         logical_line = "assertFalse(observed)"
         filename = "radloggerpy/tests/bar.py"
 
-        generator = checks.check_assert_false(
-            logical_line, filename)
+        generator = checks.check_assert_false(logical_line, filename)
 
         self.assertRaises(StopIteration, next, generator)
 
@@ -151,8 +145,7 @@ class TestHacking(base.TestCase):
         logical_line = "assertEqual(True, observed)"
         filename = "radloggerpy/tests/bar.py"
 
-        generator = checks.check_assert_true(
-            logical_line, filename)
+        generator = checks.check_assert_true(logical_line, filename)
 
         self.assertEqual(0, next(generator)[0])
 
@@ -160,8 +153,7 @@ class TestHacking(base.TestCase):
         logical_line = "assertTrue(observed)"
         filename = "radloggerpy/tests/bar.py"
 
-        generator = checks.check_assert_false(
-            logical_line, filename)
+        generator = checks.check_assert_false(logical_line, filename)
 
         self.assertRaises(StopIteration, next, generator)
 
@@ -211,8 +203,7 @@ class TestHacking(base.TestCase):
         logical_line = "m_mocked.asserthascalled(1, 2)"
         filename = "radloggerpy/tests/bar.py"
 
-        generator = checks.check_assert_called_once_with(
-            logical_line, filename)
+        generator = checks.check_assert_called_once_with(logical_line, filename)
 
         self.assertEqual(0, next(generator)[0])
 
@@ -220,8 +211,7 @@ class TestHacking(base.TestCase):
         logical_line = "m_mocked.calledoncewith(1, 2)"
         filename = "radloggerpy/tests/bar.py"
 
-        generator = checks.check_assert_called_once_with(
-            logical_line, filename)
+        generator = checks.check_assert_called_once_with(logical_line, filename)
 
         self.assertEqual(0, next(generator)[0])
 
@@ -229,8 +219,7 @@ class TestHacking(base.TestCase):
         logical_line = "m_mocked.assert_called_once_with(1, 2)"
         filename = "radloggerpy/tests/bar.py"
 
-        generator = checks.check_assert_called_once_with(
-            logical_line, filename)
+        generator = checks.check_assert_called_once_with(logical_line, filename)
 
         self.assertRaises(StopIteration, next, generator)
 
@@ -238,8 +227,7 @@ class TestHacking(base.TestCase):
         logical_line = "LOG.debug(_('Shikato ga nai~'))"
         filename = "radloggerpy/tests/bar.py"
 
-        generator = checks.no_translate_debug_logs(
-            logical_line, filename)
+        generator = checks.no_translate_debug_logs(logical_line, filename)
 
         self.assertEqual(0, next(generator)[0])
 
@@ -247,7 +235,6 @@ class TestHacking(base.TestCase):
         logical_line = "LOG.warning(_('Shikato ga nai~'))"
         filename = "radloggerpy/tests/bar.py"
 
-        generator = checks.no_translate_debug_logs(
-            logical_line, filename)
+        generator = checks.no_translate_debug_logs(logical_line, filename)
 
         self.assertRaises(StopIteration, next, generator)

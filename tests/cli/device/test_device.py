@@ -20,9 +20,7 @@ from tests import base
 
 
 class TestDeviceCommand(base.TestCase):
-
     class DevCommandExp(device.DeviceCommand):
-
         _arguments = None
 
         @property
@@ -40,6 +38,6 @@ class TestDeviceCommand(base.TestCase):
         dev_command._add_interfaces()
 
         self.assertItemsEqual(
-            INTERFACE_CHOICES.values(), dev_command.arguments[
-                '--interface'].kwargs()['choices']
+            INTERFACE_CHOICES.values(),
+            dev_command.arguments["--interface"].kwargs()["choices"],
         )

@@ -18,7 +18,6 @@ from radloggerpy.models import base
 
 
 class TimeStamp(base.BaseModel):
-
     _timestamp = 0
 
     def __init__(self):

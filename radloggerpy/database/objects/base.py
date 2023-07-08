@@ -88,12 +88,16 @@ class DatabaseObject(metaclass=abc.ABCMeta):
         """
 
         if ignore:
-            LOG.warning(_("Use of deprecated ignore parameter on database "
-                          "object filter!"))
+            LOG.warning(
+                _("Use of deprecated ignore parameter on database " "object filter!")
+            )
 
-        return {key: name for (key, name) in vars(filter_object).items()
-                if hasattr(filter_object.__class__, key) and
-                (key not in ignore or (seq_but_not_str(key and key)))}
+        return {
+            key: name
+            for (key, name) in vars(filter_object).items()
+            if hasattr(filter_object.__class__, key)
+            and (key not in ignore or (seq_but_not_str(key and key)))
+        }
 
     @staticmethod
     @abc.abstractmethod

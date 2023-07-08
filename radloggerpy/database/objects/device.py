@@ -15,6 +15,7 @@
 
 from radloggerpy.database.models.device import Device
 from radloggerpy.database.objects.base import DatabaseObject
+
 # from radloggerpy.database.objects.serial_device import SerialDeviceObject
 from radloggerpy.types.device_interfaces import INTERFACE_CHOICES
 from radloggerpy.types.device_types import DEVICE_TYPE_CHOICES
@@ -163,8 +164,7 @@ class DeviceObject(DatabaseObject):
 
     @staticmethod
     def find_enabled(session):
-        return DeviceObject.find(
-            session, DeviceObject(**{'enabled': True}), True)
+        return DeviceObject.find(session, DeviceObject(**{"enabled": True}), True)
 
     # @staticmethod
     # def upgrade(session, reference):

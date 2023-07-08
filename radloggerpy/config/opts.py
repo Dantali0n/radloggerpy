@@ -42,9 +42,10 @@ def list_opts():
     """
     opts = list()
     package_path = os.path.dirname(os.path.abspath(__file__))
-    module_names = list_module_names(package_path, ['opts'])
+    module_names = list_module_names(package_path, ["opts"])
     imported_modules = import_modules(
-        module_names, 'radloggerpy.config', LIST_OPTS_FUNC_NAME)
+        module_names, "radloggerpy.config", LIST_OPTS_FUNC_NAME
+    )
     for mod in imported_modules:
         opts.extend(mod.list_opts())
     return opts

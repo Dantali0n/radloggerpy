@@ -28,25 +28,18 @@ CONF = config.CONF
 
 
 class TestFirstTimeRun(base.TestCase):
-
     def setUp(self):
         super(TestFirstTimeRun, self).setUp()
 
-        self.p_tsk = mock.patch.object(
-            FirstTimeRun, '_tasks',
-            new=list())
+        self.p_tsk = mock.patch.object(FirstTimeRun, "_tasks", new=list())
         self.m_tasks = self.p_tsk.start()
         self.addCleanup(self.p_tsk.stop)
 
-        self.p_chk = mock.patch.object(
-            FirstTimeRun, '_checks',
-            new=list())
+        self.p_chk = mock.patch.object(FirstTimeRun, "_checks", new=list())
         self.m_checks = self.p_chk.start()
         self.addCleanup(self.p_chk.stop)
 
-        self.p_chk_tsk = mock.patch.object(
-            FirstTimeRun, '_check_tasks',
-            new=list())
+        self.p_chk_tsk = mock.patch.object(FirstTimeRun, "_check_tasks", new=list())
         self.m_check_tasks = self.p_chk_tsk.start()
         self.addCleanup(self.p_chk_tsk.stop)
 
@@ -87,21 +80,21 @@ class TestFirstTimeRun(base.TestCase):
 
         self.assertEqual(1, len(FirstTimeRun._check_tasks))
 
-    @mock.patch.object(first_time_run, 'LOG')
+    @mock.patch.object(first_time_run, "LOG")
     def test_add_check_task_fake_check(self, m_log):
         FirstTimeRun.add_check_task(True, self.fake_task)
 
         self.assertEqual(0, len(FirstTimeRun._check_tasks))
         m_log.warning.assert_called_once()
 
-    @mock.patch.object(first_time_run, 'LOG')
+    @mock.patch.object(first_time_run, "LOG")
     def test_add_check_task_fake_task(self, m_log):
         FirstTimeRun.add_check_task(self.fake_check_true, True)
 
         self.assertEqual(0, len(FirstTimeRun._check_tasks))
         m_log.warning.assert_called_once()
 
-    @mock.patch.object(first_time_run, 'LOG')
+    @mock.patch.object(first_time_run, "LOG")
     def test_run_checks_error(self, m_log):
         m_run = FirstTimeRun()
         m_run._checks.append(True)
@@ -148,7 +141,7 @@ class TestFirstTimeRun(base.TestCase):
 
         m_method.assert_called_once()
 
-    @mock.patch.object(first_time_run, 'LOG')
+    @mock.patch.object(first_time_run, "LOG")
     def test_run_tasks_error(self, m_log):
         # Crate a mocked method
         m_method = mock.Mock()
@@ -177,7 +170,7 @@ class TestFirstTimeRun(base.TestCase):
 
         m_method.assert_called_once()
 
-    @mock.patch.object(first_time_run, 'LOG')
+    @mock.patch.object(first_time_run, "LOG")
     def test_run_check_tasks_except_check(self, m_log):
         m_run = FirstTimeRun()
 
@@ -188,7 +181,7 @@ class TestFirstTimeRun(base.TestCase):
 
         m_log.error.assert_called_once()
 
-    @mock.patch.object(first_time_run, 'LOG')
+    @mock.patch.object(first_time_run, "LOG")
     def test_run_check_tasks_except_task(self, m_log):
         # Crate a mocked method
         m_method = mock.Mock()

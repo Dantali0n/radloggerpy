@@ -20,4 +20,4 @@
 # IMPLEMENTATION_CHOICES = [(imp.NAME, imp.NAME.lower()) for imp in
 #                          Dm.get_device_implementations()]
 
-IMPLEMENTATION_CHOICES = [('ArduinoGeigerPCB', 'arduinogeigerpcb')]
+IMPLEMENTATION_CHOICES = [("ArduinoGeigerPCB", "arduinogeigerpcb")]

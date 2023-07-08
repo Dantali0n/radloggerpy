@@ -33,7 +33,6 @@ CONF = config.CONF
 
 
 class TestDevice(base.TestCase):
-
     class FakeDevice(Device):
         """Fake class to implement device for testing"""
 

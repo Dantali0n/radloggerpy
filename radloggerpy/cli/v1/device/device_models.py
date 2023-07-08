@@ -22,7 +22,7 @@ class DeviceModels(Lister):
     """Command to list available device interfaces and implementations"""
 
     def take_action(self, parsed_args):
-        columns = ("interface", 'implementation')
+        columns = ("interface", "implementation")
 
         # Convert data from device_map
         map = DeviceManager.get_device_map()

@@ -36,10 +36,9 @@ def _list_tables():
     # create module_name and expected class tuples from list_module_names
     # if the module file is account_types the expected class is AccountTypes.
     for module_name in list_module_names(models.__path__[0]):
-        modules.append((module_name, module_name.title().replace('_', '')))
+        modules.append((module_name, module_name.title().replace("_", "")))
 
-    imported_modules = import_modules(
-        modules, models.__name__, fetch_attribute=True)
+    imported_modules = import_modules(modules, models.__name__, fetch_attribute=True)
     for module, attribute in imported_modules:
         # Access the modules class and subsequent __table__
         tables.append(getattr(module, attribute).__table__)

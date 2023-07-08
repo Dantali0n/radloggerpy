@@ -57,22 +57,19 @@ class SerialDeviceObject(DeviceObject):
             self.m_serial_device.bytesize = self.bytesize
         elif self.bytesize in BYTESIZE_CHOICES.values():
             index = list(BYTESIZE_CHOICES.values()).index(self.bytesize)
-            self.m_serial_device.bytesize = \
-                list(BYTESIZE_CHOICES.keys())[index]
+            self.m_serial_device.bytesize = list(BYTESIZE_CHOICES.keys())[index]
 
         if self.parity in PARITY_CHOICES.keys():
             self.m_serial_device.parity = self.parity
         elif self.parity in PARITY_CHOICES.values():
             index = list(PARITY_CHOICES.values()).index(self.parity)
-            self.m_serial_device.parity = \
-                list(PARITY_CHOICES.keys())[index]
+            self.m_serial_device.parity = list(PARITY_CHOICES.keys())[index]
 
         if self.stopbits in STOPBIT_CHOICES.keys():
             self.m_serial_device.stopbits = self.stopbits
         elif self.stopbits in STOPBIT_CHOICES.values():
             index = list(STOPBIT_CHOICES.values()).index(self.stopbits)
-            self.m_serial_device.stopbits = \
-                list(STOPBIT_CHOICES.keys())[index]
+            self.m_serial_device.stopbits = list(STOPBIT_CHOICES.keys())[index]
 
         if self.timeout:
             self.m_serial_device.timeout = self.timeout
@@ -133,14 +130,18 @@ class SerialDeviceObject(DeviceObject):
         base_filters = reference._filter(reference.m_device)
 
         """Check if reference is base or child type when setting filters"""
-        if hasattr(reference, 'm_serial_device'):
+        if hasattr(reference, "m_serial_device"):
             filters = reference._filter(reference.m_serial_device)
         else:
             LOG.warning(_("Reference should be of type SerialDeviceObject"))
             filters = {}
 
-        query = session.query(Device).filter_by(**base_filters)\
-            .join(SerialDevice).filter_by(**filters)
+        query = (
+            session.query(Device)
+            .filter_by(**base_filters)
+            .join(SerialDevice)
+            .filter_by(**filters)
+        )
 
         if allow_multiple:
             results = query.all()
@@ -172,7 +173,8 @@ class SerialDeviceObject(DeviceObject):
     @staticmethod
     def find_enabled(session):
         return SerialDeviceObject.find(
-            session, SerialDeviceObject(**{'enabled': True}), True)
+            session, SerialDeviceObject(**{"enabled": True}), True
+        )
 
     @staticmethod
     def find_all(session, references):

@@ -31,7 +31,6 @@ CONF = config.CONF
 
 
 class TestArduinoGeigerPcb(base.TestCase):
-
     def setUp(self):
         super(TestArduinoGeigerPcb, self).setUp()
         self.m_info = SerialDeviceObject()
@@ -42,13 +41,13 @@ class TestArduinoGeigerPcb(base.TestCase):
         m_device = agpcb.ArduinoGeigerPcb(self.m_info, self.m_condition)
         self.assertEqual(agpcb.ArduinoGeigerPcb.NAME, m_device.NAME)
 
-    @mock.patch.object(agpcb, 'serial')
-    @mock.patch.object(agpcb, 'time')
+    @mock.patch.object(agpcb, "serial")
+    @mock.patch.object(agpcb, "time")
     def test_run(self, m_time, m_serial):
         m_time.sleep.side_effect = [InterruptedError]
         m_waiting = mock.Mock()
         m_waiting.inWaiting.side_effect = [1, 0]
-        m_waiting.read.return_value.decode.return_value = 'a'
+        m_waiting.read.return_value.decode.return_value = "a"
         m_serial.Serial.return_value = m_waiting
         m_device = agpcb.ArduinoGeigerPcb(self.m_info, self.m_condition)
 

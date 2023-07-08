@@ -42,18 +42,29 @@ class DeviceList(Lister, DeviceCommand):
         args = dict(parsed_args._get_kwargs())
         device_obj = DeviceObject(**args)
 
-        data = DeviceObject.find(
-            self.app.database_session, device_obj, True)
+        data = DeviceObject.find(self.app.database_session, device_obj, True)
 
         if len(data) == 0:
             raise RuntimeWarning(_("No devices found"))
 
-        fields = ('id', 'enabled', 'name', 'measurement type', 'interface',
-                  'implementation')
+        fields = (
+            "id",
+            "enabled",
+            "name",
+            "measurement type",
+            "interface",
+            "implementation",
+        )
         values = []
         for result in data:
-            value = (result.id, result.enabled, result.name, result.type,
-                     result.interface, result.implementation)
+            value = (
+                result.id,
+                result.enabled,
+                result.name,
+                result.type,
+                result.interface,
+                result.implementation,
+            )
             values.append(value)
 
         return [fields, values]

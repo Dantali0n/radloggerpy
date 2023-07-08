@@ -27,7 +27,6 @@ from tests import base
 
 
 class TestDeviceList(base.TestCase):
-
     def setUp(self):
         super(TestDeviceList, self).setUp()
 
@@ -35,30 +34,28 @@ class TestDeviceList(base.TestCase):
         bases = copy(mc.MeasurementList.__bases__)
         f_bases = tuple(base for base in bases if base != Lister)
 
-        m_base = mock.patch.object(
-            mc.MeasurementList, '__bases__', f_bases)
+        m_base = mock.patch.object(mc.MeasurementList, "__bases__", f_bases)
         with m_base:
             m_base.is_local = True
             t_device = mc.MeasurementList()
             t_device.register_arguments(mock.Mock())
 
-            self.assertTrue('--device' in t_device._arguments.keys())
-            self.assertTrue('--name' in t_device._arguments.keys())
+            self.assertTrue("--device" in t_device._arguments.keys())
+            self.assertTrue("--name" in t_device._arguments.keys())
 
         # ensure that is_local on the patch does not modify the actual bases
         self.assertEqual(bases, mc.MeasurementList.__bases__)
 
-    @mock.patch.object(mc, 'super')
+    @mock.patch.object(mc, "super")
     def test_arguments(self, m_super):
         m_super.return_value = mock.Mock(
-            arguments={'--device': Argument(), '--name': Argument()}
+            arguments={"--device": Argument(), "--name": Argument()}
         )
 
         bases = copy(mc.MeasurementList.__bases__)
         f_bases = tuple(base for base in bases if base != Lister)
 
-        m_base = mock.patch.object(
-            mc.MeasurementList, '__bases__', f_bases)
+        m_base = mock.patch.object(mc.MeasurementList, "__bases__", f_bases)
         with m_base:
             m_base.is_local = True
             t_device = mc.MeasurementList()
@@ -66,15 +63,14 @@ class TestDeviceList(base.TestCase):
 
             m_super.assert_called_once()
 
-            self.assertTrue('--device' in t_device.arguments.keys())
-            self.assertTrue('--name' in t_device.arguments.keys())
+            self.assertTrue("--device" in t_device.arguments.keys())
+            self.assertTrue("--name" in t_device.arguments.keys())
 
         # ensure that is_local on the patch does not modify the actual bases
         self.assertEqual(bases, mc.MeasurementList.__bases__)
 
-    @mock.patch.object(mc, 'super')
+    @mock.patch.object(mc, "super")
     def test_parser(self, m_super):
-
         m_parser = mock.Mock()
         m_super.return_value.get_parser.return_value = m_parser
 
@@ -82,8 +78,7 @@ class TestDeviceList(base.TestCase):
         bases = copy(mc.MeasurementList.__bases__)
         f_bases = tuple(base for base in bases if base != Lister)
 
-        m_base = mock.patch.object(
-            mc.MeasurementList, '__bases__', f_bases)
+        m_base = mock.patch.object(mc.MeasurementList, "__bases__", f_bases)
         with m_base:
             m_base.is_local = True
             t_device = mc.MeasurementList()
@@ -102,9 +97,8 @@ class TestDeviceList(base.TestCase):
         # ensure that is_local on the patch does not modify the actual bases
         self.assertEqual(bases, mc.MeasurementList.__bases__)
 
-    @mock.patch.object(mc, 'MeasurementObject')
+    @mock.patch.object(mc, "MeasurementObject")
     def test_take_action(self, m_dev_obj):
-
         # remove ShowOne from the DeviceShow inheritance
         bases = copy(mc.MeasurementList.__bases__)
         f_bases = tuple(base for base in bases if base != Lister)
@@ -117,12 +111,11 @@ class TestDeviceList(base.TestCase):
         m_mod_dev.timestamp = datetime.utcnow()
         m_mod_dev.cpm = 12
         m_mod_dev.svh = 0.12
-        m_mod_dev.device = DeviceObject(**{'id': 1})
+        m_mod_dev.device = DeviceObject(**{"id": 1})
 
         m_dev_obj.find.return_value = [m_mod_dev]
 
-        m_base = mock.patch.object(
-            mc.MeasurementList, '__bases__', f_bases)
+        m_base = mock.patch.object(mc.MeasurementList, "__bases__", f_bases)
         with m_base:
             m_base.is_local = True
             t_device = mc.MeasurementList()
@@ -139,24 +132,22 @@ class TestDeviceList(base.TestCase):
         # ensure that is_local on the patch does not modify the actual bases
         self.assertEqual(bases, mc.MeasurementList.__bases__)
 
-    @mock.patch.object(mc, 'DeviceObject')
-    @mock.patch.object(mc, 'MeasurementObject')
+    @mock.patch.object(mc, "DeviceObject")
+    @mock.patch.object(mc, "MeasurementObject")
     def test_take_action_device(self, m_dev_obj, m_obj):
-
         # remove ShowOne from the DeviceShow inheritance
         bases = copy(mc.MeasurementList.__bases__)
         f_bases = tuple(base for base in bases if base != Lister)
 
         m_args = mock.Mock()
-        m_args._get_kwargs.return_value = {'device': 1, 'name': 'test'}
+        m_args._get_kwargs.return_value = {"device": 1, "name": "test"}
 
         m_mock = mock.Mock()
         m_obj.return_value = m_mock
 
         m_dev_obj.find.return_value = [mock.Mock()]
 
-        m_base = mock.patch.object(
-            mc.MeasurementList, '__bases__', f_bases)
+        m_base = mock.patch.object(mc.MeasurementList, "__bases__", f_bases)
         with m_base:
             m_base.is_local = True
             t_device = mc.MeasurementList()
@@ -164,14 +155,13 @@ class TestDeviceList(base.TestCase):
             t_device.app = mock.Mock()
 
             t_device.take_action(m_args)
-            m_dev_obj.assert_called_once_with(**{'device': m_mock})
+            m_dev_obj.assert_called_once_with(**{"device": m_mock})
 
         # ensure that is_local on the patch does not modify the actual bases
         self.assertEqual(bases, mc.MeasurementList.__bases__)
 
-    @mock.patch.object(mc, 'MeasurementObject')
+    @mock.patch.object(mc, "MeasurementObject")
     def test_take_action_none(self, m_dev_obj):
-
         # remove ShowOne from the DeviceShow inheritance
         bases = copy(mc.MeasurementList.__bases__)
         f_bases = tuple(base for base in bases if base != Lister)
@@ -181,8 +171,7 @@ class TestDeviceList(base.TestCase):
 
         m_dev_obj.find.return_value = []
 
-        m_base = mock.patch.object(
-            mc.MeasurementList, '__bases__', f_bases)
+        m_base = mock.patch.object(mc.MeasurementList, "__bases__", f_bases)
         with m_base:
             m_base.is_local = True
             t_device = mc.MeasurementList()

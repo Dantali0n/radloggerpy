@@ -35,11 +35,10 @@ CONF = config.CONF
 
 
 class TestDeviceManager(base.TestCase):
-
     def setUp(self):
         super(TestDeviceManager, self).setUp()
 
-    @mock.patch.object(multiprocessing, 'cpu_count')
+    @mock.patch.object(multiprocessing, "cpu_count")
     def test_num_processors(self, m_cpu):
         m_cpu.return_value = 2
 
@@ -47,22 +46,21 @@ class TestDeviceManager(base.TestCase):
 
         m_cpu.assert_called_once_with()
 
-    @mock.patch.object(dm, 'futurist')
+    @mock.patch.object(dm, "futurist")
     def test_conf_workers(self, m_futurist):
         CONF.devices.concurrent_worker_amount = 2
 
         self.m_dmanager = dm.DeviceManager()
 
-        m_futurist.ThreadPoolExecutor.\
-            assert_called_once_with(max_workers=2)
+        m_futurist.ThreadPoolExecutor.assert_called_once_with(max_workers=2)
 
-    @mock.patch.object(dm, 'import_modules')
-    @mock.patch.object(dm, 'list_module_names')
+    @mock.patch.object(dm, "import_modules")
+    @mock.patch.object(dm, "list_module_names")
     def test_get_device_module(self, m_list_names, m_import):
-        m_path = 'path'
-        m_package = 'package'
-        m_name = 'test'
-        m_class = 'Test'
+        m_path = "path"
+        m_package = "package"
+        m_name = "test"
+        m_class = "Test"
 
         m_module = mock.Mock(__path__=[m_path], __name__=m_package)
 
@@ -75,18 +73,19 @@ class TestDeviceManager(base.TestCase):
 
         m_list_names.assert_called_once_with(m_path)
         m_import.assert_called_once_with(
-            [(m_name, m_class)], m_package, fetch_attribute=True)
+            [(m_name, m_class)], m_package, fetch_attribute=True
+        )
 
         self.assertEqual([True], result)
 
-    @mock.patch.object(dm.DeviceManager, '_get_device_module')
+    @mock.patch.object(dm.DeviceManager, "_get_device_module")
     def test_get_device_interfaces(self, m_get_device_module):
         """Assert get_device_interfaces called with correct module"""
         dm.DeviceManager.get_device_interfaces()
 
         m_get_device_module.assert_called_once_with(di)
 
-    @mock.patch.object(dm.DeviceManager, '_get_device_module')
+    @mock.patch.object(dm.DeviceManager, "_get_device_module")
     def test_get_device_implementations(self, m_get_device_module):
         """Assert get_device_implementations called with correct module"""
         dm.DeviceManager.get_device_implementations()
@@ -116,7 +115,7 @@ class TestDeviceManager(base.TestCase):
         # This will break once an implementation supports multiple interfaces!
         self.assertEqual(num_choices, len(IMPLEMENTATION_CHOICES))
 
-    @mock.patch.object(dm.DeviceManager, 'get_device_map')
+    @mock.patch.object(dm.DeviceManager, "get_device_map")
     def test_get_device_class(self, m_get_device_map):
         """Ensure class can be found for instances of DeviceObject
 
@@ -127,17 +126,14 @@ class TestDeviceManager(base.TestCase):
 
         m_class = mock.Mock(NAME="test")
         m_get_device_map.return_value = {
-            DeviceInterfaces.SERIAL: [
-                m_class,
-                mock.Mock(NAME="different")
-            ]
+            DeviceInterfaces.SERIAL: [m_class, mock.Mock(NAME="different")]
         }
 
         # Create actual DeviceObject instead of mock as to not upset type
         # hinting.
         args = {
-            "implementation": 'test',
-            "interface": INTERFACE_CHOICES[DeviceInterfaces.SERIAL]
+            "implementation": "test",
+            "interface": INTERFACE_CHOICES[DeviceInterfaces.SERIAL],
         }
         m_obj = DeviceObject(**args)
 

@@ -24,6 +24,5 @@ CONF = config.CONF
 
 
 class DatabaseIntegrationBase(base.TestCase):
-
     def setUp(self):
         super(DatabaseIntegrationBase, self).setUp()

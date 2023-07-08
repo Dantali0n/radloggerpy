@@ -20,7 +20,6 @@ from tests import base
 
 
 class TestBaseModel(base.TestCase):
-
     def test_no_instance_attributes(self):
         """Test that the class has no instance variables"""
 

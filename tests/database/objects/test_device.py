@@ -31,12 +31,10 @@ CONF = config.CONF
 
 
 class TestDeviceObject(base.TestCase):
-
     def setUp(self):
         super(TestDeviceObject, self).setUp()
 
     def test_init(self):
-
         m_atribs = {
             "name": "value1",
             "attributeskip": "none",
@@ -48,7 +46,6 @@ class TestDeviceObject(base.TestCase):
         self.assertIsNone(None, getattr(test_obj, "attributeskip", None))
 
     def test_filter(self):
-
         m_atribs = {
             "name": "value1",
             "attributeskip": "none",
@@ -58,11 +55,9 @@ class TestDeviceObject(base.TestCase):
 
         m_result = test_obj._filter(test_obj)
 
-        self.assertEqual(
-            {"name": "value1"}, m_result)
+        self.assertEqual({"name": "value1"}, m_result)
 
     def test_build_object_unset(self):
-
         test_obj = DeviceObject()
         test_obj._build_object()
 
@@ -72,7 +67,6 @@ class TestDeviceObject(base.TestCase):
         self.assertIsNone(None, test_obj.m_device.implementation)
 
     def test_build_object_values(self):
-
         m_atribs = {
             "id": 1,
             "name": "value1",
@@ -88,7 +82,6 @@ class TestDeviceObject(base.TestCase):
         self.assertEqual(DeviceInterfaces.SERIAL, test_obj.m_device.interface)
 
     def test_build_object_keys(self):
-
         m_atribs = {
             "id": 2,
             "name": "value2",
@@ -104,7 +97,6 @@ class TestDeviceObject(base.TestCase):
         self.assertEqual(DeviceInterfaces.SERIAL, test_obj.m_device.interface)
 
     def test_build_attributes_none(self):
-
         test_obj = DeviceObject()
         test_obj.m_device = Device()
         test_obj._build_attributes()
@@ -131,7 +123,8 @@ class TestDeviceObject(base.TestCase):
         m_device.name = "test1"
         m_device.interface = DeviceInterfaces.SERIAL
         m_device.implementation = mock.Mock(
-            code="ArduinoGeigerPCB", value="arduinogeigerpcb")
+            code="ArduinoGeigerPCB", value="arduinogeigerpcb"
+        )
 
         m_session.query.return_value.filter_by.return_value = m_query
         m_query.one_or_none.return_value = m_device
@@ -143,7 +136,7 @@ class TestDeviceObject(base.TestCase):
             [
                 mock.call(m_device),
             ],
-            any_order=True
+            any_order=True,
         )
         m_session.commit.assert_called_once()
 
@@ -164,7 +157,8 @@ class TestDeviceObject(base.TestCase):
         m_device.name = "test1"
         m_device.interface = DeviceInterfaces.SERIAL
         m_device.implementation = mock.Mock(
-            code="ArduinoGeigerPCB", value="arduinogeigerpcb")
+            code="ArduinoGeigerPCB", value="arduinogeigerpcb"
+        )
 
         m_session.query.return_value.filter_by.return_value = m_query
         m_query.one_or_none.return_value = None
@@ -192,7 +186,8 @@ class TestDeviceObject(base.TestCase):
         m_device.name = "test1"
         m_device.interface = DeviceInterfaces.SERIAL
         m_device.implementation = mock.Mock(
-            code="ArduinoGeigerPCB", value="arduinogeigerpcb")
+            code="ArduinoGeigerPCB", value="arduinogeigerpcb"
+        )
 
         m_session.query.return_value.filter_by.return_value = m_query
         m_query.one_or_none.return_value = m_device
@@ -200,14 +195,13 @@ class TestDeviceObject(base.TestCase):
         m_session.commit.side_effect = RuntimeWarning
 
         test_obj = DeviceObject(**m_atribs)
-        self.assertRaises(
-            RuntimeWarning, DeviceObject.delete, m_session, test_obj)
+        self.assertRaises(RuntimeWarning, DeviceObject.delete, m_session, test_obj)
 
         m_session.delete.assert_has_calls(
             [
                 mock.call(m_device),
             ],
-            any_order=True
+            any_order=True,
         )
         m_session.commit.assert_called_once()
         m_session.rollback.assert_called_once()
@@ -229,7 +223,8 @@ class TestDeviceObject(base.TestCase):
         m_device.name = "test1"
         m_device.interface = DeviceInterfaces.SERIAL
         m_device.implementation = mock.Mock(
-            code="ArduinoGeigerPCB", value="arduinogeigerpcb")
+            code="ArduinoGeigerPCB", value="arduinogeigerpcb"
+        )
 
         m_session.query.return_value.filter_by.return_value = m_query
         m_query.all.return_value = [m_device]
@@ -241,19 +236,19 @@ class TestDeviceObject(base.TestCase):
             [
                 mock.call(m_device),
             ],
-            any_order=True
+            any_order=True,
         )
         m_session.commit.assert_called_once()
 
     def test_find_obj(self):
-
-        """Represents mocked device as it will be retrieved from db """
+        """Represents mocked device as it will be retrieved from db"""
         m_device = Device()
         m_device.id = 1
         m_device.name = "test"
         m_device.interface = DeviceInterfaces.SERIAL
         m_device.implementation = mock.Mock(
-            code="ArduinoGeigerPCB", value="arduinogeigerpcb")
+            code="ArduinoGeigerPCB", value="arduinogeigerpcb"
+        )
 
         """Setup query and session to return mocked device"""
         m_query = mock.Mock()
@@ -294,13 +289,15 @@ class TestDeviceObject(base.TestCase):
         m_device1.name = "test1"
         m_device1.interface = DeviceInterfaces.SERIAL
         m_device1.implementation = mock.Mock(
-            code="ArduinoGeigerPCB", value="arduinogeigerpcb")
+            code="ArduinoGeigerPCB", value="arduinogeigerpcb"
+        )
 
         m_device2.id = 2
         m_device2.name = "test2"
         m_device2.interface = DeviceInterfaces.SERIAL
         m_device2.implementation = mock.Mock(
-            code="ArduinoGeigerPCB", value="arduinogeigerpcb")
+            code="ArduinoGeigerPCB", value="arduinogeigerpcb"
+        )
 
         test_obj = DeviceObject(**{"interface": "serial"})
         result_obj = DeviceObject.find(m_session, test_obj, True)

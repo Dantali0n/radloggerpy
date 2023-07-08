@@ -21,7 +21,6 @@ from tests import base
 
 
 class TestRadiationReadingModel(base.TestCase):
-
     def setUp(self):
         super(TestRadiationReadingModel, self).setUp()
 
@@ -31,14 +30,13 @@ class TestRadiationReadingModel(base.TestCase):
         """Test that the class has no instance variables"""
 
         test = radiationreading.RadiationReading()
-        self.assertEqual(
-            len(dir(radiationreading.RadiationReading)), len(dir(test)))
+        self.assertEqual(len(dir(radiationreading.RadiationReading)), len(dir(test)))
 
     def test_set_get(self):
         self.m_radiation_reading.set_cpm(24)
         self.assertEqual(24, self.m_radiation_reading.get_cpm())
 
-    @mock.patch.object(radiationreading, 'LOG')
+    @mock.patch.object(radiationreading, "LOG")
     def test_set_invalid(self, m_log):
         """Set cpm to an invalid value and check it stays unchanged and logs"""
 

@@ -19,6 +19,7 @@ from enum import unique
 @unique
 class SerialBytesizeTypes(Enum):
     """Enum listing all possible supported types of serial byte sizes"""
+
     FIVEBITS = 5
     SIXBITS = 6
     SEVENBITS = 7

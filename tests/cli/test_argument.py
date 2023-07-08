@@ -19,12 +19,11 @@ from tests import base
 
 
 class TestArgument(base.TestCase):
-
     def setUp(self):
         super(TestArgument, self).setUp()
 
     def test_construct_args(self):
-        arg = Argument('-t')
+        arg = Argument("-t")
 
         self.assertEqual(1, len(arg.args()))
         self.assertEqual(("-t",), arg.args())
