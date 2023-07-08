@@ -13,11 +13,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+
 import oslo_i18n
+
+from radloggerpy import __package_folder__ as package_folder
 
 # The domain is the name of the App which is used to generate the folder
 # containing the translation files (i.e. the .pot file and the various locales)
-DOMAIN = "radloggerpy"
+DOMAIN = package_folder
 
 _translators = oslo_i18n.TranslatorFactory(domain=DOMAIN)
 

@@ -22,7 +22,7 @@ from radloggerpy import __version__
 from radloggerpy._i18n import _
 from radloggerpy.common import ascii_logo
 from radloggerpy.common.first_time_run import FirstTimeRun
-from radloggerpy.config.config import parse_args
+from radloggerpy.config.config import setup_config_and_logging
 from radloggerpy.database import database_manager as dm
 
 CONF = config.CONF
@@ -46,7 +46,7 @@ class RadLoggerShell(app.App):
 
     def initialize_app(self, argv):
         # update configuration (sets CONF.version amongst others)
-        parse_args(argv=())
+        setup_config_and_logging(argv=argv, conf=config.CONF)
 
         # Display logo
         self.LOG.info(ascii_logo.TEXT + ascii_logo.LOGO)

@@ -25,7 +25,7 @@ class ConfFixture(conf_fixture.Config):
 
     def setUp(self):
         super().setUp()
-        config.parse_args([], default_config_files=[])
+        config.parse_config_args([], default_config_files=[])
 
 
 class ConfReloadFixture(ConfFixture):
