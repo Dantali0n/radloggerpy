@@ -63,7 +63,16 @@ coverage:
   script:
     - pip install codecov
     - tox -e coverage
-    - codecov
+    - codecov -f coverage.xml
+  coverage: '/(?i)total.*? (100(?:\.0+)?\%|[1-9]?\d(?:\.\d+)?\%)$/'
+  artifacts:
+    reports:
+      coverage_report:
+        coverage_format: cobertura
+        path: coverage.xml
+    paths:
+      - htmlcov/*
+    expire_in: 7 days
 docs:
   stage: documents
   script:
