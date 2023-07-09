@@ -14,6 +14,8 @@
 # limitations under the License.
 #
 
+import gettext
+
 import oslo_i18n
 
 from radloggerpy import __package_folder__ as package_folder
@@ -38,6 +40,10 @@ oslo_i18n.enable_lazy()
 
 def translate(value, user_locale):
     return oslo_i18n.translate(value, user_locale)
+
+
+def has_translation_files() -> bool:
+    return gettext.find(package_folder)
 
 
 def get_available_languages():

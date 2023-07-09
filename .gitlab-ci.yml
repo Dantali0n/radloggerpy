@@ -62,7 +62,7 @@ coverage:
   stage: coverage
   script:
     - pip install codecov
-    - tox -e cover
+    - tox -e coverage
     - codecov
 docs:
   stage: documents
