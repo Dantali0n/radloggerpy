@@ -37,7 +37,7 @@ unit_test_py38:
   stage: unit-tests
   image: python:3.8-buster
   script:
-    - tox -e py37
+    - tox -e py38
 unit_test_py39:
   stage: unit-tests
   image: python:3.9-buster
@@ -57,7 +57,7 @@ lower_constraints:
   stage: unit-tests
   image: python:3.8-buster
   script:
-    - tox -e lower-constraints
+    - tox -e py38-lower-constraints
 coverage:
   stage: coverage
   script:
