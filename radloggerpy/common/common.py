@@ -1,3 +1,6 @@
+# Copyright (C) 2019 Dantali0n
+# SPDX-License-Identifier: Apache-2.0
+
 from collections.abc import Sequence
 
 
