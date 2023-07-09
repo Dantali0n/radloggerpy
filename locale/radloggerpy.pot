@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2023-07-07 21:25+0200\n"
+"POT-Creation-Date: 2023-07-09 16:17+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,28 +17,28 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.12.1\n"
 
-#: radloggerpy/radloggerpy.py:46
+#: radloggerpy/radloggerpy.py:47
 #, python-format
 msgid "Starting RadLoggerPy service on PID %s"
 msgstr ""
 
-#: radloggerpy/cli/radlogger_shell.py:60
+#: radloggerpy/cli/radlogger_shell.py:58
 #, python-format
 msgid "Initializing radloggercli %s"
 msgstr ""
 
-#: radloggerpy/cli/radlogger_shell.py:74
+#: radloggerpy/cli/radlogger_shell.py:72
 #, python-format
 msgid "Exception raised: %s"
 msgstr ""
 
-#: radloggerpy/cli/v1/device/device_helper.py:33
+#: radloggerpy/cli/v1/device/device_helper.py:32
 #, python-format
 msgid "_implementation_key variable is not overridden in %s child class"
 msgstr ""
 
-#: radloggerpy/cli/v1/device/device_list.py:49
-#: radloggerpy/cli/v1/device/device_list_serial.py:77
+#: radloggerpy/cli/v1/device/device_list.py:48
+#: radloggerpy/cli/v1/device/device_list_serial.py:80
 msgid "No devices found"
 msgstr ""
 
@@ -46,23 +46,23 @@ msgstr ""
 msgid "Either the id or name must be specified to remove a device"
 msgstr ""
 
-#: radloggerpy/cli/v1/device/device_remove.py:57
-#: radloggerpy/cli/v1/device/device_show.py:61
-#: radloggerpy/cli/v1/device/device_show_serial.py:79
+#: radloggerpy/cli/v1/device/device_remove.py:56
+#: radloggerpy/cli/v1/device/device_show.py:65
+#: radloggerpy/cli/v1/device/device_show_serial.py:82
 msgid "Multiple devices found"
 msgstr ""
 
-#: radloggerpy/cli/v1/device/device_remove.py:60
-#: radloggerpy/cli/v1/device/device_show.py:64
-#: radloggerpy/cli/v1/device/device_show_serial.py:82
+#: radloggerpy/cli/v1/device/device_remove.py:59
+#: radloggerpy/cli/v1/device/device_show.py:68
+#: radloggerpy/cli/v1/device/device_show_serial.py:85
 msgid "Device could not be found"
 msgstr ""
 
-#: radloggerpy/cli/v1/device/device_remove.py:65
+#: radloggerpy/cli/v1/device/device_remove.py:64
 msgid "Device removed successfully"
 msgstr ""
 
-#: radloggerpy/cli/v1/measurement/measurement_list.py:60
+#: radloggerpy/cli/v1/measurement/measurement_list.py:59
 msgid "No measurements found"
 msgstr ""
 
@@ -70,34 +70,34 @@ msgstr ""
 msgid "Performing first time initialization"
 msgstr ""
 
-#: radloggerpy/common/first_time_run.py:96
+#: radloggerpy/common/first_time_run.py:97
 #, python-format
 msgid "Encountered error during execution of CheckTask: %s"
 msgstr ""
 
-#: radloggerpy/common/first_time_run.py:105
+#: radloggerpy/common/first_time_run.py:106
 #, python-format
 msgid "Ran task: %s"
 msgstr ""
 
-#: radloggerpy/common/first_time_run.py:107
+#: radloggerpy/common/first_time_run.py:109
 #, python-format
 msgid "Encountered error during first timeinitialization with task: %s"
 msgstr ""
 
-#: radloggerpy/common/first_time_run.py:125
+#: radloggerpy/common/first_time_run.py:132
 #, python-format
 msgid "Encountered error while performing check forfirst time init: %s"
 msgstr ""
 
-#: radloggerpy/common/first_time_run.py:150
-#: radloggerpy/common/first_time_run.py:169
+#: radloggerpy/common/first_time_run.py:161
+#: radloggerpy/common/first_time_run.py:180
 #, python-format
 msgid "Check %s was not of type method"
 msgstr ""
 
-#: radloggerpy/common/first_time_run.py:153
-#: radloggerpy/common/first_time_run.py:162
+#: radloggerpy/common/first_time_run.py:164
+#: radloggerpy/common/first_time_run.py:173
 #, python-format
 msgid "Task %s was not of type method"
 msgstr ""
@@ -110,17 +110,22 @@ msgstr ""
 msgid "Not all states have required valid transition set"
 msgstr ""
 
-#: radloggerpy/common/state_machine.py:87
+#: radloggerpy/common/state_machine.py:89
 msgid "Not all members of transition set are of same type as state"
 msgstr ""
 
-#: radloggerpy/common/state_machine.py:107
+#: radloggerpy/common/state_machine.py:111
 msgid "State is not of same type as POSSIBLE_STATES"
 msgstr ""
 
-#: radloggerpy/common/state_machine.py:113
+#: radloggerpy/common/state_machine.py:117
 #, python-format
 msgid "Transition from %(initial)s to %(to)s state is not valid"
+msgstr ""
+
+#: radloggerpy/config/config.py:53
+#, python-format
+msgid "Failed to find config file looked in %s"
 msgstr ""
 
 #: radloggerpy/database/database_manager.py:50
@@ -150,15 +155,15 @@ msgstr ""
 msgid "Failed to create database due to error: %s"
 msgstr ""
 
-#: radloggerpy/database/objects/base.py:91
+#: radloggerpy/database/objects/base.py:92
 msgid "Use of deprecated ignore parameter on database object filter!"
 msgstr ""
 
-#: radloggerpy/database/objects/measurement.py:88
+#: radloggerpy/database/objects/measurement.py:91
 msgid "No associateable Device found"
 msgstr ""
 
-#: radloggerpy/database/objects/serial_device.py:139
+#: radloggerpy/database/objects/serial_device.py:136
 msgid "Reference should be of type SerialDeviceObject"
 msgstr ""
 
@@ -171,11 +176,11 @@ msgstr ""
 msgid "Restarting {} device of implementation {} from previous error state."
 msgstr ""
 
-#: radloggerpy/device/device.py:95
+#: radloggerpy/device/device.py:98
 msgid "Can not start same device {} multiple times"
 msgstr ""
 
-#: radloggerpy/device/device.py:154
+#: radloggerpy/device/device.py:157
 #, python-format
 msgid "Unable to retrieve data for: %s"
 msgstr ""
@@ -185,24 +190,24 @@ msgstr ""
 msgid "Configured device manager for %d workers"
 msgstr ""
 
-#: radloggerpy/device/device_manager.py:141
+#: radloggerpy/device/device_manager.py:139
 msgid "Unhandled Exception"
 msgstr ""
 
-#: radloggerpy/device/devices/arduino_geiger_pcb.py:58
+#: radloggerpy/device/devices/arduino_geiger_pcb.py:61
 msgid "Insufficient permissions to open device."
 msgstr ""
 
-#: radloggerpy/device/devices/arduino_geiger_pcb.py:62
+#: radloggerpy/device/devices/arduino_geiger_pcb.py:64
 msgid "Device does not exist"
 msgstr ""
 
-#: radloggerpy/device/devices/arduino_geiger_pcb.py:65
+#: radloggerpy/device/devices/arduino_geiger_pcb.py:67
 #, python-format
 msgid "Device error %d"
 msgstr ""
 
-#: radloggerpy/models/radiationreading.py:40
+#: radloggerpy/models/radiationreading.py:39
 msgid "RadiationReading can not have negative cpm"
 msgstr ""
 
