@@ -36,9 +36,10 @@ extensions = [
 ]
 
 config_generator_config_file = [(
-    f"../../etc/{package_folder}/{package_folder}.conf",
+    f"../../etc/{package_folder}/{package_folder}-config-generator.conf",
     f"_static/{package_folder}")]
-sample_config_basename = package_folder
+# config_generator_config_file = f"../../etc/{package_folder}/{package_folder}-config-generator.conf"
+sample_config_basename = f"_static/{package_folder}"
 
 # Do not ignore cliff autoprogram commands
 autoprogram_cliff_ignored = []
@@ -63,7 +64,7 @@ project = package_name
 copyright = u'2019, Dantali0n'
 
 # openstackdocstheme options
-repository_name = f"Dantali0n/{package_name}"
+repository_name = f"Dantali0n/{package_folder}"
 bug_project = 'none'
 bug_tag = ''
 html_last_updated_fmt = '%Y-%m-%d %H:%M'
@@ -74,7 +75,7 @@ add_function_parentheses = True
 release = version
 version = version
 
-modindex_common_prefix = ['radloggerpy.']
+modindex_common_prefix = [f"{package_folder}."]
 
 # If true, the current module name will be prepended to all description
 # unit titles (such as .. function::).
@@ -108,7 +109,7 @@ latex_documents = [
     ('index',
      '%s.tex' % project,
      u'%s Documentation' % project,
-     u'RadLoggerPy', 'manual'),
+     f"{package_name}", 'manual'),
 ]
 
 # Example configuration for intersphinx: refer to the Python standard library.
