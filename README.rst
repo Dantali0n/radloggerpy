@@ -8,6 +8,9 @@ RadLoggerPy
 .. image:: https://codecov.io/gh/Dantali0n/radloggerpy/branch/master/graph/badge.svg
     :target: https://codecov.io/gh/Dantali0n/radloggerpy/tree/master/radloggerpy
     :alt: Codecov report about total code coverage achieved by unit tests.
+.. image:: https://gitlab.dantalion.nl/root/radloggerpy/badges/master/coverage.svg?job=coverage)
+    :target: https://codecov.io/gh/Dantali0n/radloggerpy/tree/master/radloggerpy
+    :alt: Code coverage report about total code coverage achieved by unit tests by gitlab.
 .. image:: https://img.shields.io/github/license/Dantali0n/radloggerpy
     :target: https://github.com/Dantali0n/radloggerpy/blob/master/LICENSE
     :alt: Logo of Apache 2.0 software license.

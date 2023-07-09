@@ -1,4 +1,6 @@
-image: python:latest
+image:
+  name: python:latest
+  pull_policy: always
 variables:
   PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
   CODECOV_TOKEN: "ad646b4d-8d41-4b6c-912e-09a09ac2d097"
@@ -11,8 +13,7 @@ stages:
   - linting
   - locale
   - unit-tests
-  - coverage
-  - documents
+  - documentation
 pep8:
   stage: linting
   script:
@@ -33,6 +34,11 @@ locale:
     paths:
       - locale/
     expire_in: 7 days
+lower_constraints:
+  stage: unit-tests
+  image: python:3.8-buster
+  script:
+    - tox -e py38-lower-constraints
 unit_test_py38:
   stage: unit-tests
   image: python:3.8-buster
@@ -48,18 +54,9 @@ unit_test_py310:
   image: python:3.10-buster
   script:
     - tox -e py310
-unit_test_py311:
+coverage:
   stage: unit-tests
   image: python:3.11-buster
-  script:
-    - tox -e py311
-lower_constraints:
-  stage: unit-tests
-  image: python:3.8-buster
-  script:
-    - tox -e py38-lower-constraints
-coverage:
-  stage: coverage
   script:
     - pip install codecov
     - tox -e coverage
@@ -74,10 +71,10 @@ coverage:
       - htmlcov/*
     expire_in: 7 days
 docs:
-  stage: documents
+  stage: documentation
   script:
     - tox -e docs
 config:
-  stage: documents
+  stage: documentation
   script:
     - tox -e genconfig
