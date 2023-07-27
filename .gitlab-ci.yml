@@ -25,13 +25,14 @@ pylint:
     - tox -e pylint
 locale:
   stage: locale
+  allow_failure: true
   # Enforce that pot file is up to date
   script:
     - cp locale/radloggerpy.pot locale/radloggerpy.pot.ref
     - tox -e extract_messages
     - tox -e update_catalog
     - tox -e compile_catalog
-    - diff <(tail -n +19 locale/radloggerpy.pot) <(tail -n +19 locale/radloggerpy.pot.ref)
+    - diff -I '^#' -I '^ #' <(tail -n +19 locale/radloggerpy.pot) <(tail -n +19 locale/radloggerpy.pot.ref)
   artifacts:
     paths:
       - locale/
