@@ -44,6 +44,8 @@ class TestTranslation(base.TestCase):
 
         dirs = translation.translation_dirs()
 
+        # Based on:
+        # https://refspecs.linuxfoundation.org/FHS_3.0/fhs-3.0.html#theUsrHierarchy
         if "/usr/share/locale" in dirs:
             self.assertIn("/usr/share/locale", dirs)
         else:
