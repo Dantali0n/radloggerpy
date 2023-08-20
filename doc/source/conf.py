@@ -1,21 +1,12 @@
-# -*- coding: utf-8 -*-
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#    http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
-# implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
+# Copyright (C) 2019 Dantali0n
+# SPDX-License-Identifier: Apache-2.0
 
 import os
 import sys
 
-from radloggerpy import version
+from radloggerpy import __version__ as version
+from radloggerpy import __package_name__ as package_name
+from radloggerpy import __package_folder__ as package_folder
 
 sys.path.insert(0, os.path.abspath('../..'))
 # -- General configuration ----------------------------------------------------
@@ -34,14 +25,15 @@ extensions = [
 ]
 
 config_generator_config_file = [(
-    '../../etc/radloggerpy/radloggerpy.conf',
-    '_static/radloggerpy')]
-sample_config_basename = 'radloggerpy'
+    f"../../etc/{package_folder}/{package_folder}-config-generator.conf",
+    f"_static/{package_folder}")]
+# config_generator_config_file = f"../../etc/{package_folder}/{package_folder}-config-generator.conf"
+sample_config_basename = f"_static/{package_folder}"
 
 # Do not ignore cliff autoprogram commands
 autoprogram_cliff_ignored = []
 
-apidoc_module_dir = '../../radloggerpy'
+apidoc_module_dir = f"../../{package_folder}"
 apidoc_output_dir = 'source_documentation'
 apidoc_excluded_paths = ['tests', 'hacking']
 apidoc_separate_modules = True
@@ -57,11 +49,11 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'RadLoggerPy'
+project = package_name
 copyright = u'2019, Dantali0n'
 
 # openstackdocstheme options
-repository_name = 'Dantali0n/RadLoggerPy'
+repository_name = f"Dantali0n/{package_folder}"
 bug_project = 'none'
 bug_tag = ''
 html_last_updated_fmt = '%Y-%m-%d %H:%M'
@@ -69,10 +61,10 @@ html_last_updated_fmt = '%Y-%m-%d %H:%M'
 # If true, '()' will be appended to :func: etc. cross-reference text.
 add_function_parentheses = True
 
-release = version.version_info.release_string()
-version = version.version_info.version_string()
+release = version
+version = version
 
-modindex_common_prefix = ['radloggerpy.']
+modindex_common_prefix = [f"{package_folder}."]
 
 # If true, the current module name will be prepended to all description
 # unit titles (such as .. function::).
@@ -106,7 +98,7 @@ latex_documents = [
     ('index',
      '%s.tex' % project,
      u'%s Documentation' % project,
-     u'RadLoggerPy', 'manual'),
+     f"{package_name}", 'manual'),
 ]
 
 # Example configuration for intersphinx: refer to the Python standard library.

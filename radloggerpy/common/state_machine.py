@@ -1,16 +1,5 @@
-# Copyright (c) 2020 Dantali0n
-#
-# Licensed under the Apache License, Version 2.0 (the "License"); you may
-# not use this file except in compliance with the License. You may obtain
-# a copy of the License at
-#
-#      http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
-# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
-# License for the specific language governing permissions and limitations
-# under the License.
+# Copyright (C) 2020 Dantali0n
+# SPDX-License-Identifier: Apache-2.0
 
 import abc
 import enum
@@ -61,12 +50,12 @@ class StateMachine(metaclass=abc.ABCMeta):
     """
 
     def __init__(self, transitions: _U, states: enum.Enum = None):
-
         if states and isinstance(states, enum.Enum):
             self.POSSIBLE_STATES = states
         elif not isinstance(self.POSSIBLE_STATES, enum.Enum):
-            raise RuntimeError(_("Neither POSSIBLE_STATES nor states are of"
-                                 "type Enum"))
+            raise RuntimeError(
+                _("Neither POSSIBLE_STATES nor states are of" "type Enum")
+            )
 
         self._sclass = self.POSSIBLE_STATES.__class__
 
@@ -81,11 +70,16 @@ class StateMachine(metaclass=abc.ABCMeta):
         for t in self._sclass:
             if t not in self.transitions:
                 raise RuntimeError(
-                    _("Not all states have required valid transition set"))
+                    _("Not all states have required valid transition set")
+                )
             for s in self.transitions[t]:
                 if not isinstance(s, self._sclass):
-                    raise RuntimeError(_("Not all members of transition set "
-                                         "are of same type as state"))
+                    raise RuntimeError(
+                        _(
+                            "Not all members of transition set "
+                            "are of same type as state"
+                        )
+                    )
 
     def reset_state(self):
         """Reset state to the initial state"""
@@ -103,12 +97,12 @@ class StateMachine(metaclass=abc.ABCMeta):
         """
 
         if not isinstance(state, self._sclass):
-            raise RuntimeWarning(
-                _("State is not of same type as POSSIBLE_STATES"))
+            raise RuntimeWarning(_("State is not of same type as POSSIBLE_STATES"))
 
         if state in self.transitions[self._state]:
             self._state = state
         else:
             raise RuntimeWarning(
-                _("Transition from %(initial)s to %(to)s state is not valid") %
-                {'initial': self._state, 'to': state})
+                _("Transition from %(initial)s to %(to)s state is not valid")
+                % {"initial": self._state, "to": state}
+            )

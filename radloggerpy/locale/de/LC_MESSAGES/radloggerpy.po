@@ -1,0 +1,229 @@
+# German translations for PROJECT.
+# Copyright (C) 2023 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2023.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2023-07-28 08:29+0200\n"
+"PO-Revision-Date: 2023-07-08 07:09+0200\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: de\n"
+"Language-Team: de <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.12.1\n"
+
+#: radloggerpy/radloggerpy.py:36
+#, python-format
+msgid "Starting RadLoggerPy service on PID %s"
+msgstr ""
+
+#: radloggerpy/cli/radlogger_shell.py:47
+#, python-format
+msgid "Initializing radloggercli %s"
+msgstr ""
+
+#: radloggerpy/cli/radlogger_shell.py:61
+#, python-format
+msgid "Exception raised: %s"
+msgstr ""
+
+#: radloggerpy/cli/v1/device/device_helper.py:20
+#, python-format
+msgid "_implementation_key variable is not overridden in %s child class"
+msgstr ""
+
+#: radloggerpy/cli/v1/device/device_list.py:36
+#: radloggerpy/cli/v1/device/device_list_serial.py:68
+msgid "No devices found"
+msgstr ""
+
+#: radloggerpy/cli/v1/device/device_remove.py:38
+msgid "Either the id or name must be specified to remove a device"
+msgstr ""
+
+#: radloggerpy/cli/v1/device/device_remove.py:44
+#: radloggerpy/cli/v1/device/device_show.py:53
+#: radloggerpy/cli/v1/device/device_show_serial.py:70
+msgid "Multiple devices found"
+msgstr ""
+
+#: radloggerpy/cli/v1/device/device_remove.py:47
+#: radloggerpy/cli/v1/device/device_show.py:56
+#: radloggerpy/cli/v1/device/device_show_serial.py:73
+msgid "Device could not be found"
+msgstr ""
+
+#: radloggerpy/cli/v1/device/device_remove.py:52
+msgid "Device removed successfully"
+msgstr ""
+
+#: radloggerpy/cli/v1/measurement/measurement_list.py:47
+msgid "No measurements found"
+msgstr ""
+
+#: radloggerpy/common/first_time_run.py:73
+msgid "Performing first time initialization"
+msgstr ""
+
+#: radloggerpy/common/first_time_run.py:86
+#, python-format
+msgid "Encountered error during execution of CheckTask: %s"
+msgstr ""
+
+#: radloggerpy/common/first_time_run.py:95
+#, python-format
+msgid "Ran task: %s"
+msgstr ""
+
+#: radloggerpy/common/first_time_run.py:98
+#, python-format
+msgid "Encountered error during first timeinitialization with task: %s"
+msgstr ""
+
+#: radloggerpy/common/first_time_run.py:121
+#, python-format
+msgid "Encountered error while performing check forfirst time init: %s"
+msgstr ""
+
+#: radloggerpy/common/first_time_run.py:150
+#: radloggerpy/common/first_time_run.py:169
+#, python-format
+msgid "Check %s was not of type method"
+msgstr ""
+
+#: radloggerpy/common/first_time_run.py:153
+#: radloggerpy/common/first_time_run.py:162
+#, python-format
+msgid "Task %s was not of type method"
+msgstr ""
+
+#: radloggerpy/common/state_machine.py:57
+msgid "Neither POSSIBLE_STATES nor states are oftype Enum"
+msgstr ""
+
+#: radloggerpy/common/state_machine.py:73
+msgid "Not all states have required valid transition set"
+msgstr ""
+
+#: radloggerpy/common/state_machine.py:78
+msgid "Not all members of transition set are of same type as state"
+msgstr ""
+
+#: radloggerpy/common/state_machine.py:100
+msgid "State is not of same type as POSSIBLE_STATES"
+msgstr ""
+
+#: radloggerpy/common/state_machine.py:106
+#, python-format
+msgid "Transition from %(initial)s to %(to)s state is not valid"
+msgstr ""
+
+#: radloggerpy/config/config.py:44
+#, python-format
+msgid "Failed to find config file looked in %s"
+msgstr ""
+
+#: radloggerpy/config/config.py:60
+#, python-format
+msgid "Failed to find localization files looked in %s"
+msgstr ""
+
+#: radloggerpy/config/config.py:67
+#, python-format
+msgid "Using translation files found in %s"
+msgstr ""
+
+#: radloggerpy/config/config.py:69
+#, python-format
+msgid "Currently supported languages %s"
+msgstr ""
+
+#: radloggerpy/database/database_manager.py:39
+#, python-format
+msgid "Failed to create session due to exception: %s"
+msgstr ""
+
+#: radloggerpy/database/database_manager.py:71
+#, python-format
+msgid "Checking if database: %s exists"
+msgstr ""
+
+#: radloggerpy/database/database_manager.py:74
+msgid "Database file does not exist in configured path"
+msgstr ""
+
+#: radloggerpy/database/database_manager.py:93
+msgid "Creating database"
+msgstr ""
+
+#: radloggerpy/database/database_manager.py:95
+msgid "Creating database tables"
+msgstr ""
+
+#: radloggerpy/database/database_manager.py:98
+#, python-format
+msgid "Failed to create database due to error: %s"
+msgstr ""
+
+#: radloggerpy/database/objects/base.py:80
+msgid "Use of deprecated ignore parameter on database object filter!"
+msgstr ""
+
+#: radloggerpy/database/objects/measurement.py:79
+msgid "No associateable Device found"
+msgstr ""
+
+#: radloggerpy/database/objects/serial_device.py:124
+msgid "Reference should be of type SerialDeviceObject"
+msgstr ""
+
+#: radloggerpy/datastructures/device_data_buffer.py:54
+#, python-format
+msgid "Element: %s, is not of type RadiationReading"
+msgstr ""
+
+#: radloggerpy/device/device.py:78
+msgid "Restarting {} device of implementation {} from previous error state."
+msgstr ""
+
+#: radloggerpy/device/device.py:87
+msgid "Can not start same device {} multiple times"
+msgstr ""
+
+#: radloggerpy/device/device.py:146
+#, python-format
+msgid "Unable to retrieve data for: %s"
+msgstr ""
+
+#: radloggerpy/device/device_manager.py:82
+#, python-format
+msgid "Configured device manager for %d workers"
+msgstr ""
+
+#: radloggerpy/device/device_manager.py:127
+msgid "Unhandled Exception"
+msgstr ""
+
+#: radloggerpy/device/devices/arduino_geiger_pcb.py:49
+msgid "Insufficient permissions to open device."
+msgstr ""
+
+#: radloggerpy/device/devices/arduino_geiger_pcb.py:52
+msgid "Device does not exist"
+msgstr ""
+
+#: radloggerpy/device/devices/arduino_geiger_pcb.py:55
+#, python-format
+msgid "Device error %d"
+msgstr ""
+
+#: radloggerpy/models/radiationreading.py:28
+msgid "RadiationReading can not have negative cpm"
+msgstr ""
+

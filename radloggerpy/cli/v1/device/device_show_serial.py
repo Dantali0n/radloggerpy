@@ -1,17 +1,5 @@
-# -*- encoding: utf-8 -*-
-# Copyright (c) 2019 Dantali0n
-#
-# Licensed under the Apache License, Version 2.0 (the "License"); you may
-# not use this file except in compliance with the License. You may obtain
-# a copy of the License at
-#
-#      http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
-# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
-# License for the specific language governing permissions and limitations
-# under the License.
+# Copyright (C) 2019 Dantali0n
+# SPDX-License-Identifier: Apache-2.0
 
 from sqlalchemy.exc import MultipleResultsFound
 
@@ -35,31 +23,35 @@ class DeviceShowSerial(DeviceShow):
         if self._arguments is None:
             # retrieve existing arguments from baseclass
             self._arguments = super().arguments
-            self._arguments.update({
-                '--port': Argument(
-                    help="Symbolic name of the serial port to be translated "
-                         "to the physical device, such as /dev/ttyUSB0 or "
-                         "COM1.",
-                    default=None),
-                '--baudrate': Argument(
-                    '-r', default=None,
-                    help="The speed at which the device sends data expressed "
-                         "in symbols per second (baud), typically 9600 Bd/s."
+            self._arguments.update(
+                {
+                    "--port": Argument(
+                        help="Symbolic name of the serial port to be translated "
+                        "to the physical device, such as /dev/ttyUSB0 or "
+                        "COM1.",
+                        default=None,
                     ),
-                '--bytesize': Argument(
-                    '-b', default=None, type=int,
-                    choices=BYTESIZE_CHOICES.values()),
-                '--parity': Argument(
-                    '-p', default=None,
-                    choices=PARITY_CHOICES.values()),
-                '---stopbits': Argument(
-                    '-s', default=None, type=float,
-                    choices=STOPBIT_CHOICES.values()),
-                '--timeout': Argument('-t', default=None),
-            })
+                    "--baudrate": Argument(
+                        "-r",
+                        default=None,
+                        help="The speed at which the device sends data expressed "
+                        "in symbols per second (baud), typically 9600 Bd/s.",
+                    ),
+                    "--bytesize": Argument(
+                        "-b", default=None, type=int, choices=BYTESIZE_CHOICES.values()
+                    ),
+                    "--parity": Argument(
+                        "-p", default=None, choices=PARITY_CHOICES.values()
+                    ),
+                    "---stopbits": Argument(
+                        "-s", default=None, type=float, choices=STOPBIT_CHOICES.values()
+                    ),
+                    "--timeout": Argument("-t", default=None),
+                }
+            )
             # remove interface argument as serial is predefined interface type
-            if '--interface' in self._arguments:
-                del self._arguments['--interface']
+            if "--interface" in self._arguments:
+                del self._arguments["--interface"]
         return self._arguments
 
     def get_parser(self, program_name):
@@ -73,8 +65,7 @@ class DeviceShowSerial(DeviceShow):
         device_obj = SerialDeviceObject(**args)
 
         try:
-            data = SerialDeviceObject.find(
-                self.app.database_session, device_obj, False)
+            data = SerialDeviceObject.find(self.app.database_session, device_obj, False)
         except MultipleResultsFound:
             raise RuntimeWarning(_("Multiple devices found"))
 
@@ -82,10 +73,30 @@ class DeviceShowSerial(DeviceShow):
             raise RuntimeWarning(_("Device could not be found"))
 
         fields = (
-            'id', 'name', 'measurement type', 'interface', 'implementation',
-            'port', 'baudrate', 'bytesize', 'parity', 'stopbits', 'timeout')
-        values = (data.id, data.name, data.type, data.interface,
-                  data.implementation, data.port, data.baudrate, data.bytesize,
-                  data.parity, data.stopbits, data.timeout)
+            "id",
+            "name",
+            "measurement type",
+            "interface",
+            "implementation",
+            "port",
+            "baudrate",
+            "bytesize",
+            "parity",
+            "stopbits",
+            "timeout",
+        )
+        values = (
+            data.id,
+            data.name,
+            data.type,
+            data.interface,
+            data.implementation,
+            data.port,
+            data.baudrate,
+            data.bytesize,
+            data.parity,
+            data.stopbits,
+            data.timeout,
+        )
 
         return (fields, values)

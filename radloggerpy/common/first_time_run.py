@@ -1,16 +1,5 @@
-# Copyright (c) 2019 Dantali0n
-#
-# Licensed under the Apache License, Version 2.0 (the "License"); you may
-# not use this file except in compliance with the License. You may obtain
-# a copy of the License at
-#
-#      http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
-# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
-# License for the specific language governing permissions and limitations
-# under the License.
+# Copyright (C) 2019 Dantali0n
+# SPDX-License-Identifier: Apache-2.0
 
 import inspect
 
@@ -93,8 +82,9 @@ class FirstTimeRun:
                 if check_task.check():
                     check_task.task()
             except Exception as e:
-                LOG.error(_("Encountered error during execution of "
-                            "CheckTask: %s") % e)
+                LOG.error(
+                    _("Encountered error during execution of " "CheckTask: %s") % e
+                )
 
     def _run_tasks(self):
         """Will try to execute all calls from the internal list"""
@@ -104,8 +94,13 @@ class FirstTimeRun:
                 task()
                 LOG.info(_("Ran task: %s") % task)
             except Exception as e:
-                LOG.error(_("Encountered error during first time"
-                            "initialization with task: %s") % e)
+                LOG.error(
+                    _(
+                        "Encountered error during first time"
+                        "initialization with task: %s"
+                    )
+                    % e
+                )
 
     def _run_checks(self, all_to_init=False):
         """Run all checks from the internal list
@@ -122,8 +117,13 @@ class FirstTimeRun:
             try:
                 values.append(check())
             except Exception as e:
-                LOG.error(_("Encountered error while performing check for"
-                            "first time init: %s") % e)
+                LOG.error(
+                    _(
+                        "Encountered error while performing check for"
+                        "first time init: %s"
+                    )
+                    % e
+                )
 
         has_true = False
         for v in values:

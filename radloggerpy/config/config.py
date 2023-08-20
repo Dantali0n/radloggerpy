@@ -1,26 +1,20 @@
 # Copyright 2010 United States Government as represented by the
 # Administrator of the National Aeronautics and Space Administration.
 # All Rights Reserved.
-# Copyright 2012 Red Hat, Inc.
-#
-#    Licensed under the Apache License, Version 2.0 (the "License"); you may
-#    not use this file except in compliance with the License. You may obtain
-#    a copy of the License at
-#
-#         http://www.apache.org/licenses/LICENSE-2.0
-#
-#    Unless required by applicable law or agreed to in writing, software
-#    distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
-#    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
-#    License for the specific language governing permissions and limitations
-#    under the License.
+# Copyright (C) 2023 Dantali0n
+# SPDX-License-Identifier: Apache-2.0
 
 from oslo_config import cfg
 from oslo_log import _options
 from oslo_log import log
 
+from radloggerpy import __package_folder__ as package_name
+from radloggerpy import __version__
+from radloggerpy._i18n import _
+from radloggerpy._i18n import dummy
 from radloggerpy import config
-from radloggerpy import version
+from radloggerpy.config import translation
+
 
 LOG = log.getLogger(__name__)
 CONF = config.CONF
@@ -28,34 +22,80 @@ CONF = config.CONF
 """Handles service like methods such as setting the correct log levels and
 parsing command line arguments."""
 
-_DEFAULT_LOG_LEVELS = ['sqlalchemy=WARN', 'stevedore=INFO', 'iso8601=WARN',
-                       'requests=WARN']
+_DEFAULT_LOG_LEVELS = [
+    "sqlalchemy=WARN",
+    "stevedore=INFO",
+    "iso8601=WARN",
+    "requests=WARN",
+]
 
 
 def setup_config_and_logging(argv=(), conf=cfg.CONF):
     """register logging config options and parse commandline arguments"""
     log.register_options(conf)
 
-    parse_args(argv)
+    has_config = parse_config_args(argv)
     # Set log levels for external libraries
-    cfg.set_defaults(_options.log_opts,
-                     default_log_levels=_DEFAULT_LOG_LEVELS)
-    log.setup(conf, 'radloggerpy')
+    cfg.set_defaults(_options.log_opts, default_log_levels=_DEFAULT_LOG_LEVELS)
+    log.setup(conf, package_name)
+
+    if not has_config:
+        LOG.warning(
+            _("Failed to find config file looked in %s") % cfg._get_config_dirs(
+                project=package_name
+            )
+        )
+
+    check_locale_config()
+
     # Write all configuration options and values to log
     conf.log_opt_values(LOG, log.DEBUG)
 
 
-def parse_args(argv, default_config_files=None, default_config_dirs=None):
-    """Load information into config and allow program arguments to override"""
-    default_config_files = (default_config_files or
-                            cfg.find_config_files(project='RadLoggerPy'))
-    default_config_dirs = (default_config_dirs or
-                           cfg.find_config_dirs(project='RadLoggerPy'))
-    cfg.CONF(argv[1:],
-             project='RadLoggerPy',
-             version=version.version_info.release_string(),
-             default_config_dirs=default_config_dirs,
-             default_config_files=default_config_files)
+def check_locale_config():
+    """Check locale configuration to see if translations setup successful"""
+
+    if _ == dummy:
+        LOG.warning(
+            _("Failed to find localization files looked in %s"),
+            translation.translation_dirs()
+        )
+        return
+
+    for directory in translation.translation_dirs():
+        if translation.has_translation_files(directory):
+            LOG.info(_("Using translation files found in %s"), directory)
+
+    LOG.info(_("Currently supported languages %s"), translation.LANGUAGES)
+
+
+def parse_config_args(
+    argv, default_config_files=None, default_config_dirs=None
+) -> bool:
+    """Load information into config and allow program arguments to override
+
+    :return: true if configuration files could be found, false otherwise
+    """
+
+    default_config_files = default_config_files or cfg.find_config_files(
+        project=package_name
+    )
+    default_config_dirs = default_config_dirs or cfg.find_config_dirs(
+        project=package_name
+    )
+
+    cfg.CONF(
+        argv[1:],
+        project=package_name,
+        version=__version__,
+        default_config_dirs=default_config_dirs,
+        default_config_files=default_config_files,
+    )
+
+    if not default_config_files and not default_config_dirs:
+        return False
+
+    return True
 
 
 def list_opts():

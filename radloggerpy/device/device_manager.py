@@ -1,16 +1,5 @@
-# Copyright (c) 2019 Dantali0n
-#
-# Licensed under the Apache License, Version 2.0 (the "License"); you may
-# not use this file except in compliance with the License. You may obtain
-# a copy of the License at
-#
-#      http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
-# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
-# License for the specific language governing permissions and limitations
-# under the License.
+# Copyright (C) 2019 Dantali0n
+# SPDX-License-Identifier: Apache-2.0
 
 from collections import OrderedDict
 import multiprocessing
@@ -47,13 +36,10 @@ class ManagedDevice:
 
     consecutive_errors: int = 0
 
-    _I = TypeVar('_I', bound=Device)
+    _I = TypeVar("_I", bound=Device)
     """Bound to :py:class:`radloggerpy.device.device.Device`"""
 
-    _U = TypeVar('_U', bound=Future)
-    """Bound to :py:class:`concurrent.futures._base.Future`"""
-
-    def __init__(self, future: Type[_U], device: Type[_I]):
+    def __init__(self, future: Future, device: Type[_I]):
         self.future = future
         self.device = device
 
@@ -91,26 +77,24 @@ class DeviceManager:
     def __init__(self):
         num_workers = CONF.devices.concurrent_worker_amount
 
-        if num_workers is -1:
+        if num_workers == -1:
             num_workers = multiprocessing.cpu_count()
-            LOG.info(_("Configured device manager for %d workers")
-                     % num_workers)
+            LOG.info(_("Configured device manager for %d workers") % num_workers)
 
         self._condition = Condition()
 
         self._mng_devices = []
         "List of ManagedDevice devices see :py:class:`ManagedDevice`"
-        self._threadpool = futurist.ThreadPoolExecutor(
-            max_workers=num_workers)
+        self._threadpool = futurist.ThreadPoolExecutor(max_workers=num_workers)
         # self._threadpool = futurist.GreenThreadPoolExecutor(
         #    max_workers=num_workers)
 
         self.get_device_map()
 
-    _I = TypeVar('_I', bound=Device)
+    _I = TypeVar("_I", bound=Device)
     """Bound to :py:class:`radloggerpy.device.device.Device`"""
 
-    _U = TypeVar('_U', bound=DeviceObject)
+    _U = TypeVar("_U", bound=DeviceObject)
     """Bound to :py:class:`radloggerpy.database.objects.device.DeviceObject`"""
 
     def launch_device(self, device_obj: Type[_U]):
@@ -135,14 +119,15 @@ class DeviceManager:
 
         removals = []
         for mng_device in self._mng_devices:
+
+            mng_device.device.get_state()
             future_exception = mng_device.future.exception()
 
-            if type(future_exception) is not DeviceException:
+            if not isinstance(future_exception, DeviceException):
                 LOG.error(_("Unhandled Exception"))
 
             if mng_device.future.done() and CONF.devices.restart_on_error:
-                mng_device.future =\
-                    self._threadpool.submit(mng_device.device.run)
+                mng_device.future = self._threadpool.submit(mng_device.device.run)
             elif mng_device.future.done():
                 removals.append(mng_device)
 
@@ -160,10 +145,9 @@ class DeviceManager:
 
         modules = list()
         for module_name in list_module_names(package_path):
-            modules.append((module_name, module_name.title().replace('_', '')))
+            modules.append((module_name, module_name.title().replace("_", "")))
 
-        imported_modules = import_modules(
-            modules, package, fetch_attribute=True)
+        imported_modules = import_modules(modules, package, fetch_attribute=True)
         for module, attribute in imported_modules:
             device_modules.append(getattr(module, attribute))
 
@@ -228,7 +212,7 @@ class DeviceManager:
         return DeviceManager._DEVICE_MAP
 
     @staticmethod
-    def get_device_class(device_obj: Type[_U]) -> _I:
+    def get_device_class(device_obj: Type[_U]) -> Type[_I]:
         """Determines the matching device class for a device object
 
         The device object must specify a concrete implementation

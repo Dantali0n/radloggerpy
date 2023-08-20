@@ -1,17 +1,5 @@
-# -*- encoding: utf-8 -*-
-# Copyright (c) 2019 Dantali0n
-#
-# Licensed under the Apache License, Version 2.0 (the "License"); you may
-# not use this file except in compliance with the License. You may obtain
-# a copy of the License at
-#
-#      http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
-# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
-# License for the specific language governing permissions and limitations
-# under the License.
+# Copyright (C) 2019 Dantali0n
+# SPDX-License-Identifier: Apache-2.0
 
 import errno
 import serial
@@ -50,13 +38,15 @@ class ArduinoGeigerPcb(SerialDevice):
         parity = PARITY_CHOICES_R[self.info.parity].value
         try:
             self.serial = serial.Serial(
-                port=self.info.port, baudrate=self.info.baudrate,
-                parity=parity, stopbits=self.info.stopbits,
-                bytesize=self.info.bytesize)
+                port=self.info.port,
+                baudrate=self.info.baudrate,
+                parity=parity,
+                stopbits=self.info.stopbits,
+                bytesize=self.info.bytesize,
+            )
         except serial.serialutil.SerialException as e:
             if e.errno == errno.EACCES:
-                LOG.critical(_("Insufficient permissions "
-                               "to open device."))
+                LOG.critical(_("Insufficient permissions " "to open device."))
                 raise DeviceException
             elif e.errno == errno.ENOENT:
                 LOG.critical(_("Device does not exist"))
@@ -70,12 +60,12 @@ class ArduinoGeigerPcb(SerialDevice):
         while not self.stop:
             while self.serial.inWaiting() > 0:
                 char = self.serial.read(1).decode("utf-8")
-                if char == '\n':
+                if char == "\n":
                     measure = RadiationReading()
                     measure.set_cpm(int(string))
                     self.data.append(measure)
                     string = ""
-                elif char == '\r':
+                elif char == "\r":
                     pass
                 else:
                     string += char

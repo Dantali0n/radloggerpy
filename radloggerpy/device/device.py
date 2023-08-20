@@ -1,16 +1,5 @@
-# Copyright (c) 2019 Dantali0n
-#
-# Licensed under the Apache License, Version 2.0 (the "License"); you may
-# not use this file except in compliance with the License. You may obtain
-# a copy of the License at
-#
-#      http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
-# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
-# License for the specific language governing permissions and limitations
-# under the License.
+# Copyright (C) 2019 Dantali0n
+# SPDX-License-Identifier: Apache-2.0
 
 import abc
 from threading import Condition
@@ -44,11 +33,10 @@ class Device(metaclass=abc.ABCMeta):
     TYPE = DeviceTypes.UNDEFINED
     """Each radiation monitoring device should define its type"""
 
-    _U = TypeVar('_U', bound=DeviceObject)
+    _U = TypeVar("_U", bound=DeviceObject)
     """Bound to :py:class:`radloggerpy.database.objects.device.DeviceObject`"""
 
     def __init__(self, info: Type[_U], condition: Condition):
-
         self.condition = condition
         self.info = info
         self.data = DeviceDataBuffer(self.condition)
@@ -86,14 +74,18 @@ class Device(metaclass=abc.ABCMeta):
 
         if self._statemachine.get_state() is DeviceStates.ERROR:
             "Recover device from error state"
-            LOG.info(_("Restarting {} device of implementation {} from "
-                       "previous error state.")
-                     .format(self.info.name, self.info.implementation))
+            LOG.info(
+                _(
+                    "Restarting {} device of implementation {} from "
+                    "previous error state."
+                ).format(self.info.name, self.info.implementation)
+            )
             self._statemachine.reset_state()
         elif self._statemachine.get_state() is not DeviceStates.STOPPED:
             "Not logging a message here, DeviceManager can easily do that"
-            raise RuntimeError(_("Can not start same device {} multiple times")
-                               .format(self.info.name))
+            raise RuntimeError(
+                _("Can not start same device {} multiple times").format(self.info.name)
+            )
 
         try:
             self._statemachine.transition(DeviceStates.INITIALIZING)

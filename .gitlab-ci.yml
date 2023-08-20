@@ -1,88 +1,140 @@
-image: python:latest
+image:
+  name: python:latest
+  pull_policy: always
 variables:
   PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
   CODECOV_TOKEN: "ad646b4d-8d41-4b6c-912e-09a09ac2d097"
 cache:
   paths:
     - .cache/pip
-    - radloggerpy/locale
+include:
+  - template: Security/SAST.gitlab-ci.yml
+  - template: Security/Dependency-Scanning.gitlab-ci.yml
+  - template: Security/Secret-Detection.gitlab-ci.yml
 before_script:
   - pip install tox
 stages:
   - linting
   - locale
   - unit-tests
-  - coverage
-  - documents
-linting:
+  - static-analysis
+  - documentation
+  - packaging
+  - publishing
+pep8:
   stage: linting
   script:
     - tox -e pep8
-#type_checking:
-#  stage: linting
-#  allow_failure: true
-#  script:
-#    - tox -e typecheck
+pylint:
+  stage: linting
+  allow_failure: true
+  script:
+    - tox -e pylint
 locale:
   stage: locale
+  allow_failure: true
+  # Check that pot file is up to date
   script:
-    # Enforce that pot file is up to date
-    - tox -e tenv python setup.py compile_catalog
-#locale_docker:
-#  stage: locale
-#  image: python:3.9-buster
-#  tags:
-#    - docker
-#  script:
-#    - tox -e tenv python setup.py compile_catalog
-unit_test_py36:
-  stage: unit-tests
-  image: python:3.6-buster
-  script:
-    - tox -e py36
-unit_test_py37:
-  stage: unit-tests
-  image: python:3.7-buster
-  script:
-    - tox -e py37
-unit_test_py38:
-  stage: unit-tests
-  image: python:3.8-buster
-  script:
-    - tox -e py37
-unit_test_py39:
-  stage: unit-tests
-  image: python:3.9-buster
-  script:
-    - tox -e py39
-unit_test_py310:
-  stage: unit-tests
-  image: python:3.10-buster
-  script:
-    - tox -e py310
+    - cp radloggerpy/locale/radloggerpy.pot radloggerpy/locale/radloggerpy.pot.ref
+    - tox -e extract_messages
+    - tox -e update_catalog
+    - tox -e compile_catalog
+    - bash scripts/locale-diff.sh
+    - rm radloggerpy/locale/radloggerpy.pot.ref
+  artifacts:
+    when: always
+    paths:
+      - radloggerpy/locale/
+    expire_in: 7 days
 lower_constraints:
   stage: unit-tests
-  image: python:3.6-buster
+  image: python:3.8-buster
+  dependencies:
+    - locale
   script:
-    - tox -e lower-constraints
-#unit_test_docker:
-#  stage: unit-tests
-#  image: python:3.9-buster
-#  tags:
-#    - docker
-#  script:
-#    - tox -e py39
+    - tox -e py38-lower-constraints
+unit_test_base:
+  stage: unit-tests
+  parallel:
+    matrix:
+      - PY_VERSION: [8, 9, 10]
+  dependencies:
+    - locale
+  image: python:3.${PY_VERSION}-buster
+  script:
+    - tox -e py3${PY_VERSION}
 coverage:
-  stage: coverage
+  stage: unit-tests
+  image: python:3.11-buster
+  dependencies:
+    - locale
   script:
     - pip install codecov
-    - tox -e cover
-    - codecov
+    - tox -e coverage
+    - codecov -f coverage.xml
+  coverage: '/(?i)total.*? (100(?:\.0+)?\%|[1-9]?\d(?:\.\d+)?\%)$/'
+  artifacts:
+    reports:
+      coverage_report:
+        coverage_format: cobertura
+        path: coverage.xml
+    paths:
+      - htmlcov/*
+    expire_in: 7 days
+sast:
+  variables:
+    SAST_EXCLUDED_ANALYZERS: brakeman, flawfinder, kubesec, nodejs-scan, phpcs-security-audit,
+      pmd-apex, security-code-scan, sobelow, spotbugs
+  stage: static-analysis
+  before_script:
+    - python3 --version
+dependency_scanning:
+  stage: static-analysis
+  before_script:
+    - uname
+secret_detection:
+  stage: static-analysis
+  before_script:
+    - uname
+bandit:
+  stage: static-analysis
+  script:
+    - tox -e bandit
 docs:
-  stage: documents
+  stage: documentation
   script:
     - tox -e docs
+  artifacts:
+    paths:
+      - docs/build/*
+    expire_in: 7 days
 config:
-  stage: documents
+  stage: documentation
   script:
     - tox -e genconfig
+  artifacts:
+    paths:
+      - etc/
+    expire_in: 7 days
+build-wheel:
+  stage: packaging
+  script:
+    - tox -e build
+  dependencies:
+    - locale
+  artifacts:
+    paths:
+      - dist/
+    expire_in: 7 days
+publish-wheel:
+  stage: publishing
+  dependencies:
+    - build-wheel
+  rules:
+    - if: $CI_COMMIT_TAG
+  variables:
+    TWINE_PASSWORD: "${CI_JOB_TOKEN}"
+    TWINE_USERNAME: "gitlab-ci-token"
+  script:
+    - pip install twine
+    - python -m twine upload --repository-url ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/pypi dist/*

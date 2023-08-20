@@ -1,16 +1,5 @@
-# Copyright (c) 2019 Dantali0n
-#
-# Licensed under the Apache License, Version 2.0 (the "License"); you may
-# not use this file except in compliance with the License. You may obtain
-# a copy of the License at
-#
-#      http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
-# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
-# License for the specific language governing permissions and limitations
-# under the License.
+# Copyright (C) 2019 Dantali0n
+# SPDX-License-Identifier: Apache-2.0
 
 import importlib
 import pkgutil
@@ -34,8 +23,9 @@ def list_module_names(package_path, excludes=[]):
     module_names = []
     for __, modname, ispkg in pkgutil.iter_modules(path=[package_path]):
         if modname in excludes or ispkg:
-            LOG.debug("Exclude {} in list_module_names from {}"
-                      .format(modname, package_path))
+            LOG.debug(
+                "Exclude {} in list_module_names from {}".format(modname, package_path)
+            )
         else:
             module_names.append(modname)
     return module_names
@@ -68,10 +58,13 @@ def import_modules(modules, path, attribute=None, fetch_attribute=False):
             module_filters.append((module_name, attribute))
 
     for modname, attrib in module_filters:
-        mod = importlib.import_module(path + '.' + modname)
+        mod = importlib.import_module(path + "." + modname)
         if not hasattr(mod, attrib):
-            msg = "The module '%s.%s' should have a '%s' "\
-                  "attribute." % (path, modname, attrib)
+            msg = "The module '%s.%s' should have a '%s' " "attribute." % (
+                path,
+                modname,
+                attrib,
+            )
             raise AttributeError(msg)
         elif fetch_attribute:
             imported_modules.append((mod, attrib))
