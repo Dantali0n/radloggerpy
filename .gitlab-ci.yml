@@ -72,7 +72,7 @@ coverage:
     - pip install codecov
     - tox -e coverage
     - codecov -f coverage.xml
-  coverage: '/(?i)total.*? (100(?:\.0+)?\%|[1-9]?\d(?:\.\d+)?\%)$/'
+  coverage: '/(?i)TOTAL.*? ([1-9]?\d(?:\.\d+)?\%)/'
   artifacts:
     reports:
       coverage_report:
@@ -137,4 +137,5 @@ publish-wheel:
     TWINE_USERNAME: "gitlab-ci-token"
   script:
     - pip install twine
+    - git status  # check if clean
     - python -m twine upload --repository-url ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/pypi dist/*
