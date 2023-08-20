@@ -1,16 +1,5 @@
-# Copyright (c) 2019 Dantali0n
-#
-# Licensed under the Apache License, Version 2.0 (the "License"); you may
-# not use this file except in compliance with the License. You may obtain
-# a copy of the License at
-#
-#      http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
-# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
-# License for the specific language governing permissions and limitations
-# under the License.
+# Copyright (C) 2019 Dantali0n
+# SPDX-License-Identifier: Apache-2.0
 
 
 from radloggerpy.common.dynamic_import import import_modules
@@ -36,10 +25,9 @@ def _list_tables():
     # create module_name and expected class tuples from list_module_names
     # if the module file is account_types the expected class is AccountTypes.
     for module_name in list_module_names(models.__path__[0]):
-        modules.append((module_name, module_name.title().replace('_', '')))
+        modules.append((module_name, module_name.title().replace("_", "")))
 
-    imported_modules = import_modules(
-        modules, models.__name__, fetch_attribute=True)
+    imported_modules = import_modules(modules, models.__name__, fetch_attribute=True)
     for module, attribute in imported_modules:
         # Access the modules class and subsequent __table__
         tables.append(getattr(module, attribute).__table__)

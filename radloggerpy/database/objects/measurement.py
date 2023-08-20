@@ -1,17 +1,5 @@
-# -*- encoding: utf-8 -*-
-# Copyright (c) 2020 Dantali0n
-#
-# Licensed under the Apache License, Version 2.0 (the "License"); you may
-# not use this file except in compliance with the License. You may obtain
-# a copy of the License at
-#
-#      http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
-# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
-# License for the specific language governing permissions and limitations
-# under the License.
+# Copyright (C) 2020 Dantali0n
+# SPDX-License-Identifier: Apache-2.0
 
 from radloggerpy._i18n import _
 from radloggerpy.database.models.device import Device
@@ -77,8 +65,11 @@ class MeasurementObject(DatabaseObject):
         reference._build_object()
 
         """Measurement.device_id must be set to populate the field"""
-        if reference.m_measurement.device_id is None \
-                and hasattr(reference.device, 'id') and reference.device.id:
+        if (
+            reference.m_measurement.device_id is None and
+            hasattr(reference.device, "id") and
+            reference.device.id
+        ):
             """If no device_id is set find it through device id"""
             reference.m_measurement.device_id = reference.device.id
         elif reference.m_measurement.device_id is None and reference.device:
@@ -155,10 +146,13 @@ class MeasurementObject(DatabaseObject):
         query = session.query(Measurement).filter_by(**filters)
 
         if reference.device:
-            dev_filter = reference.device._filter(
-                reference.device.m_device)
-            query = session.query(Measurement).filter_by(**filters)\
-                .join(Device).filter_by(**dev_filter)
+            dev_filter = reference.device._filter(reference.device.m_device)
+            query = (
+                session.query(Measurement)
+                .filter_by(**filters)
+                .join(Device)
+                .filter_by(**dev_filter)
+            )
 
         if allow_multiple:
             results = query.all()

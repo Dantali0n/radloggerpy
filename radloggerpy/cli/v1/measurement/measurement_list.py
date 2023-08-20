@@ -1,17 +1,5 @@
-# -*- encoding: utf-8 -*-
-# Copyright (c) 2020 Dantali0n
-#
-# Licensed under the Apache License, Version 2.0 (the "License"); you may
-# not use this file except in compliance with the License. You may obtain
-# a copy of the License at
-#
-#      http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
-# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
-# License for the specific language governing permissions and limitations
-# under the License.
+# Copyright (C) 2020 Dantali0n
+# SPDX-License-Identifier: Apache-2.0
 
 from cliff.lister import Lister
 
@@ -40,30 +28,28 @@ class MeasurementList(Lister, MeasurementCommand):
     def take_action(self, parsed_args):
         args = dict(parsed_args._get_kwargs())
 
-        if 'device' in args or 'name' in args:
+        if "device" in args or "name" in args:
             """Set device for MeasurementObject if any device params are set"""
             dev_obj = DeviceObject()
-            if args['device']:
-                dev_obj.id = args['device']
-                del args['device']
-            if args['name']:
-                dev_obj.name = args['name']
-                del args['name']
-            args['device'] = dev_obj
+            if args["device"]:
+                dev_obj.id = args["device"]
+                del args["device"]
+            if args["name"]:
+                dev_obj.name = args["name"]
+                del args["name"]
+            args["device"] = dev_obj
 
         measure_obj = MeasurementObject(**args)
 
-        data = MeasurementObject.find(
-            self.app.database_session, measure_obj, True)
+        data = MeasurementObject.find(self.app.database_session, measure_obj, True)
 
         if len(data) == 0:
             raise RuntimeWarning(_("No measurements found"))
 
-        fields = ('timestamp', 'device', 'cpm', 'μSv/h')
+        fields = ("timestamp", "device", "cpm", "μSv/h")
         values = []
         for result in data:
-            value = (result.timestamp, result.device.id, result.cpm,
-                     result.svh)
+            value = (result.timestamp, result.device.id, result.cpm, result.svh)
             values.append(value)
 
         return [fields, values]

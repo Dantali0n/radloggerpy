@@ -1,19 +1,9 @@
-# Copyright (c) 2019 Dantali0n
-#
-# Licensed under the Apache License, Version 2.0 (the "License"); you may
-# not use this file except in compliance with the License. You may obtain
-# a copy of the License at
-#
-#      http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
-# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
-# License for the specific language governing permissions and limitations
-# under the License.
+# Copyright (C) 2019 Dantali0n
+# SPDX-License-Identifier: Apache-2.0
 
 import copy
 from threading import Condition
+from typing import List
 
 from oslo_log import log
 from radloggerpy import config
@@ -48,7 +38,7 @@ class DeviceDataBuffer:
         self.data = list()
         self.rwlock = rwlock.RWLockRead()
 
-    def add_readings(self, readings):
+    def add_readings(self, readings: List[RadiationReading]):
         """Add the readings to the buffer
 
         Add all the readings to the buffer and remove any elements not of type
@@ -61,8 +51,7 @@ class DeviceDataBuffer:
 
         for e in readings:
             if not isinstance(e, RadiationReading):
-                LOG.error(_("Element: %s, is not of type "
-                            "RadiationReading") % e)
+                LOG.error(_("Element: %s, is not of type " "RadiationReading") % e)
                 readings.remove(e)
 
         lock = self.rwlock.gen_rlock()
@@ -78,17 +67,17 @@ class DeviceDataBuffer:
 
         return False
 
-    def has_readings(self):
+    def has_readings(self) -> bool:
         """Indicate if the buffer is not empty
 
         :return: True if one or more entries in buffer, false otherwise
         """
         return self.has_reading
 
-    def fetch_clear_readings(self):
+    def fetch_clear_readings(self) -> List[RadiationReading]:
         """Retrieve all the readings from the buffer and clear the buffer
 
-        Gets a exclusive write lock to create a reference to current data
+        Gets an exclusive write lock to create a reference to current data
         and subsequently clears the internal buffer. Afterwards it returns
         the previous internal readings. If getting the exclusive write lock
         failed it will return None instead.

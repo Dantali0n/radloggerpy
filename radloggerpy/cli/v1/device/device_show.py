@@ -1,17 +1,5 @@
-# -*- encoding: utf-8 -*-
-# Copyright (c) 2019 Dantali0n
-#
-# Licensed under the Apache License, Version 2.0 (the "License"); you may
-# not use this file except in compliance with the License. You may obtain
-# a copy of the License at
-#
-#      http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
-# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
-# License for the specific language governing permissions and limitations
-# under the License.
+# Copyright (C) 2019 Dantali0n
+# SPDX-License-Identifier: Apache-2.0
 
 from cliff.show import ShowOne
 from sqlalchemy.exc import MultipleResultsFound
@@ -34,11 +22,16 @@ class DeviceShow(ShowOne, DeviceCommand):
     def arguments(self):
         if self._arguments is None:
             self._arguments = super().arguments
-            self._arguments.update({
-                '--detailed': Argument(
-                    '-d', help="Show details related to the specific device "
-                               "type if found.",
-                    action="store_true")})
+            self._arguments.update(
+                {
+                    "--detailed": Argument(
+                        "-d",
+                        help="Show details related to the specific device "
+                        "type if found.",
+                        action="store_true",
+                    )
+                }
+            )
         return self._arguments
 
     def get_parser(self, program_name):
@@ -52,11 +45,10 @@ class DeviceShow(ShowOne, DeviceCommand):
         args = dict(parsed_args._get_kwargs())
         device_obj = DeviceObject(**args)
 
-        details = args['detailed']
+        details = args["detailed"]
 
         try:
-            data = DeviceObject.find(
-                self.app.database_session, device_obj, False)
+            data = DeviceObject.find(self.app.database_session, device_obj, False)
         except MultipleResultsFound:
             raise RuntimeWarning(_("Multiple devices found"))
 
@@ -64,25 +56,36 @@ class DeviceShow(ShowOne, DeviceCommand):
             raise RuntimeWarning(_("Device could not be found"))
 
         fields = (
-            'id', 'enabled', 'name', 'measurement type', 'interface',
-            'implementation')
+            "id",
+            "enabled",
+            "name",
+            "measurement type",
+            "interface",
+            "implementation",
+        )
         values = (
-            data.id, data.enabled, data.name, data.type, data.interface,
-            data.implementation)
+            data.id,
+            data.enabled,
+            data.name,
+            data.type,
+            data.interface,
+            data.implementation,
+        )
 
-        if details and data.interface == \
-                INTERFACE_CHOICES[DeviceInterfaces.SERIAL]:
-            data = SerialDeviceObject.find(
-                self.app.database_session, device_obj, False)
-            fields += ('port', 'baudrate', 'bytesize', 'parity',
-                       'stopbits', 'timeout')
-            values += (data.port, data.baudrate, data.bytesize, data.parity,
-                       data.stopbits, data.timeout)
-        elif details and data.interface == \
-                INTERFACE_CHOICES[DeviceInterfaces.ETHERNET]:
+        if details and data.interface == INTERFACE_CHOICES[DeviceInterfaces.SERIAL]:
+            data = SerialDeviceObject.find(self.app.database_session, device_obj, False)
+            fields += ("port", "baudrate", "bytesize", "parity", "stopbits", "timeout")
+            values += (
+                data.port,
+                data.baudrate,
+                data.bytesize,
+                data.parity,
+                data.stopbits,
+                data.timeout,
+            )
+        elif details and data.interface == INTERFACE_CHOICES[DeviceInterfaces.ETHERNET]:
             pass
-        elif details and data.interface == \
-                INTERFACE_CHOICES[DeviceInterfaces.USB]:
+        elif details and data.interface == INTERFACE_CHOICES[DeviceInterfaces.USB]:
             pass
 
         return (fields, values)

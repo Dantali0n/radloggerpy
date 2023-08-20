@@ -1,20 +1,9 @@
-# -*- encoding: utf-8 -*-
-# Copyright (c) 2019 Dantali0n
-#
-# Licensed under the Apache License, Version 2.0 (the "License"); you may
-# not use this file except in compliance with the License. You may obtain
-# a copy of the License at
-#
-#      http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
-# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
-# License for the specific language governing permissions and limitations
-# under the License.
+# Copyright (C) 2019 Dantali0n
+# SPDX-License-Identifier: Apache-2.0
 
 from radloggerpy.database.models.device import Device
 from radloggerpy.database.objects.base import DatabaseObject
+
 # from radloggerpy.database.objects.serial_device import SerialDeviceObject
 from radloggerpy.types.device_interfaces import INTERFACE_CHOICES
 from radloggerpy.types.device_types import DEVICE_TYPE_CHOICES
@@ -163,8 +152,7 @@ class DeviceObject(DatabaseObject):
 
     @staticmethod
     def find_enabled(session):
-        return DeviceObject.find(
-            session, DeviceObject(**{'enabled': True}), True)
+        return DeviceObject.find(session, DeviceObject(**{"enabled": True}), True)
 
     # @staticmethod
     # def upgrade(session, reference):

@@ -1,17 +1,5 @@
-# -*- encoding: utf-8 -*-
-# Copyright (c) 2019 Dantali0n
-#
-# Licensed under the Apache License, Version 2.0 (the "License"); you may
-# not use this file except in compliance with the License. You may obtain
-# a copy of the License at
-#
-#      http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
-# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
-# License for the specific language governing permissions and limitations
-# under the License.
+# Copyright (C) 2019 Dantali0n
+# SPDX-License-Identifier: Apache-2.0
 
 from cliff.command import Command
 
@@ -36,25 +24,29 @@ class DeviceAddSerial(Command, DeviceAddCommand):
         if self._arguments is None:
             # retrieve existing arguments from baseclass
             self._arguments = super().arguments
-            self._arguments.update({
-                'port': Argument(
-                    help="Symbolic name of the serial port to be translated "
-                         "to the physical device, such as /dev/ttyUSB0 or "
-                         "COM1."),
-                'baudrate': Argument(
-                    help="The speed at which the device sends data expressed "
-                         "in symbols per second (baud), typically 9600 Bd/s."),
-                '--bytesize': Argument(
-                    '-b', default=8, type=int,
-                    choices=BYTESIZE_CHOICES.values()),
-                '--parity': Argument(
-                    '-p', default="none",
-                    choices=PARITY_CHOICES.values()),
-                '---stopbits': Argument(
-                    '-s', default=1, type=float,
-                    choices=STOPBIT_CHOICES.values()),
-                '--timeout': Argument('-t', default=None),
-            })
+            self._arguments.update(
+                {
+                    "port": Argument(
+                        help="Symbolic name of the serial port to be translated "
+                        "to the physical device, such as /dev/ttyUSB0 or "
+                        "COM1."
+                    ),
+                    "baudrate": Argument(
+                        help="The speed at which the device sends data expressed "
+                        "in symbols per second (baud), typically 9600 Bd/s."
+                    ),
+                    "--bytesize": Argument(
+                        "-b", default=8, type=int, choices=BYTESIZE_CHOICES.values()
+                    ),
+                    "--parity": Argument(
+                        "-p", default="none", choices=PARITY_CHOICES.values()
+                    ),
+                    "---stopbits": Argument(
+                        "-s", default=1, type=float, choices=STOPBIT_CHOICES.values()
+                    ),
+                    "--timeout": Argument("-t", default=None),
+                }
+            )
         return self._arguments
 
     def get_parser(self, program_name):
