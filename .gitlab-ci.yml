@@ -11,6 +11,9 @@ include:
   - template: Security/SAST.gitlab-ci.yml
   - template: Security/Dependency-Scanning.gitlab-ci.yml
   - template: Security/Secret-Detection.gitlab-ci.yml
+.release-rules:
+  rules:
+    - if: '$CI_COMMIT_TAG && $CI_COMMIT_REF_PROTECTED == "true" && $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
 before_script:
   - pip install tox
 stages:
@@ -32,7 +35,6 @@ pylint:
     - tox -e pylint
 locale:
   stage: locale
-  allow_failure: true
   # Check that pot file is up to date
   script:
     - cp radloggerpy/locale/radloggerpy.pot radloggerpy/locale/radloggerpy.pot.ref
@@ -118,7 +120,7 @@ pages:
     - mkdir public
     - mv doc/build/html/* public/
   rules:
-    - if: '$CI_COMMIT_TAG && $CI_COMMIT_REF_PROTECTED == "true"'
+    - !reference [.release-rules, rules]
   artifacts:
     paths:
       - public
@@ -134,12 +136,7 @@ config:
 build-wheel:
   stage: packaging
   script:
-    - git status
-    - git checkout "$CI_COMMIT_REF_NAME"
-    - git status
     - tox -e build
-  dependencies:
-    - locale
   artifacts:
     paths:
       - dist/
@@ -149,11 +146,10 @@ publish-wheel:
   dependencies:
     - build-wheel
   rules:
-    - if: '$CI_COMMIT_TAG && $CI_COMMIT_REF_PROTECTED == "true"'
+    - !reference [.release-rules, rules]
   variables:
     TWINE_PASSWORD: "${CI_JOB_TOKEN}"
     TWINE_USERNAME: "gitlab-ci-token"
   script:
     - pip install twine
-    - git status  # check if clean
     - python -m twine upload --repository-url ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/pypi dist/*
