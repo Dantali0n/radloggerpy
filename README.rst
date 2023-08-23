@@ -11,6 +11,9 @@ RadLoggerPy
 .. image:: https://gitlab.dantalion.nl/root/radloggerpy/badges/master/coverage.svg?job=coverage
     :target: https://codecov.io/gh/Dantali0n/radloggerpy/tree/master/radloggerpy
     :alt: Code coverage report about total code coverage achieved by unit tests by gitlab.
+.. image:: https://readthedocs.org/projects/radloggerpy/badge/?version=latest
+    :target: https://root.pages.dantalion.nl/radloggerpy/
+    :alt: Badge for documentation resources
 .. image:: https://img.shields.io/github/license/Dantali0n/radloggerpy
     :target: https://github.com/Dantali0n/radloggerpy/blob/master/LICENSE
     :alt: Logo of Apache 2.0 software license.
@@ -23,6 +26,7 @@ designed to be used with background radiation measuring devices.
 
 * Free software: Apache license
 * Source: https://github.com/Dantali0n/RadLoggerPy
+* Documentation: https://root.pages.dantalion.nl/radloggerpy/
 * Bugs: https://github.com/Dantali0n/RadLoggerPy/issues
 * CI pipeline: https://gitlab.dantalion.nl/root/radloggerpy/-/pipelines
 * Code coverage: https://codecov.io/gh/Dantali0n/radloggerpy/tree/master/radloggerpy
