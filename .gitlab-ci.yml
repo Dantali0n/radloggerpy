@@ -134,6 +134,9 @@ config:
 build-wheel:
   stage: packaging
   script:
+    - git status
+    - git checkout "$CI_COMMIT_REF_NAME"
+    - git status
     - tox -e build
   dependencies:
     - locale
