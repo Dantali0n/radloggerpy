@@ -13,7 +13,7 @@ include:
   - template: Security/Secret-Detection.gitlab-ci.yml
 .release-rules:
   rules:
-    - if: '$CI_COMMIT_TAG && $CI_COMMIT_REF_PROTECTED == "true" && $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
+    - if: '$CI_COMMIT_TAG && $CI_COMMIT_REF_PROTECTED == "true"'
 before_script:
   - pip install tox
 stages:
@@ -24,6 +24,16 @@ stages:
   - documentation
   - packaging
   - publishing
+check-no-release-tag-on-branch:
+  stage: linting
+  rules:
+    - !reference [.release-rules, rules]
+  before_script:
+    - echo "Release tags should only be created on the master branch,"
+    - echo "Please ensure the tags are only created once your patch has merged."
+    - echo "Failure to comply will now fail this job."
+  script:
+    - if [ $(git symbolic-ref --short HEAD) == "$CI_DEFAULT_BRANCH" ]; then exit 1; fi
 pep8:
   stage: linting
   script:
