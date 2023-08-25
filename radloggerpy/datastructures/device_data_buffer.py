@@ -35,7 +35,7 @@ class DeviceDataBuffer:
     def __init__(self, condition: Condition):
         self.has_reading = False
         self.condition = condition
-        self.data = list()
+        self.data: List[RadiationReading] = list()
         self.rwlock = rwlock.RWLockRead()
 
     def add_readings(self, readings: List[RadiationReading]):

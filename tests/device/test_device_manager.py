@@ -2,15 +2,24 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import multiprocessing
+import time
+from threading import Condition
+from typing import Callable
 from unittest import mock
 
+from futurist import waiters
 from oslo_log import log
+from timeout_decorator import timeout_decorator
+
 from radloggerpy import config
 from radloggerpy.database.objects.device import DeviceObject
+from radloggerpy.database.objects.serial_device import SerialDeviceObject
 
 from radloggerpy.device import device_interfaces as di
 from radloggerpy.device import device_manager as dm
 from radloggerpy.device import devices as dev
+from radloggerpy.device.device_interfaces.serial_device import SerialDevice
+from radloggerpy.models.radiationreading import RadiationReading
 from radloggerpy.types.device_implementations import IMPLEMENTATION_CHOICES
 from radloggerpy.types.device_interfaces import DeviceInterfaces
 from radloggerpy.types.device_interfaces import INTERFACE_CHOICES
@@ -140,3 +149,85 @@ class TestDeviceManager(base.TestCase):
 
         for imp in implementations:
             self.assertNotEqual(imp.TYPE, DeviceTypes.UNDEFINED)
+
+    class DummyDevice(SerialDevice):
+        """Special device to be used for testing of DeviceManager"""
+
+        def __init__(self, info: SerialDeviceObject, condition: Condition):
+            super().__init__(info, condition)
+
+        def _init(self):
+            pass
+
+        def _run(self):
+            pass
+
+        def stop(self):
+            pass
+
+        def is_stopping(self):
+            pass
+
+    def setup_dummy_device(self, fn: Callable[[DummyDevice], None]):
+        """"""
+        p_dummy_device = mock.patch.object(self.DummyDevice, "_run", autospec=True)
+        m_dummy_device = p_dummy_device.start()
+        self.addCleanup(p_dummy_device.stop)
+        m_dummy_device.side_effect = fn
+
+        p_device_class = mock.patch.object(
+            dm.DeviceManager, "get_device_class", autospec=True
+        )
+        m_device_class = p_device_class.start()
+        self.addCleanup(p_device_class.stop)
+        m_device_class.return_value = self.DummyDevice
+
+    @timeout_decorator.timeout(5)
+    def test_run_retrieve(self):
+        """Submit a dummy device to the manager and retrieve data"""
+
+        def add_reading(this):
+            measure = RadiationReading()
+            measure.set_cpm(0)
+            this.data.add_readings([measure])
+
+        self.setup_dummy_device(add_reading)
+
+        m_serial = SerialDeviceObject()
+
+        manager = dm.DeviceManager()
+        manager.launch_device(m_serial)
+
+        waiters.wait_for_all([manager._mng_devices[0].future])
+
+        result = manager._mng_devices[0].future.result()
+        self.assertNotIsInstance(result, Exception, result)
+
+        self.assertEqual(1, len(manager._mng_devices[0].device.get_data()))
+
+    @timeout_decorator.timeout(10)
+    @mock.patch.object(multiprocessing, "cpu_count")
+    def test_run_concurrent_device_scheduling(self, m_cpu):
+        """Ensure that yielding devices allow others to run instead"""
+        num_cpu = 2
+        m_cpu.return_value = num_cpu
+
+        def add_reading_block(this):
+            measure = RadiationReading()
+            measure.set_cpm(0)
+            this.data.add_readings([measure])
+            time.sleep(5)
+
+        self.setup_dummy_device(add_reading_block)
+
+        m_serial = SerialDeviceObject()
+
+        manager = dm.DeviceManager()
+
+        for i in range(num_cpu + 1):
+            manager.launch_device(m_serial)
+
+        time.sleep(5)
+
+        for i in range(num_cpu + 1):
+            self.assertEqual(1, len(manager._mng_devices[i].device.get_data()))

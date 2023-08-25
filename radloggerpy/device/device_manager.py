@@ -6,6 +6,7 @@ import multiprocessing
 from threading import Condition
 from typing import Type
 from typing import TypeVar
+from typing import List
 
 
 from oslo_log import log
@@ -57,7 +58,7 @@ class DeviceManager:
     devices time to retrieve data but short enough to have relevant timing
     data.
 
-    Devices are expected to run in a endless loop, upon returning they will
+    Devices are expected to run in an endless loop, upon returning they will
     NOT get automatically rescheduled back into the queue of the threadpool.
     Since all devices inherit the Device super class this class will provide
     methods to store data. The storage and retrieval methods for data can
@@ -83,11 +84,12 @@ class DeviceManager:
 
         self._condition = Condition()
 
-        self._mng_devices = []
+        self._mng_devices: List[ManagedDevice] = []
         "List of ManagedDevice devices see :py:class:`ManagedDevice`"
         self._threadpool = futurist.ThreadPoolExecutor(max_workers=num_workers)
         # self._threadpool = futurist.GreenThreadPoolExecutor(
-        #    max_workers=num_workers)
+        #    max_workers=num_workers
+        # )
 
         self.get_device_map()
 

@@ -31,7 +31,7 @@ class TestArduinoGeigerPcb(base.TestCase):
 
     @mock.patch.object(agpcb, "serial")
     @mock.patch.object(agpcb, "time")
-    def test_run(self, m_time, m_serial):
+    def test_run_serial_error(self, m_time, m_serial):
         m_time.sleep.side_effect = [InterruptedError]
         m_waiting = mock.Mock()
         m_waiting.inWaiting.side_effect = [1, 0]

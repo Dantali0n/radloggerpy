@@ -17,7 +17,7 @@ class RadiationReading(timestamp.TimeStamp):
     def __init__(self):
         super().__init__()
 
-    def set_cpm(self, cpm):
+    def set_cpm(self, cpm: int):
         """Set the counts per minute to the new value
 
         :param cpm: Counts per minute
@@ -30,7 +30,7 @@ class RadiationReading(timestamp.TimeStamp):
 
         self._cpm = cpm
 
-    def get_cpm(self):
+    def get_cpm(self) -> int:
         """Get the current counts per minute
 
         :return: The current internal counts per minute
