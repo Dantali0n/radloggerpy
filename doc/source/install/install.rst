@@ -29,16 +29,6 @@ Install dependencies:
     python3-pip`
  CentOS 8:
     :bash:`sudo yum -y install python3 python3-pip python3-virtualenv`
- CentOS 7.5:
-    .. code-block:: bash
-
-        sudo yum update
-        sudo yum install yum-utils
-        sudo yum groupinstall development
-        sudo yum install https://centos7.iuscommunity.org/ius-release.rpm
-        sudo yum install python36u
-        sudo yum install python36u-pip
-        sudo yum install python36u-devel
 
 Installing RadLoggerPy with virtualenv
 ######################################
@@ -54,6 +44,6 @@ environment should be located in a convenient location.
     cd radloggerpy
     tox -e venv
     source .tox/venv/bin/active
-    python setup.py install
+    pip install ./
 
 .. _`latest release`: https://github.com/Dantali0n/radloggerpy/archive/master.zip

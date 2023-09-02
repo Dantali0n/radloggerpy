@@ -82,6 +82,12 @@ pygments_style = 'sphinx'
 # html_static_path = ['static']
 html_theme = "sphinx_rtd_theme"
 
+html_theme_options = {
+    "sticky_navigation": True,
+    "collapse_navigation": False,
+    'includehidden': False,
+}
+
 html_static_path = ['static']
 
 html_css_files = [

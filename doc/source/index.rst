@@ -24,4 +24,5 @@ Contents:
    user/index
    developer/roadmap
    developer/index
+   specifications/index
    source_documentation/index

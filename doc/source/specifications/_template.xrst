@@ -1,0 +1,63 @@
+==================
+Specification name
+==================
+
+Short problem description and introduction. `Include any references`_
+were needed.
+
+.. _`Include any references` : https://docs.openstack.org/oslo.config/latest/
+
+Problem Description
+*******************
+
+Describe the problem as best as possible.
+
+Use Cases
+*********
+
+What actors will benefit from this specification and how can they use it.
+Think about different types of actors, users, developers, system administrators.
+
+Proposed Change
+***************
+
+Describe how to address the problem in detail. If part of a greater series
+of changes describe how this one change fits with the rest of changes. Be sure
+to reference the other proposed changes.
+
+Alternatives
+------------
+
+In what other ways could the problem be solved.
+
+Work Items
+------------
+
+Subdivide the proposed changes into individual chunks of work.
+
+Database model impact
+*********************
+
+Any impact on the current database model.
+
+Dependencies
+************
+
+Any dependencies on other changes, new libraries or frameworks that might be
+required or other external systems.
+
+References
+**********
+
+A complete list of all references made throughout the spec.
+
+History
+*******
+
+.. list-table:: Revisions
+   :header-rows: 1
+
+   * - Release Name
+     - Description
+   * - vx.x.x
+     - Introduced
