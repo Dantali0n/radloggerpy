@@ -2,8 +2,8 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import multiprocessing
-import time
 from threading import Condition
+import time
 from typing import Callable
 from unittest import mock
 
@@ -14,11 +14,10 @@ from timeout_decorator import timeout_decorator
 from radloggerpy import config
 from radloggerpy.database.objects.device import DeviceObject
 from radloggerpy.database.objects.serial_device import SerialDeviceObject
-
 from radloggerpy.device import device_interfaces as di
+from radloggerpy.device.device_interfaces.serial_device import SerialDevice
 from radloggerpy.device import device_manager as dm
 from radloggerpy.device import devices as dev
-from radloggerpy.device.device_interfaces.serial_device import SerialDevice
 from radloggerpy.models.radiationreading import RadiationReading
 from radloggerpy.types.device_implementations import IMPLEMENTATION_CHOICES
 from radloggerpy.types.device_interfaces import DeviceInterfaces

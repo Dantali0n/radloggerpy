@@ -4,9 +4,9 @@
 from collections import OrderedDict
 import multiprocessing
 from threading import Condition
+from typing import List
 from typing import Type
 from typing import TypeVar
-from typing import List
 
 
 from oslo_log import log
