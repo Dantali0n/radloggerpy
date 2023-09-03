@@ -1,7 +1,7 @@
 # Copyright (C) 2019 Dantali0n
 # SPDX-License-Identifier: Apache-2.0
 
-from radloggerpy.rlpy_hacking import checks
+from radloggerpy.hacking import checks
 
 from tests import base
 

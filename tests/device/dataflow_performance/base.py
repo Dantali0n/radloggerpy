@@ -11,7 +11,9 @@ from tests.device.dataflow_performance.data import DummyData
 from tests.device.dataflow_performance.interfaces.broker import BrokerInterface
 from tests.device.dataflow_performance.interfaces.consumer import ConsumerInterface
 from tests.device.dataflow_performance.interfaces.data import DataInterface
+from tests.device.dataflow_performance.interfaces.device import DeviceCallable
 from tests.device.dataflow_performance.interfaces.device import DeviceInterface
+from tests.device.dataflow_performance.interfaces.endpoint import EndpointCallable
 from tests.device.dataflow_performance.interfaces.endpoint import EndpointInterface
 from tests.device.dataflow_performance.interfaces.queue import QueueInterface
 
@@ -220,3 +222,38 @@ class DataFlowPerformanceTestContainer:
 
         def test_measure_queue_insert_thread_32(self):
             self.measure_queue_insert_thread(32)
+
+        def measure_end_to_end_one_device_one_endpoint(
+            self,
+            device_hook: DeviceCallable = None,
+            endpoint_hook: EndpointCallable = None
+        ):
+            """Test end to end throughput with one device and endpoint"""
+
+            broker = self.broker()
+            endpoint = self.endpoint(hook=endpoint_hook)
+            queue = self.queue()
+            device = self.device(queue, DummyData, hook=device_hook)
+            broker.subscribe(endpoint, "data")
+
+            self.timer.start_timer()
+            for n in range(NUM_OPERATIONS):
+                device.produce()
+                broker.publish(queue.get(), "data")
+
+            result = self.timer.stop_timer()
+            self.timer.log_results(self, result)
+
+        def test_measure_end_to_end_one_device_one_endpoint__no_load(self):
+            self.measure_end_to_end_one_device_one_endpoint()
+
+        def test_measure_end_to_end_one_device_one_endpoint_sleep_load(self):
+            def device_hook():
+                time.sleep(0.00005)
+
+            def endpoint_hook(data: DataInterface):
+                time.sleep(0.00005)
+
+            self.measure_end_to_end_one_device_one_endpoint(
+                device_hook, endpoint_hook
+            )

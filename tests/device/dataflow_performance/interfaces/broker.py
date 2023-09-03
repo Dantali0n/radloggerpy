@@ -11,9 +11,9 @@ from tests.device.dataflow_performance.interfaces.endpoint import \
 class BrokerInterface(abc.ABC):
 
     @abc.abstractmethod
-    def subscribe(self, endpoint: EndpointInterface, topic: any):
+    def subscribe(self, endpoint: EndpointInterface, topic: str):
         pass
 
     @abc.abstractmethod
-    def publish(self, data: DataInterface, topic: any):
+    def publish(self, data: DataInterface, topic: str):
         pass

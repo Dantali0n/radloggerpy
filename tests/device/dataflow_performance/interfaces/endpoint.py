@@ -7,14 +7,16 @@ from typing import Optional
 
 from tests.device.dataflow_performance.interfaces.data import DataInterface
 
+EndpointCallable = Callable[[DataInterface], None]
+
 
 class EndpointInterface(abc.ABC):
 
-    def __init__(self, hook: Optional[Callable[[DataInterface], None]] = None):
+    def __init__(self, hook: Optional[EndpointCallable] = None):
         if hook:
             self.hook = hook
         else:
-            self.hook = lambda: {}
+            self.hook = lambda x: {}
 
     @abc.abstractmethod
     def deliver(self, data: DataInterface):

@@ -3,9 +3,15 @@
 
 # import unittest
 
-from tests.device.dataflow_performance.base import DataFlowPerformanceTestContainer
+
+from tests.device.dataflow_performance.base import \
+    DataFlowPerformanceTestContainer
+from tests.device.dataflow_performance.sequential.sequential_broker import \
+    SequentialBroker
 from tests.device.dataflow_performance.sequential.sequential_device import \
     SequentialDevice
+from tests.device.dataflow_performance.sequential.sequential_endpoint import \
+    SequentialEndpoint
 from tests.device.dataflow_performance.sequential.sequential_queue import \
     SequentialQueue
 
@@ -16,10 +22,10 @@ class SequentialDataflowPerformance(
 
     def setUp(self):
         super().setUp(
-            broker=None,
+            broker=SequentialBroker,
             consumer=None,
             device=SequentialDevice,
-            endpoint=None,
+            endpoint=SequentialEndpoint,
             queue=SequentialQueue
         )
 
