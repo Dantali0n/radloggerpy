@@ -8,7 +8,7 @@ from tests.device.dataflow_performance.interfaces.data import DataInterface
 from tests.device.dataflow_performance.interfaces.queue import QueueInterface
 
 
-class NativeQueue(QueueInterface):
+class ThreadSafeQueue(QueueInterface):
 
     def __init__(self):
         super().__init__()

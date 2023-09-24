@@ -2,7 +2,9 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import functools
+import inspect
 import logging
+import socket
 from threading import Thread
 import time
 from typing import Type
@@ -23,7 +25,8 @@ from tests.base import TestCase
 logger = logging.getLogger()
 logger.setLevel(logging.DEBUG)
 
-NUM_OPERATIONS: int = 200000
+# NUM_OPERATIONS: int = 2000000
+NUM_OPERATIONS: int = 50000
 
 
 def timing_decorator(func):
@@ -68,11 +71,18 @@ class PerformanceTimer:
         return self.total_time
 
     @staticmethod
-    def log_results(this: object, result: float):
+    def get_measured_method(diff_from_current_call: int) -> str:
+        return inspect.stack()[diff_from_current_call + 1][0].f_code.co_name
+
+    @staticmethod
+    def log_results(this: object, result: float, diff_from_current_call: int = 0):
         """Log the measured execution time"""
+        inspect.stack()[0][0].f_code.co_name
         logger.info(
-            "%s Execution time: %f (%d operations / second)",
-            this.__class__.__name__, result, (NUM_OPERATIONS / result)
+            "%s:%s Execution time: %f (%d operations / second)",
+            this.__class__.__name__,
+            PerformanceTimer.get_measured_method(diff_from_current_call + 1),
+            result, (NUM_OPERATIONS / result)
         )
 
 
@@ -206,7 +216,7 @@ class DataFlowPerformanceTestContainer:
             self.assertEqual(NUM_OPERATIONS, queue.qsize())
 
             result = self.timer.stop_timer()
-            self.timer.log_results(self, result)
+            self.timer.log_results(self, result, 1)
 
         def test_measure_queue_insert_thread_2(self):
             self.measure_queue_insert_thread(2)
@@ -242,7 +252,7 @@ class DataFlowPerformanceTestContainer:
                 broker.publish(queue.get(), "data")
 
             result = self.timer.stop_timer()
-            self.timer.log_results(self, result)
+            self.timer.log_results(self, result, 1)
 
         def test_measure_end_to_end_one_device_one_endpoint__no_load(self):
             self.measure_end_to_end_one_device_one_endpoint()
@@ -256,4 +266,30 @@ class DataFlowPerformanceTestContainer:
 
             self.measure_end_to_end_one_device_one_endpoint(
                 device_hook, endpoint_hook
+            )
+
+        def test_measure_end_to_end_one_device_one_endpoint_compute_load(self):
+            def device_hook():
+                y = 0
+                for x in range(2000):
+                    y *= x / 10
+
+            def endpoint_hook(data: DataInterface):
+                y = 0
+                for x in range(2000):
+                    y *= x / 10
+
+            self.measure_end_to_end_one_device_one_endpoint(
+                device_hook, endpoint_hook
+            )
+
+        @staticmethod
+        def udp_message(data: DataInterface = None):
+            sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)  # UDP
+            sock.sendto(bytes("Very Long Message 4 Test", "utf-8"), ("localhost", 9999))
+
+        def test_measure_end_to_end_one_device_one_endpoint_udp_load(self):
+
+            self.measure_end_to_end_one_device_one_endpoint(
+                self.udp_message, self.udp_message
             )
